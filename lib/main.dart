@@ -1,5 +1,5 @@
 import 'package:dewa_wo_app/pages/detail_pesanan_page.dart';
-import 'package:dewa_wo_app/pages/home_page.dart';
+import 'package:dewa_wo_app/pages/home/home_page.dart';
 import 'package:dewa_wo_app/pages/layanan_page.dart';
 import 'package:dewa_wo_app/pages/portofolio_page.dart';
 import 'package:flutter/material.dart';
