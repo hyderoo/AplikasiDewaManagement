@@ -127,7 +127,7 @@ class _PortofolioPageState extends State<PortofolioPage> {
                     style: const TextStyle(color: Colors.white),
                     cursorColor: Colors.white,
                     decoration: const InputDecoration(
-                      hintText: 'Cari layanan...',
+                      hintText: 'Cari portofolio...',
                       hintStyle: TextStyle(color: Colors.white70),
                       contentPadding: EdgeInsets.symmetric(
                         vertical: 15,
@@ -209,7 +209,7 @@ class _PortofolioPageState extends State<PortofolioPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
                 color: isSelected ? Colors.pink[50] : Colors.transparent,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: isSelected ? Colors.pink[50]! : Colors.grey[400]!,
                   width: 1,

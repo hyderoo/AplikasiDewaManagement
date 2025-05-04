@@ -206,7 +206,7 @@ class _LayananPageState extends State<LayananPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
                 color: isSelected ? Colors.pink[50] : Colors.transparent,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: isSelected ? Colors.pink[50]! : Colors.grey[400]!,
                   width: 1,

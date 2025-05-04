@@ -5,20 +5,19 @@ import 'package:shimmer/shimmer.dart';
 import 'package:intl/intl.dart';
 
 class PesananPage extends StatefulWidget {
-  const PesananPage({Key? key}) : super(key: key);
+  const PesananPage({super.key});
 
   @override
-  _PesananPageState createState() => _PesananPageState();
+  State<PesananPage> createState() => _PesananPageState();
 }
 
 class _PesananPageState extends State<PesananPage> {
   bool _isSearchMode = false;
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   String _selectedStatus = 'Semua';
-  List<String> _statusList = ['Semua', 'Lunas', 'Menunggu Pembayaran'];
+  final List<String> _statusList = ['Semua', 'Lunas', 'Menunggu Pembayaran'];
   bool _isLoading = true;
 
-  // Data pesanan
   List<PesananModel> pesananData = [
     PesananModel(
       id: '1',
@@ -117,14 +116,7 @@ class _PesananPageState extends State<PesananPage> {
     super.initState();
     _filteredPesanan = pesananData;
 
-    // Mengatur status bar transparan dan warna ikon status bar putih
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-    ));
-
-    // Simulasi loading data
-    Future.delayed(Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
         setState(() {
           _isLoading = false;
@@ -171,7 +163,7 @@ class _PesananPageState extends State<PesananPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60),
+        preferredSize: const Size.fromHeight(60),
         child: AppBar(
           backgroundColor: Colors.pink,
           elevation: 0,
@@ -181,7 +173,6 @@ class _PesananPageState extends State<PesananPage> {
       ),
       body: Column(
         children: [
-          // Spacer untuk memastikan konten di bawah AppBar
           SizedBox(height: MediaQuery.of(context).padding.top + 60),
           _buildStatusFilterList(),
           Expanded(
@@ -192,13 +183,6 @@ class _PesananPageState extends State<PesananPage> {
                     : _buildPesananList(),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Implementasi tambah pesanan baru
-        },
-        backgroundColor: Colors.pink,
-        child: Icon(Icons.add),
       ),
     );
   }
@@ -213,8 +197,8 @@ class _PesananPageState extends State<PesananPage> {
       child: _isSearchMode
           ? Row(
               children: [
-                IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.white),
+                BackButton(
+                  color: Colors.white,
                   onPressed: () {
                     setState(() {
                       _isSearchMode = false;
@@ -226,19 +210,37 @@ class _PesananPageState extends State<PesananPage> {
                 Expanded(
                   child: TextField(
                     controller: _searchController,
-                    style: TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
+                    style: const TextStyle(color: Colors.white),
+                    cursorColor: Colors.white,
+                    decoration: const InputDecoration(
                       hintText: 'Cari pesanan...',
                       hintStyle: TextStyle(color: Colors.white70),
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(vertical: 15),
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 15,
+                        horizontal: 16,
+                      ),
+                      filled: false,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        borderSide: BorderSide(
+                          color: Colors.white,
+                          width: 1,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        borderSide: BorderSide(
+                          color: Colors.white,
+                          width: 1,
+                        ),
+                      ),
                     ),
                     onChanged: _searchPesanan,
                     autofocus: true,
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.clear, color: Colors.white),
+                  icon: const Icon(Icons.clear, color: Colors.white),
                   onPressed: () {
                     _searchController.clear();
                     _searchPesanan('');
@@ -249,11 +251,11 @@ class _PesananPageState extends State<PesananPage> {
           : Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.white),
+                BackButton(
+                  color: Colors.white,
                   onPressed: () => context.pop(),
                 ),
-                Text(
+                const Text(
                   'Pesanan Saya',
                   style: TextStyle(
                     color: Colors.white,
@@ -262,7 +264,7 @@ class _PesananPageState extends State<PesananPage> {
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.search, color: Colors.white),
+                  icon: const Icon(Icons.search, color: Colors.white),
                   onPressed: () {
                     setState(() {
                       _isSearchMode = true;
@@ -277,10 +279,10 @@ class _PesananPageState extends State<PesananPage> {
   Widget _buildStatusFilterList() {
     return Container(
       height: 60,
-      padding: EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.symmetric(horizontal: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         itemCount: _statusList.length,
         itemBuilder: (context, index) {
           final status = _statusList[index];
@@ -289,13 +291,13 @@ class _PesananPageState extends State<PesananPage> {
           return GestureDetector(
             onTap: () => _filterPesanan(status),
             child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 6),
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              margin: const EdgeInsets.symmetric(horizontal: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
                 color: isSelected ? Colors.pink[50] : Colors.transparent,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: isSelected ? Colors.pink : Colors.grey[400]!,
+                  color: isSelected ? Colors.pink[50]! : Colors.grey[400]!,
                   width: 1,
                 ),
               ),
@@ -315,23 +317,28 @@ class _PesananPageState extends State<PesananPage> {
   }
 
   Widget _buildShimmerList() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Shimmer.fromColors(
-        baseColor: Colors.grey[300]!,
-        highlightColor: Colors.grey[100]!,
-        child: ListView.builder(
-          itemCount: 5,
-          itemBuilder: (context, index) {
-            return Container(
-              height: 100,
-              margin: EdgeInsets.only(bottom: 16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-              ),
-            );
-          },
+    return MediaQuery.removePadding(
+      context: context,
+      removeTop: true,
+      removeBottom: true,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Shimmer.fromColors(
+          baseColor: Colors.grey[300]!,
+          highlightColor: Colors.grey[100]!,
+          child: ListView.builder(
+            itemCount: 5,
+            itemBuilder: (context, index) {
+              return Container(
+                height: 100,
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -347,7 +354,7 @@ class _PesananPageState extends State<PesananPage> {
             size: 80,
             color: Colors.grey[400],
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Text(
             'Tidak ada pesanan yang ditemukan',
             style: TextStyle(
@@ -356,7 +363,7 @@ class _PesananPageState extends State<PesananPage> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
             'Silakan buat pesanan baru atau ubah filter',
             style: TextStyle(
@@ -371,21 +378,22 @@ class _PesananPageState extends State<PesananPage> {
   }
 
   Widget _buildPesananList() {
-    return ListView.builder(
-      padding: EdgeInsets.all(16),
+    return ListView.separated(
+      padding: const EdgeInsets.all(16),
       itemCount: _filteredPesanan.length,
       itemBuilder: (context, index) {
         return _buildPesananCard(_filteredPesanan[index]);
+      },
+      separatorBuilder: (BuildContext context, int index) {
+        return const SizedBox(height: 16);
       },
     );
   }
 
   Widget _buildPesananCard(PesananModel pesanan) {
-    // Warna status
     Color statusColor =
         pesanan.status == 'Lunas' ? Colors.green : Colors.orange;
 
-    // Format harga
     final formatCurrency = NumberFormat.currency(
       locale: 'id_ID',
       symbol: 'Rp ',
@@ -394,10 +402,6 @@ class _PesananPageState extends State<PesananPage> {
     final formattedHarga = formatCurrency.format(pesanan.totalHarga);
 
     return Card(
-      margin: EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      elevation: 4,
-      shadowColor: Colors.pink[100],
       child: InkWell(
         onTap: () => _showPesananDetail(pesanan),
         borderRadius: BorderRadius.circular(16),
@@ -415,27 +419,30 @@ class _PesananPageState extends State<PesananPage> {
                       children: [
                         Text(
                           pesanan.userName,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
+                            color: Colors.black,
                           ),
                         ),
-                        SizedBox(height: 4),
+                        const SizedBox(height: 4),
                         Text(
                           pesanan.paketName,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 14,
-                            color: Colors.pink,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.grey,
                           ),
                         ),
                       ],
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                     decoration: BoxDecoration(
                       color: statusColor.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       pesanan.status,
@@ -448,11 +455,15 @@ class _PesananPageState extends State<PesananPage> {
                   ),
                 ],
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               Row(
                 children: [
-                  Icon(Icons.calendar_today, size: 16, color: Colors.grey[600]),
-                  SizedBox(width: 4),
+                  Icon(
+                    Icons.calendar_today,
+                    size: 16,
+                    color: Colors.grey[600],
+                  ),
+                  const SizedBox(width: 8),
                   Text(
                     pesanan.tanggal,
                     style: TextStyle(
@@ -460,81 +471,66 @@ class _PesananPageState extends State<PesananPage> {
                       color: Colors.grey[600],
                     ),
                   ),
-                  SizedBox(width: 16),
-                  Icon(Icons.monetization_on,
-                      size: 16, color: Colors.grey[600]),
-                  SizedBox(width: 4),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  Icon(
+                    Icons.monetization_on,
+                    size: 16,
+                    color: Colors.grey[600],
+                  ),
+                  const SizedBox(width: 8),
                   Text(
                     formattedHarga,
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey[600],
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 4),
               Row(
                 children: [
-                  Expanded(
-                    child: InkWell(
-                      onTap: () => _showPesananDetail(pesanan),
-                      borderRadius: BorderRadius.circular(4),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.visibility,
-                                size: 16, color: Colors.pink),
-                            SizedBox(width: 4),
-                            Text(
-                              'Lihat Detail',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.pink,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                  Icon(
+                    Icons.location_pin,
+                    size: 16,
+                    color: Colors.grey[600],
                   ),
-                  Container(
-                    height: 24,
-                    width: 1,
-                    color: Colors.grey[300],
-                  ),
-                  Expanded(
-                    child: InkWell(
-                      onTap: () {
-                        // Implementasi hubungi admin
-                      },
-                      borderRadius: BorderRadius.circular(4),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.support_agent,
-                                size: 16, color: Colors.blue),
-                            SizedBox(width: 4),
-                            Text(
-                              'Hubungi Admin',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Grand Hyatt Jakarta',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[600],
                     ),
                   ),
                 ],
+              ),
+              if (true) ...[
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange,
+                    ),
+                    onPressed: () {},
+                    child: const Text('Bayar Sekarang'),
+                  ),
+                ),
+              ],
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    _showPesananDetail(pesanan);
+                  },
+                  child: const Text('Lihat Detail'),
+                ),
               ),
             ],
           ),
@@ -544,7 +540,6 @@ class _PesananPageState extends State<PesananPage> {
   }
 
   void _showPesananDetail(PesananModel pesanan) {
-    // Format harga
     final formatCurrency = NumberFormat.currency(
       locale: 'id_ID',
       symbol: 'Rp ',
@@ -552,7 +547,6 @@ class _PesananPageState extends State<PesananPage> {
     );
     final formattedHarga = formatCurrency.format(pesanan.totalHarga);
 
-    // Warna status
     Color statusColor =
         pesanan.status == 'Lunas' ? Colors.green : Colors.orange;
 
@@ -562,7 +556,7 @@ class _PesananPageState extends State<PesananPage> {
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
         height: MediaQuery.of(context).size.height * 0.75,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(24),
@@ -572,10 +566,9 @@ class _PesananPageState extends State<PesananPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
             Container(
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
+              padding: const EdgeInsets.all(16),
+              decoration: const BoxDecoration(
                 color: Colors.pink,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(24),
@@ -585,7 +578,7 @@ class _PesananPageState extends State<PesananPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
+                  const Row(
                     children: [
                       Icon(Icons.receipt, color: Colors.white),
                       SizedBox(width: 8),
@@ -600,21 +593,18 @@ class _PesananPageState extends State<PesananPage> {
                     ],
                   ),
                   IconButton(
-                    icon: Icon(Icons.close, color: Colors.white),
+                    icon: const Icon(Icons.close, color: Colors.white),
                     onPressed: () => Navigator.pop(context),
                   ),
                 ],
               ),
             ),
-
-            // Konten
             Expanded(
               child: SingleChildScrollView(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Header info
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -624,26 +614,26 @@ class _PesananPageState extends State<PesananPage> {
                             children: [
                               Text(
                                 pesanan.userName,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(height: 4),
+                              const SizedBox(height: 4),
                               Text(
                                 pesanan.paketName,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 16,
                                   color: Colors.pink,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
-                              SizedBox(height: 8),
+                              const SizedBox(height: 8),
                               Row(
                                 children: [
                                   Icon(Icons.calendar_today,
                                       size: 16, color: Colors.grey[600]),
-                                  SizedBox(width: 4),
+                                  const SizedBox(width: 4),
                                   Text(
                                     'Tanggal Acara: ${pesanan.tanggal}',
                                     style: TextStyle(
@@ -657,8 +647,8 @@ class _PesananPageState extends State<PesananPage> {
                           ),
                         ),
                         Container(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
                             color: statusColor.withOpacity(0.2),
                             borderRadius: BorderRadius.circular(12),
@@ -673,20 +663,17 @@ class _PesananPageState extends State<PesananPage> {
                         ),
                       ],
                     ),
-
-                    Divider(height: 32),
-
-                    // Informasi biaya
-                    Text(
+                    const Divider(height: 32),
+                    const Text(
                       'Informasi Biaya',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 12),
+                    const SizedBox(height: 12),
                     Container(
-                      padding: EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: Colors.grey[100],
                         borderRadius: BorderRadius.circular(12),
@@ -694,7 +681,7 @@ class _PesananPageState extends State<PesananPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          const Text(
                             'Total Biaya',
                             style: TextStyle(
                               fontSize: 16,
@@ -703,7 +690,7 @@ class _PesananPageState extends State<PesananPage> {
                           ),
                           Text(
                             formattedHarga,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: Colors.pink,
@@ -712,19 +699,17 @@ class _PesananPageState extends State<PesananPage> {
                         ],
                       ),
                     ),
-
-                    // Status pembayaran
-                    SizedBox(height: 24),
-                    Text(
+                    const SizedBox(height: 24),
+                    const Text(
                       'Status Pembayaran',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 12),
+                    const SizedBox(height: 12),
                     Container(
-                      padding: EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: statusColor.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(12),
@@ -744,7 +729,7 @@ class _PesananPageState extends State<PesananPage> {
                                     : Icons.pending,
                                 color: statusColor,
                               ),
-                              SizedBox(width: 8),
+                              const SizedBox(width: 8),
                               Text(
                                 pesanan.status,
                                 style: TextStyle(
@@ -756,7 +741,7 @@ class _PesananPageState extends State<PesananPage> {
                             ],
                           ),
                           if (pesanan.status == 'Lunas') ...[
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             Text(
                               'Dibayar pada: ${pesanan.tanggalPembayaran}',
                               style: TextStyle(
@@ -766,33 +751,29 @@ class _PesananPageState extends State<PesananPage> {
                             ),
                           ],
                           if (pesanan.status == 'Menunggu Pembayaran') ...[
-                            SizedBox(height: 16),
+                            const SizedBox(height: 16),
                             SizedBox(
                               width: double.infinity,
                               child: ElevatedButton(
-                                onPressed: () {
-                                  // Implementasi upload bukti pembayaran
-                                },
-                                child: Text('Upload Bukti Pembayaran'),
+                                onPressed: () {},
+                                child: const Text('Upload Bukti Pembayaran'),
                               ),
                             ),
                           ],
                         ],
                       ),
                     ),
-
-                    // Detail paket
-                    SizedBox(height: 24),
-                    Text(
+                    const SizedBox(height: 24),
+                    const Text(
                       'Detail Paket',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 12),
+                    const SizedBox(height: 12),
                     Container(
-                      padding: EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: Colors.pink[50],
                         borderRadius: BorderRadius.circular(12),
@@ -808,7 +789,7 @@ class _PesananPageState extends State<PesananPage> {
                               color: Colors.pink[700],
                             ),
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           ...pesanan.detailPesanan.map((item) => Padding(
                                 padding: const EdgeInsets.only(bottom: 4),
                                 child: Row(
@@ -816,11 +797,11 @@ class _PesananPageState extends State<PesananPage> {
                                   children: [
                                     Icon(Icons.check_circle,
                                         size: 16, color: Colors.pink[300]),
-                                    SizedBox(width: 8),
+                                    const SizedBox(width: 8),
                                     Expanded(
                                       child: Text(
                                         item,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 14,
                                         ),
                                       ),
@@ -831,33 +812,27 @@ class _PesananPageState extends State<PesananPage> {
                         ],
                       ),
                     ),
-
-                    // Tombol aksi
-                    SizedBox(height: 24),
+                    const SizedBox(height: 24),
                     Row(
                       children: [
                         Expanded(
                           child: OutlinedButton(
-                            onPressed: () {
-                              // Implementasi hubungi admin
-                            },
+                            onPressed: () {},
                             style: OutlinedButton.styleFrom(
-                              side: BorderSide(color: Colors.pink),
-                              padding: EdgeInsets.symmetric(vertical: 12),
+                              side: const BorderSide(color: Colors.pink),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
                             ),
-                            child: Text('Hubungi Admin'),
+                            child: const Text('Hubungi Admin'),
                           ),
                         ),
-                        SizedBox(width: 16),
+                        const SizedBox(width: 16),
                         Expanded(
                           child: ElevatedButton(
-                            onPressed: () {
-                              // Implementasi jadwalkan konsultasi
-                            },
+                            onPressed: () {},
                             style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(vertical: 12),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
                             ),
-                            child: Text('Jadwalkan Konsultasi'),
+                            child: const Text('Jadwalkan Konsultasi'),
                           ),
                         ),
                       ],
@@ -873,7 +848,6 @@ class _PesananPageState extends State<PesananPage> {
   }
 }
 
-// Model Data
 class PesananModel {
   final String id;
   final String userName;

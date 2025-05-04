@@ -102,7 +102,7 @@ class _TimPageState extends State<TimPage> {
                     style: const TextStyle(color: Colors.white),
                     cursorColor: Colors.white,
                     decoration: const InputDecoration(
-                      hintText: 'Cari layanan...',
+                      hintText: 'Cari tim kami...',
                       hintStyle: TextStyle(color: Colors.white70),
                       contentPadding: EdgeInsets.symmetric(
                         vertical: 15,
