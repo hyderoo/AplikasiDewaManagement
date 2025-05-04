@@ -56,17 +56,17 @@ final GoRouter _router = GoRouter(
       builder: (context, state) => const SizedBox.shrink(),
       routes: [
         GoRoute(
-          path: '/login',
+          path: 'login',
           name: 'login',
           builder: (context, state) => const LoginPage(),
         ),
         GoRoute(
-          path: '/register',
+          path: 'register',
           name: 'register',
           builder: (context, state) => const RegisterPage(),
         ),
         GoRoute(
-          path: '/forgot-password',
+          path: 'forgot-password',
           name: 'forgot-password',
           builder: (context, state) => const ForgotPasswordPage(),
         ),
@@ -77,12 +77,12 @@ final GoRouter _router = GoRouter(
       builder: (context, state) => const SizedBox.shrink(),
       routes: [
         GoRoute(
-          path: '/privacy-policy',
+          path: 'privacy-policy',
           name: 'privacy-policy',
           builder: (context, state) => const PrivacyPolicyPage(),
         ),
         GoRoute(
-          path: '/term-and-condition',
+          path: 'term-and-condition',
           name: 'term-and-condition',
           builder: (context, state) => const TermsConditionsPage(),
         ),

@@ -1,22 +1,20 @@
 import 'package:dewa_wo_app/models/layanan_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class LayananPage extends StatefulWidget {
-  const LayananPage({Key? key}) : super(key: key);
+  const LayananPage({super.key});
 
   @override
-  _LayananPageState createState() => _LayananPageState();
+  State<LayananPage> createState() => _LayananPageState();
 }
 
 class _LayananPageState extends State<LayananPage> {
   bool _isSearchMode = false;
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   String _selectedCategory = 'Semua';
-  List<String> _categories = [
+  final List<String> _categories = [
     'Semua',
     'Dokumentasi',
     'Dekorasi',
@@ -33,12 +31,6 @@ class _LayananPageState extends State<LayananPage> {
   void initState() {
     super.initState();
     _filteredLayanan = layananData;
-
-    // Mengatur status bar transparan dan warna ikon status bar putih
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-    ));
   }
 
   void _filterLayanan(String category) {
@@ -77,21 +69,16 @@ class _LayananPageState extends State<LayananPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Menggunakan AppBar tetapi dengan properti extendBodyBehindAppBar: true
-      // pada Scaffold untuk memastikan AppBar memanjang hingga status bar
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60),
+        preferredSize: const Size.fromHeight(60),
         child: AppBar(
-          backgroundColor: Colors.pink,
-          elevation: 0,
           automaticallyImplyLeading: false,
           flexibleSpace: _buildHeader(),
         ),
       ),
       body: Column(
         children: [
-          // Spacer untuk memastikan konten di bawah AppBar
           SizedBox(height: MediaQuery.of(context).padding.top + 60),
           _buildCategoryList(),
           Expanded(
@@ -101,7 +88,7 @@ class _LayananPageState extends State<LayananPage> {
                   _buildLayananList(),
                   _buildCustomPackageCard(),
                   _buildCalendarCard(),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 64),
                 ],
               ),
             ),
@@ -121,8 +108,8 @@ class _LayananPageState extends State<LayananPage> {
       child: _isSearchMode
           ? Row(
               children: [
-                IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.white),
+                BackButton(
+                  color: Colors.white,
                   onPressed: () {
                     setState(() {
                       _isSearchMode = false;
@@ -134,19 +121,37 @@ class _LayananPageState extends State<LayananPage> {
                 Expanded(
                   child: TextField(
                     controller: _searchController,
-                    style: TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
+                    style: const TextStyle(color: Colors.white),
+                    cursorColor: Colors.white,
+                    decoration: const InputDecoration(
                       hintText: 'Cari layanan...',
                       hintStyle: TextStyle(color: Colors.white70),
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(vertical: 15),
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 15,
+                        horizontal: 16,
+                      ),
+                      filled: false,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        borderSide: BorderSide(
+                          color: Colors.white,
+                          width: 1,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        borderSide: BorderSide(
+                          color: Colors.white,
+                          width: 1,
+                        ),
+                      ),
                     ),
                     onChanged: _searchLayanan,
                     autofocus: true,
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.clear, color: Colors.white),
+                  icon: const Icon(Icons.clear, color: Colors.white),
                   onPressed: () {
                     _searchController.clear();
                     _searchLayanan('');
@@ -157,11 +162,11 @@ class _LayananPageState extends State<LayananPage> {
           : Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.white),
+                BackButton(
+                  color: Colors.white,
                   onPressed: () => context.pop(),
                 ),
-                Text(
+                const Text(
                   'Layanan Kami',
                   style: TextStyle(
                     color: Colors.white,
@@ -170,7 +175,7 @@ class _LayananPageState extends State<LayananPage> {
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.search, color: Colors.white),
+                  icon: const Icon(Icons.search, color: Colors.white),
                   onPressed: () {
                     setState(() {
                       _isSearchMode = true;
@@ -185,10 +190,10 @@ class _LayananPageState extends State<LayananPage> {
   Widget _buildCategoryList() {
     return Container(
       height: 60,
-      padding: EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.symmetric(horizontal: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         itemCount: _categories.length,
         itemBuilder: (context, index) {
           final category = _categories[index];
@@ -197,13 +202,13 @@ class _LayananPageState extends State<LayananPage> {
           return GestureDetector(
             onTap: () => _filterLayanan(category),
             child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 6),
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              margin: const EdgeInsets.symmetric(horizontal: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
                 color: isSelected ? Colors.pink[50] : Colors.transparent,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: isSelected ? Colors.pink : Colors.grey[400]!,
+                  color: isSelected ? Colors.pink[50]! : Colors.grey[400]!,
                   width: 1,
                 ),
               ),
@@ -230,7 +235,7 @@ class _LayananPageState extends State<LayananPage> {
           child: Column(
             children: [
               Icon(Icons.search_off, size: 60, color: Colors.grey[400]),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text(
                 'Tidak ada layanan yang ditemukan',
                 style: TextStyle(
@@ -244,35 +249,34 @@ class _LayananPageState extends State<LayananPage> {
       );
     }
 
-    return ListView.builder(
-      physics: NeverScrollableScrollPhysics(),
+    return ListView.separated(
+      physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       itemCount: _filteredLayanan.length,
       itemBuilder: (context, index) {
         return _buildLayananCard(_filteredLayanan[index]);
+      },
+      separatorBuilder: (BuildContext context, int index) {
+        return const SizedBox(height: 16);
       },
     );
   }
 
   Widget _buildLayananCard(LayananModel layanan) {
     return Card(
-      margin: EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      elevation: 4,
-      shadowColor: Colors.pink[100],
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(16),
               topRight: Radius.circular(16),
             ),
             child: Container(
               height: 180,
               width: double.infinity,
-              color: Colors.pink[100], // Placeholder color
+              color: Colors.pink[100],
               alignment: Alignment.center,
               child: Icon(Icons.image, size: 60, color: Colors.pink[300]),
             ),
@@ -285,36 +289,30 @@ class _LayananPageState extends State<LayananPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(
-                      child: Text(
-                        layanan.title,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
                     Text(
-                      layanan.priceRange,
-                      style: TextStyle(
+                      layanan.title,
+                      style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
-                        color: Colors.pink,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        layanan.priceRange,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.pink,
+                        ),
+                        textAlign: TextAlign.end,
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 12),
-                Text(
-                  'Yang Akan Didapatkan:',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 _buildFeatureGrid(layanan.features),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -322,7 +320,7 @@ class _LayananPageState extends State<LayananPage> {
                       'layanan_detail',
                       pathParameters: {'id': layanan.id},
                     ),
-                    child: Text('Pilih Paket'),
+                    child: const Text('Pilih Paket'),
                   ),
                 ),
               ],
@@ -334,33 +332,43 @@ class _LayananPageState extends State<LayananPage> {
   }
 
   Widget _buildFeatureGrid(List<String> features) {
-    return GridView.builder(
-      physics: NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 4,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-      ),
-      itemCount: features.length,
-      itemBuilder: (context, index) {
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(Icons.check_circle, size: 14, color: Colors.pink),
-            SizedBox(width: 4),
-            Expanded(
-              child: Text(
-                features[index],
-                style: TextStyle(fontSize: 12),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+    return MediaQuery.removePadding(
+      context: context,
+      removeTop: true,
+      removeBottom: true,
+      child: GridView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 10,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+        ),
+        itemCount: features.length,
+        itemBuilder: (context, index) {
+          return Row(
+            children: [
+              const Text(
+                '✓',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.black,
+                ),
               ),
-            ),
-          ],
-        );
-      },
+              const SizedBox(width: 4),
+              Expanded(
+                child: Text(
+                  features[index],
+                  style: const TextStyle(fontSize: 12),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 
@@ -368,29 +376,21 @@ class _LayananPageState extends State<LayananPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        elevation: 4,
-        shadowColor: Colors.pink[100],
         child: InkWell(
-          onTap: () {
-            // Implementasi custom paket
-          },
+          onTap: () {},
           borderRadius: BorderRadius.circular(16),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            width: double.infinity,
+            child: const Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CircleAvatar(
-                  backgroundColor: Colors.pink[100],
-                  radius: 24,
-                  child: Icon(
-                    Icons.add,
-                    color: Colors.pink,
-                    size: 30,
-                  ),
+                Icon(
+                  Icons.add,
+                  color: Colors.pink,
+                  size: 100,
                 ),
-                SizedBox(width: 16),
+                SizedBox(height: 8),
                 Text(
                   'Custom Paket',
                   style: TextStyle(
@@ -410,22 +410,20 @@ class _LayananPageState extends State<LayananPage> {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        elevation: 4,
-        shadowColor: Colors.pink[100],
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Jadwal Acara',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
+                  color: Colors.black,
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TableCalendar(
                 firstDay: DateTime.utc(2020, 1, 1),
                 lastDay: DateTime.utc(2030, 12, 31),
@@ -435,13 +433,20 @@ class _LayananPageState extends State<LayananPage> {
                 headerStyle: HeaderStyle(
                   formatButtonVisible: false,
                   titleCentered: true,
-                  leftChevronIcon: Icon(Icons.chevron_left, color: Colors.pink),
-                  rightChevronIcon:
-                      Icon(Icons.chevron_right, color: Colors.pink),
+                  leftChevronIcon: const Icon(
+                    Icons.chevron_left,
+                    color: Colors.black,
+                    size: 32,
+                  ),
+                  rightChevronIcon: const Icon(
+                    Icons.chevron_right,
+                    color: Colors.black,
+                    size: 32,
+                  ),
                   titleTextStyle: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Colors.pink[800],
+                    color: Colors.grey.shade600,
                   ),
                 ),
                 calendarStyle: CalendarStyle(
@@ -449,7 +454,7 @@ class _LayananPageState extends State<LayananPage> {
                     color: Colors.pink[300],
                     shape: BoxShape.circle,
                   ),
-                  selectedDecoration: BoxDecoration(
+                  selectedDecoration: const BoxDecoration(
                     color: Colors.pink,
                     shape: BoxShape.circle,
                   ),
@@ -474,15 +479,7 @@ class _LayananPageState extends State<LayananPage> {
                   _focusedDay = focusedDay;
                 },
               ),
-              SizedBox(height: 16),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Implementasi booking tanggal
-                  },
-                  child: Text('Periksa Ketersediaan'),
-                ),
-              ),
+              const SizedBox(height: 16),
             ],
           ),
         ),

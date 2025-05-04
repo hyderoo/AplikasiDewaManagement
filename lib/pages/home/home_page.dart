@@ -98,19 +98,30 @@ class _HomePageState extends State<HomePage> {
               const Expanded(
                 child: TextField(
                   style: TextStyle(color: Colors.white),
+                  cursorColor: Colors.white,
                   decoration: InputDecoration(
                     hintText: 'Cari...',
                     hintStyle: TextStyle(color: Colors.white70),
                     prefixIcon: Icon(Icons.search, color: Colors.white),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: 15,
+                      horizontal: 16,
+                    ),
+                    filled: false,
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
                       borderSide: BorderSide(
                         color: Colors.white,
-                        width: 2,
+                        width: 1,
                       ),
                     ),
-                    contentPadding: EdgeInsets.symmetric(vertical: 8),
-                    filled: false,
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                        width: 1,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -141,22 +152,22 @@ class _HomePageState extends State<HomePage> {
           _buildMenuCircle(
             icon: 'assets/layanan.png',
             label: 'Layanan',
-            onTap: () => context.goNamed('layanan'),
+            onTap: () => context.pushNamed('layanan'),
           ),
           _buildMenuCircle(
             icon: 'assets/portofolio.png',
             label: 'Portofolio',
-            onTap: () => context.goNamed('portofolio'),
+            onTap: () => context.pushNamed('portofolio'),
           ),
           _buildMenuCircle(
             icon: 'assets/tim.png',
             label: 'Tim',
-            onTap: () => context.goNamed('tim'),
+            onTap: () => context.pushNamed('tim'),
           ),
           _buildMenuCircle(
             icon: 'assets/pesanan.png',
             label: 'Pesanan',
-            onTap: () => context.goNamed('pesanan'),
+            onTap: () => context.pushNamed('pesanan'),
           ),
         ],
       ),
