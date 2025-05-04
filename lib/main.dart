@@ -1,16 +1,20 @@
+import 'package:dewa_wo_app/pages/auth/forgot/forgot_password_page.dart';
 import 'package:dewa_wo_app/pages/auth/login/login_page.dart';
 import 'package:dewa_wo_app/pages/auth/register/register_page.dart';
 import 'package:dewa_wo_app/pages/home/home_page.dart';
 import 'package:dewa_wo_app/pages/layanan/layanan_page.dart';
+import 'package:dewa_wo_app/pages/legal/privacy_policy_page.dart';
+import 'package:dewa_wo_app/pages/legal/terms_conditions_page.dart';
 import 'package:dewa_wo_app/pages/not_found/not_found_page.dart';
 import 'package:dewa_wo_app/pages/pesanan/pesanan_page.dart';
 import 'package:dewa_wo_app/pages/portofolio/portofolio_page.dart';
+import 'package:dewa_wo_app/pages/splash/splash_page.dart';
 import 'package:dewa_wo_app/pages/tim/tim_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 // Konfigurasi Go Router
@@ -19,28 +23,13 @@ final GoRouter _router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
+      name: 'splash',
+      builder: (context, state) => const SplashPage(),
+    ),
+    GoRoute(
+      path: '/home',
       name: 'home',
       builder: (context, state) => const HomePage(),
-      // routes: [
-      //   GoRoute(
-      //     path: 'detail/:id',
-      //     name: 'detail',
-      //     builder: (context, state) {
-      //       final id = state.pathParameters['id'] ?? 'unknown';
-      //       return DetailPage(id: id);
-      //     },
-      //   ),
-      //   GoRoute(
-      //     path: 'profile',
-      //     name: 'profile',
-      //     builder: (context, state) => const ProfilePage(),
-      //   ),
-      //   GoRoute(
-      //     path: 'settings',
-      //     name: 'settings',
-      //     builder: (context, state) => const SettingsPage(),
-      //   ),
-      // ],
     ),
     GoRoute(
       path: '/layanan',
@@ -63,20 +52,49 @@ final GoRouter _router = GoRouter(
       builder: (context, state) => const PesananPage(),
     ),
     GoRoute(
-      path: '/login',
-      name: 'login',
-      builder: (context, state) => const LoginPage(),
+      path: '/auth',
+      builder: (context, state) => const SizedBox.shrink(),
+      routes: [
+        GoRoute(
+          path: '/login',
+          name: 'login',
+          builder: (context, state) => const LoginPage(),
+        ),
+        GoRoute(
+          path: '/register',
+          name: 'register',
+          builder: (context, state) => const RegisterPage(),
+        ),
+        GoRoute(
+          path: '/forgot-password',
+          name: 'forgot-password',
+          builder: (context, state) => const ForgotPasswordPage(),
+        ),
+      ],
     ),
     GoRoute(
-      path: '/register',
-      name: 'register',
-      builder: (context, state) => const RegisterPage(),
+      path: '/legal',
+      builder: (context, state) => const SizedBox.shrink(),
+      routes: [
+        GoRoute(
+          path: '/privacy-policy',
+          name: 'privacy-policy',
+          builder: (context, state) => const PrivacyPolicyPage(),
+        ),
+        GoRoute(
+          path: '/term-and-condition',
+          name: 'term-and-condition',
+          builder: (context, state) => const TermsConditionsPage(),
+        ),
+      ],
     ),
   ],
-  errorBuilder: (context, state) => NotFoundPage(),
+  errorBuilder: (context, state) => const NotFoundPage(),
 );
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
@@ -91,7 +109,7 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.light,
         ),
         scaffoldBackgroundColor: Colors.white,
-        appBarTheme: AppBarTheme(
+        appBarTheme: const AppBarTheme(
           backgroundColor: Colors.pink,
           foregroundColor: Colors.white,
           elevation: 0,
@@ -100,7 +118,7 @@ class MyApp extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.pink[400],
             foregroundColor: Colors.white,
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
@@ -118,7 +136,7 @@ class MyApp extends StatelessWidget {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: Colors.pink, width: 2),
+            borderSide: const BorderSide(color: Colors.pink, width: 2),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
@@ -126,6 +144,10 @@ class MyApp extends StatelessWidget {
           ),
           fillColor: Colors.white,
           filled: true,
+          hintStyle: TextStyle(
+            color: Colors.grey.shade500,
+            fontWeight: FontWeight.w400,
+          ),
         ),
         textTheme: TextTheme(
           displayLarge:
@@ -141,13 +163,13 @@ class MyApp extends StatelessWidget {
           titleLarge:
               TextStyle(color: Colors.pink[700], fontWeight: FontWeight.bold),
           titleMedium:
-              TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-          bodyLarge: TextStyle(color: Colors.black87),
-          bodyMedium: TextStyle(color: Colors.black54),
+              const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          bodyLarge: const TextStyle(color: Colors.black87),
+          bodyMedium: const TextStyle(color: Colors.black54),
         ),
         cardTheme: CardTheme(
           elevation: 2,
-          margin: EdgeInsets.all(2),
+          margin: const EdgeInsets.all(2),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),

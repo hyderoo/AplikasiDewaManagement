@@ -1,37 +1,31 @@
-import 'package:dewa_wo_app/pages/auth/forgot/forgot_password_page.dart';
-import 'package:dewa_wo_app/pages/auth/register/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  // Controller untuk form input
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  // Status remember me
   bool _rememberMe = false;
 
-  // Status password visibility
   bool _passwordVisible = false;
 
-  // Status loading
   bool _isLoading = false;
 
-  // Form key untuk validasi
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
-    // Mengatur status bar transparan dan warna ikon status bar hitam
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
     ));
@@ -44,25 +38,18 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  // Melakukan login
   void _login() {
-    // Validasi form
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
       });
 
-      // Simulasi proses login
-      Future.delayed(Duration(seconds: 2), () {
+      Future.delayed(const Duration(seconds: 2), () {
         setState(() {
           _isLoading = false;
         });
 
-        // Navigasi ke halaman home jika login berhasil
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => DummyHomePage()),
-        );
+        context.pushReplacementNamed('home');
       });
     }
   }
@@ -75,34 +62,31 @@ class _LoginPageState extends State<LoginPage> {
         child: Stack(
           children: [
             SingleChildScrollView(
-              padding: EdgeInsets.all(24),
+              padding: const EdgeInsets.all(24),
               child: Form(
                 key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 20),
-                    // Header dengan logo dan judul
+                    const SizedBox(height: 20),
                     Center(
                       child: Column(
                         children: [
                           Container(
-                            width: 80,
-                            height: 80,
-                            decoration: BoxDecoration(
-                              color: Colors.pink[50],
+                            width: 120,
+                            height: 120,
+                            decoration: const BoxDecoration(
                               shape: BoxShape.circle,
                             ),
                             child: Center(
-                              child: Icon(
-                                Icons.favorite,
-                                size: 40,
+                              child: Image.asset(
+                                'assets/logo.png',
                                 color: Colors.pink,
                               ),
                             ),
                           ),
-                          SizedBox(height: 16),
-                          Text(
+                          const SizedBox(height: 16),
+                          const Text(
                             'Dewa Wedding Organizer',
                             style: TextStyle(
                               fontSize: 22,
@@ -110,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
                               color: Colors.pink,
                             ),
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Text(
                             'Login ke akun Anda',
                             style: TextStyle(
@@ -121,23 +105,21 @@ class _LoginPageState extends State<LoginPage> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 40),
-
-                    // Form Email
-                    Text(
+                    const SizedBox(height: 40),
+                    const Text(
                       'Email',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         hintText: 'Masukkan email Anda',
-                        prefixIcon: Icon(Icons.email, color: Colors.grey),
+                        prefixIcon: const Icon(Icons.email, color: Colors.grey),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide(
@@ -152,11 +134,12 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Colors.pink,
                           ),
                         ),
-                        contentPadding: EdgeInsets.symmetric(vertical: 16),
+                        contentPadding:
+                            const EdgeInsets.symmetric(vertical: 16),
                         filled: true,
                         fillColor: Colors.grey[50],
                       ),
@@ -171,23 +154,21 @@ class _LoginPageState extends State<LoginPage> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 20),
-
-                    // Form Password
-                    Text(
+                    const SizedBox(height: 20),
+                    const Text(
                       'Password',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     TextFormField(
                       controller: _passwordController,
                       obscureText: !_passwordVisible,
                       decoration: InputDecoration(
                         hintText: 'Masukkan password Anda',
-                        prefixIcon: Icon(Icons.lock, color: Colors.grey),
+                        prefixIcon: const Icon(Icons.lock, color: Colors.grey),
                         suffixIcon: IconButton(
                           icon: Icon(
                             _passwordVisible
@@ -215,11 +196,12 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Colors.pink,
                           ),
                         ),
-                        contentPadding: EdgeInsets.symmetric(vertical: 16),
+                        contentPadding:
+                            const EdgeInsets.symmetric(vertical: 16),
                         filled: true,
                         fillColor: Colors.grey[50],
                       ),
@@ -233,13 +215,10 @@ class _LoginPageState extends State<LoginPage> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 16),
-
-                    // Remember me & Lupa password
+                    const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // Remember me
                         Row(
                           children: [
                             SizedBox(
@@ -258,7 +237,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                             ),
-                            SizedBox(width: 8),
+                            const SizedBox(width: 8),
                             Text(
                               'Ingat Saya',
                               style: TextStyle(
@@ -268,26 +247,18 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ],
                         ),
-                        // Lupa password
                         TextButton(
                           onPressed: () {
-                            // Navigasi ke halaman lupa password
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ForgotPasswordPage()),
-                            );
+                            context.pushNamed('forgot-password');
                           },
                           style: TextButton.styleFrom(
                             foregroundColor: Colors.pink,
                           ),
-                          child: Text('Lupa Password?'),
+                          child: const Text('Lupa Password?'),
                         ),
                       ],
                     ),
-                    SizedBox(height: 32),
-
-                    // Tombol Login
+                    const SizedBox(height: 32),
                     SizedBox(
                       width: double.infinity,
                       height: 50,
@@ -299,11 +270,11 @@ class _LoginPageState extends State<LoginPage> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          padding: EdgeInsets.symmetric(vertical: 12),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
                           disabledBackgroundColor: Colors.pink[200],
                         ),
                         child: _isLoading
-                            ? SizedBox(
+                            ? const SizedBox(
                                 height: 24,
                                 width: 24,
                                 child: CircularProgressIndicator(
@@ -312,7 +283,7 @@ class _LoginPageState extends State<LoginPage> {
                                       Colors.white),
                                 ),
                               )
-                            : Text(
+                            : const Text(
                                 'Login',
                                 style: TextStyle(
                                   fontSize: 16,
@@ -321,9 +292,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                       ),
                     ),
-                    SizedBox(height: 24),
-
-                    // Tombol Register
+                    const SizedBox(height: 24),
                     Center(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -337,17 +306,12 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           TextButton(
                             onPressed: () {
-                              // Navigasi ke halaman register
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => RegisterPage()),
-                              );
+                              context.pushNamed('register');
                             },
                             style: TextButton.styleFrom(
                               foregroundColor: Colors.pink,
                             ),
-                            child: Text(
+                            child: const Text(
                               'Daftar Sekarang',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -361,18 +325,16 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
-
-            // Jika loading, tampilkan indikator loading full screen
             if (_isLoading)
               Container(
                 color: Colors.black.withOpacity(0.1),
                 alignment: Alignment.center,
                 child: Container(
-                  padding: EdgeInsets.all(24),
+                  padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
+                    boxShadow: const [
                       BoxShadow(
                         color: Colors.black26,
                         blurRadius: 10,
@@ -380,7 +342,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ],
                   ),
-                  child: Column(
+                  child: const Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       CircularProgressIndicator(
@@ -400,24 +362,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-// Halaman dummy untuk navigasi
-class DummyHomePage extends StatelessWidget {
-  const DummyHomePage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Home'),
-        backgroundColor: Colors.pink,
-      ),
-      body: Center(
-        child: Text('Halaman Home'),
       ),
     );
   }

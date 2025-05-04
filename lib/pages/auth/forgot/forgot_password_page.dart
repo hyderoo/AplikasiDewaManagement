@@ -1,29 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
-  const ForgotPasswordPage({Key? key}) : super(key: key);
+  const ForgotPasswordPage({super.key});
 
   @override
-  _ForgotPasswordPageState createState() => _ForgotPasswordPageState();
+  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
 }
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
-  // Controller untuk form input
   final _emailController = TextEditingController();
 
-  // Status loading
   bool _isLoading = false;
   bool _isEmailSent = false;
 
-  // Form key untuk validasi
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
-    // Mengatur status bar transparan dan warna ikon status bar hitam
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
     ));
@@ -35,16 +33,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     super.dispose();
   }
 
-  // Reset password
   void _resetPassword() {
-    // Validasi form
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
       });
 
-      // Simulasi proses reset password
-      Future.delayed(Duration(seconds: 2), () {
+      Future.delayed(const Duration(seconds: 2), () {
         setState(() {
           _isLoading = false;
           _isEmailSent = true;
@@ -58,7 +53,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Lupa Password',
           style: TextStyle(
             fontSize: 18,
@@ -69,14 +64,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(24),
+          padding: const EdgeInsets.all(24),
           child: _isEmailSent ? _buildSuccessView() : _buildResetForm(),
         ),
       ),
@@ -89,15 +80,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Icon
           Icon(
             Icons.lock_reset,
             size: 80,
             color: Colors.pink[300],
           ),
-          SizedBox(height: 24),
-          // Header
-          Text(
+          const SizedBox(height: 24),
+          const Text(
             'Lupa Password Anda?',
             style: TextStyle(
               fontSize: 24,
@@ -106,7 +95,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           Text(
             'Masukkan email Anda dan kami akan mengirimkan link untuk reset password.',
             style: TextStyle(
@@ -115,15 +104,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 32),
-
-          // Form Email
+          const SizedBox(height: 32),
           TextFormField(
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
             decoration: InputDecoration(
               hintText: 'Masukkan email Anda',
-              prefixIcon: Icon(Icons.email, color: Colors.grey),
+              prefixIcon: const Icon(Icons.email, color: Colors.grey),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide(
@@ -138,11 +125,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(
+                borderSide: const BorderSide(
                   color: Colors.pink,
                 ),
               ),
-              contentPadding: EdgeInsets.symmetric(vertical: 16),
+              contentPadding: const EdgeInsets.symmetric(vertical: 16),
               filled: true,
               fillColor: Colors.grey[50],
             ),
@@ -157,9 +144,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               return null;
             },
           ),
-          SizedBox(height: 32),
-
-          // Tombol Reset Password
+          const SizedBox(height: 32),
           SizedBox(
             width: double.infinity,
             height: 50,
@@ -171,11 +156,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                padding: EdgeInsets.symmetric(vertical: 12),
+                padding: const EdgeInsets.symmetric(vertical: 12),
                 disabledBackgroundColor: Colors.pink[200],
               ),
               child: _isLoading
-                  ? SizedBox(
+                  ? const SizedBox(
                       height: 24,
                       width: 24,
                       child: CircularProgressIndicator(
@@ -183,7 +168,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                       ),
                     )
-                  : Text(
+                  : const Text(
                       'Reset Password',
                       style: TextStyle(
                         fontSize: 16,
@@ -192,9 +177,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     ),
             ),
           ),
-          SizedBox(height: 24),
-
-          // Kembali ke login
+          const SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -207,12 +190,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  context.pop();
                 },
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.pink,
                 ),
-                child: Text(
+                child: const Text(
                   'Login',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -230,15 +213,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // Icon sukses
-        Icon(
+        const Icon(
           Icons.mark_email_read,
           size: 100,
           color: Colors.green,
         ),
-        SizedBox(height: 24),
-        // Header
-        Text(
+        const SizedBox(height: 24),
+        const Text(
           'Email Terkirim!',
           style: TextStyle(
             fontSize: 24,
@@ -247,7 +228,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           ),
           textAlign: TextAlign.center,
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         Text(
           'Kami telah mengirimkan instruksi reset password ke email Anda.',
           style: TextStyle(
@@ -256,7 +237,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           ),
           textAlign: TextAlign.center,
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Text(
           'Periksa inbox atau folder spam Anda untuk menemukan email dari kami.',
           style: TextStyle(
@@ -265,10 +246,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           ),
           textAlign: TextAlign.center,
         ),
-        SizedBox(height: 32),
-        // Instruksi tambahan
+        const SizedBox(height: 32),
         Container(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Colors.blue[50],
             borderRadius: BorderRadius.circular(12),
@@ -278,7 +258,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           ),
           child: Column(
             children: [
-              Row(
+              const Row(
                 children: [
                   Icon(Icons.info, color: Colors.blue),
                   SizedBox(width: 8),
@@ -292,7 +272,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   ),
                 ],
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text(
                 'Link reset password hanya berlaku selama 30 menit. Jika Anda tidak menerima email dalam beberapa menit, silakan coba kirim ulang.',
                 style: TextStyle(
@@ -303,14 +283,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             ],
           ),
         ),
-        SizedBox(height: 32),
-        // Tombol Kembali ke Login
+        const SizedBox(height: 32),
         SizedBox(
           width: double.infinity,
           height: 50,
           child: ElevatedButton(
             onPressed: () {
-              Navigator.pop(context);
+              context.pop();
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.pink,
@@ -318,9 +297,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
-              padding: EdgeInsets.symmetric(vertical: 12),
+              padding: const EdgeInsets.symmetric(vertical: 12),
             ),
-            child: Text(
+            child: const Text(
               'Kembali ke Login',
               style: TextStyle(
                 fontSize: 16,
@@ -329,8 +308,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             ),
           ),
         ),
-        SizedBox(height: 16),
-        // Tombol Kirim Ulang
+        const SizedBox(height: 16),
         TextButton(
           onPressed: () {
             setState(() {
@@ -340,7 +318,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           style: TextButton.styleFrom(
             foregroundColor: Colors.pink,
           ),
-          child: Text(
+          child: const Text(
             'Kirim Ulang Email',
             style: TextStyle(
               fontWeight: FontWeight.bold,
