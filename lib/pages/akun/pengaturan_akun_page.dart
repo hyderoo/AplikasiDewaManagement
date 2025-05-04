@@ -1,3 +1,4 @@
+import 'package:dewa_wo_app/resources/resources.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -57,7 +58,7 @@ class PengaturanAkunPage extends StatelessWidget {
     return Column(
       children: [
         _buildMenuItem(
-          icon: Icons.person_outline,
+          icon: AppIcons.profile,
           label: 'Pengaturan Profile',
           onTap: () {
             context.pushNamed('profile');
@@ -73,7 +74,7 @@ class PengaturanAkunPage extends StatelessWidget {
           ),
         ),
         _buildMenuItem(
-          icon: Icons.privacy_tip_outlined,
+          icon: AppIcons.privacyPolicy,
           label: 'Privacy Policy',
           onTap: () {
             context.pushNamed('privacy-policy');
@@ -89,7 +90,7 @@ class PengaturanAkunPage extends StatelessWidget {
           ),
         ),
         _buildMenuItem(
-          icon: Icons.star_outline,
+          icon: AppIcons.review,
           label: 'Beri Rating dan Review',
           onTap: () {
             _showRatingDialog(context);
@@ -105,7 +106,7 @@ class PengaturanAkunPage extends StatelessWidget {
           ),
         ),
         _buildMenuItem(
-          icon: Icons.logout,
+          icon: AppIcons.logout,
           label: 'Keluar',
           isLogout: true,
           onTap: () {
@@ -117,7 +118,7 @@ class PengaturanAkunPage extends StatelessWidget {
   }
 
   Widget _buildMenuItem({
-    required IconData icon,
+    required String icon,
     required String label,
     required Function() onTap,
     bool isLogout = false,
@@ -128,9 +129,9 @@ class PengaturanAkunPage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: Row(
           children: [
-            Icon(
+            Image.asset(
               icon,
-              size: 24,
+              height: 24,
               color: isLogout ? Colors.red : Colors.grey[700],
             ),
             const SizedBox(width: 16),

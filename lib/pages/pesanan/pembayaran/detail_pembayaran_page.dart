@@ -1,4 +1,5 @@
 import 'package:dewa_wo_app/models/pesanan_model.dart';
+import 'package:dewa_wo_app/resources/resources.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
@@ -228,7 +229,7 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
               width: 20,
               height: 20,
               child: Image.asset(
-                isSelected ? 'assets/checked.png' : 'assets/unchecked.png',
+                isSelected ? AppIcons.checked : AppIcons.unchecked,
               ),
             ),
             const SizedBox(width: 16),

@@ -1,3 +1,4 @@
+import 'package:dewa_wo_app/resources/resources.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
@@ -126,7 +127,7 @@ class _HomePageState extends State<HomePage> {
               ),
               IconButton(
                 icon: Image.asset(
-                  'assets/settings.png',
+                  AppIcons.settings,
                   color: Colors.white,
                   width: 32,
                   height: 32,
@@ -149,22 +150,22 @@ class _HomePageState extends State<HomePage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           _buildMenuCircle(
-            icon: 'assets/layanan.png',
+            icon: AppMenu.layanan,
             label: 'Layanan',
             onTap: () => context.pushNamed('layanan'),
           ),
           _buildMenuCircle(
-            icon: 'assets/portofolio.png',
+            icon: AppMenu.portofolio,
             label: 'Portofolio',
             onTap: () => context.pushNamed('portofolio'),
           ),
           _buildMenuCircle(
-            icon: 'assets/tim.png',
+            icon: AppMenu.tim,
             label: 'Tim',
             onTap: () => context.pushNamed('tim'),
           ),
           _buildMenuCircle(
-            icon: 'assets/pesanan.png',
+            icon: AppMenu.pesanan,
             label: 'Pesanan',
             onTap: () => context.pushNamed('pesanan'),
           ),

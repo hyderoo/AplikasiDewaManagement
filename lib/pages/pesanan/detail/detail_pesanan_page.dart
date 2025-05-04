@@ -1,4 +1,5 @@
 import 'package:dewa_wo_app/models/pesanan_model.dart';
+import 'package:dewa_wo_app/resources/resources.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -108,7 +109,11 @@ class _DetailPesananPageState extends State<DetailPesananPage> {
         children: [
           Row(
             children: [
-              Icon(Icons.calendar_today, size: 20, color: Colors.grey[600]),
+              Image.asset(
+                AppIcons.date,
+                height: 20,
+                color: Colors.grey[600],
+              ),
               const SizedBox(width: 8),
               Text(
                 pesanan.tanggal,
@@ -122,7 +127,11 @@ class _DetailPesananPageState extends State<DetailPesananPage> {
           const SizedBox(height: 12),
           Row(
             children: [
-              Icon(Icons.monetization_on, size: 20, color: Colors.grey[600]),
+              Image.asset(
+                AppIcons.dollar,
+                height: 20,
+                color: Colors.grey[600],
+              ),
               const SizedBox(width: 8),
               Text(
                 pesanan.totalHarga.toString(),
@@ -136,7 +145,11 @@ class _DetailPesananPageState extends State<DetailPesananPage> {
           const SizedBox(height: 12),
           Row(
             children: [
-              Icon(Icons.location_on, size: 20, color: Colors.grey[600]),
+              Image.asset(
+                AppIcons.location,
+                height: 20,
+                color: Colors.grey[600],
+              ),
               const SizedBox(width: 8),
               Text(
                 pesanan.lokasi,
@@ -150,7 +163,11 @@ class _DetailPesananPageState extends State<DetailPesananPage> {
           const SizedBox(height: 12),
           Row(
             children: [
-              Icon(Icons.people, size: 20, color: Colors.grey[600]),
+              Image.asset(
+                AppIcons.users,
+                height: 20,
+                color: Colors.grey[600],
+              ),
               const SizedBox(width: 8),
               Text(
                 pesanan.estimasiTamu,

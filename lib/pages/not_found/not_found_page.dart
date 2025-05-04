@@ -1,3 +1,4 @@
+import 'package:dewa_wo_app/resources/resources.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -22,7 +23,7 @@ class NotFoundPage extends StatelessWidget {
               SizedBox(
                 height: 250,
                 child: Lottie.asset(
-                  'assets/animations/404_animation.json',
+                  AppAnimations.notfound,
                   repeat: true,
                 ),
               ),
