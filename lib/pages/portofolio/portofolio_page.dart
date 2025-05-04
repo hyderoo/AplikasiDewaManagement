@@ -292,21 +292,20 @@ class _PortofolioPageState extends State<PortofolioPage> {
   }
 
   Widget _buildPortofolioList() {
-    return ListView.builder(
+    return ListView.separated(
       padding: const EdgeInsets.all(16),
       itemCount: _filteredPortofolio.length,
       itemBuilder: (context, index) {
         return _buildPortofolioCard(_filteredPortofolio[index]);
+      },
+      separatorBuilder: (BuildContext context, int index) {
+        return const SizedBox(height: 16);
       },
     );
   }
 
   Widget _buildPortofolioCard(PortofolioModel portofolio) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      elevation: 4,
-      shadowColor: Colors.pink[100],
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
