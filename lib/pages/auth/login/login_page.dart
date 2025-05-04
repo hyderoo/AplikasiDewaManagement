@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
           _isLoading = false;
         });
 
-        context.pushReplacementNamed('home');
+        context.goNamed('home');
       });
     }
   }

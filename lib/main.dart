@@ -1,3 +1,5 @@
+import 'package:dewa_wo_app/models/layanan_model.dart';
+import 'package:dewa_wo_app/models/pesanan_model.dart';
 import 'package:dewa_wo_app/pages/akun/pengaturan_akun_page.dart';
 import 'package:dewa_wo_app/pages/akun/pengaturan_profile_page.dart';
 import 'package:dewa_wo_app/pages/auth/forgot/forgot_password_page.dart';
@@ -8,14 +10,22 @@ import 'package:dewa_wo_app/pages/layanan/layanan_page.dart';
 import 'package:dewa_wo_app/pages/legal/privacy_policy_page.dart';
 import 'package:dewa_wo_app/pages/legal/terms_conditions_page.dart';
 import 'package:dewa_wo_app/pages/not_found/not_found_page.dart';
+import 'package:dewa_wo_app/pages/pesanan/detail_pembayaran_page.dart';
+import 'package:dewa_wo_app/pages/pesanan/detail_pesanan_page.dart';
+import 'package:dewa_wo_app/pages/pesanan/form_pemesanan_page.dart';
 import 'package:dewa_wo_app/pages/pesanan/pesanan_page.dart';
 import 'package:dewa_wo_app/pages/portofolio/portofolio_page.dart';
 import 'package:dewa_wo_app/pages/splash/splash_page.dart';
 import 'package:dewa_wo_app/pages/tim/tim_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('id', null);
+
   runApp(const MyApp());
 }
 
@@ -52,6 +62,29 @@ final GoRouter _router = GoRouter(
       path: '/pesanan',
       name: 'pesanan',
       builder: (context, state) => const PesananPage(),
+      routes: [
+        GoRoute(
+          path: 'form',
+          name: 'form',
+          builder: (context, state) => FormPemesananPage(
+            layanan: state.extra as LayananModel,
+          ),
+        ),
+        GoRoute(
+          path: 'detail',
+          name: 'detail',
+          builder: (context, state) => DetailPesananPage(
+            pesanan: state.extra as PesananModel,
+          ),
+        ),
+        GoRoute(
+          path: 'bayar',
+          name: 'bayar',
+          builder: (context, state) => DetailPembayaranPage(
+            pesanan: state.extra as PesananModel,
+          ),
+        ),
+      ],
     ),
     GoRoute(
       path: '/auth',
@@ -115,6 +148,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return MaterialApp.router(
       title: 'Dewa Management - Wedding Organizer',
       debugShowCheckedModeBanner: false,
@@ -167,7 +201,7 @@ class MyApp extends StatelessWidget {
             fontWeight: FontWeight.w400,
           ),
         ),
-        textTheme: TextTheme(
+        textTheme: GoogleFonts.publicSansTextTheme(textTheme).copyWith(
           displayLarge:
               TextStyle(color: Colors.pink[900], fontWeight: FontWeight.bold),
           displayMedium:

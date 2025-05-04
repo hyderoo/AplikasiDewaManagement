@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -133,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                   height: 32,
                 ),
                 onPressed: () {
-                  context.goNamed('setting');
+                  context.pushNamed('setting');
                 },
               ),
             ],
@@ -392,9 +391,9 @@ class _HomePageState extends State<HomePage> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () => context.goNamed(
-                          'layanan_detail',
-                          pathParameters: {'id': layanan.id},
+                        onPressed: () => context.push(
+                          '/pesanan/form',
+                          extra: layanan,
                         ),
                         child: const Text('Pilih Paket'),
                       ),

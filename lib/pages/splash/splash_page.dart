@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -54,19 +55,9 @@ class _SplashPageState extends State<SplashPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: SizedBox(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-            colors: [
-              Colors.pink[300]!,
-              Colors.pink[700]!,
-            ],
-          ),
-        ),
         child: AnimatedBuilder(
           animation: _animationController,
           builder: (context, child) {
@@ -77,48 +68,30 @@ class _SplashPageState extends State<SplashPage>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
+                    SizedBox(
                       width: 120,
                       height: 120,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            spreadRadius: 1,
-                            blurRadius: 10,
-                            offset: Offset(0, 5),
-                          ),
-                        ],
-                      ),
                       child: Center(
                         child: Image.asset(
                           'assets/logo.png',
-                          color: Colors.pink,
                         ),
                       ),
                     ),
                     const SizedBox(height: 24),
-                    const Text(
-                      'Dewa',
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                    Text(
+                      'Selamat Datang',
+                      style: GoogleFonts.cormorantGaramond(
+                        fontSize: 42,
+                        fontWeight: FontWeight.w300,
+                        color: Colors.black,
                       ),
                     ),
                     Text(
-                      'Management',
-                      style: TextStyle(
+                      'Di Dewa Management'.toUpperCase(),
+                      style: GoogleFonts.cormorant(
                         fontSize: 24,
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.black.withOpacity(0.9),
                       ),
-                    ),
-                    const SizedBox(height: 64),
-                    const CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      strokeWidth: 3,
                     ),
                   ],
                 ),

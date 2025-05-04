@@ -76,11 +76,7 @@ class PengaturanAkunPage extends StatelessWidget {
           icon: Icons.privacy_tip_outlined,
           label: 'Privacy Policy',
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const DummyPage('Privacy Policy')),
-            );
+            context.pushNamed('privacy-policy');
           },
         ),
         Padding(
@@ -218,25 +214,6 @@ class PengaturanAkunPage extends StatelessWidget {
             child: const Text('Keluar'),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class DummyPage extends StatelessWidget {
-  final String title;
-
-  const DummyPage(this.title, {Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-        backgroundColor: Colors.pink,
-      ),
-      body: Center(
-        child: Text('Halaman $title'),
       ),
     );
   }

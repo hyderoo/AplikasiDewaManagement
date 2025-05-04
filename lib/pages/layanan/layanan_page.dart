@@ -74,7 +74,72 @@ class _LayananPageState extends State<LayananPage> {
         preferredSize: const Size.fromHeight(60),
         child: AppBar(
           automaticallyImplyLeading: false,
-          flexibleSpace: _buildHeader(),
+          leading: BackButton(
+            color: Colors.white,
+            onPressed: () {
+              if (_isSearchMode) {
+                setState(() {
+                  _isSearchMode = false;
+                  _searchController.clear();
+                  _filterLayanan(_selectedCategory);
+                });
+              } else {
+                context.pop();
+              }
+            },
+          ),
+          title: _isSearchMode
+              ? Expanded(
+                  child: TextField(
+                    controller: _searchController,
+                    style: const TextStyle(color: Colors.white),
+                    cursorColor: Colors.white,
+                    decoration: const InputDecoration(
+                      hintText: 'Cari layanan...',
+                      hintStyle: TextStyle(color: Colors.white70),
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 15,
+                        horizontal: 16,
+                      ),
+                      filled: false,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        borderSide: BorderSide(
+                          color: Colors.white,
+                          width: 1,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        borderSide: BorderSide(
+                          color: Colors.white,
+                          width: 1,
+                        ),
+                      ),
+                    ),
+                    onChanged: _searchLayanan,
+                    autofocus: true,
+                  ),
+                )
+              : const Text('Layanan Kami'),
+          actions: [
+            IconButton(
+              icon: Icon(
+                _isSearchMode ? Icons.clear : Icons.search,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                if (_isSearchMode) {
+                  _searchController.clear();
+                  _searchLayanan('');
+                } else {
+                  setState(() {
+                    _isSearchMode = true;
+                  });
+                }
+              },
+            ),
+          ],
         ),
       ),
       body: Column(

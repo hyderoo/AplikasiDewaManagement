@@ -1,12 +1,14 @@
+import 'package:dewa_wo_app/models/pesanan_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
 
 class DetailPembayaranPage extends StatefulWidget {
-  const DetailPembayaranPage({Key? key}) : super(key: key);
+  final PesananModel pesanan;
+  const DetailPembayaranPage({super.key, required this.pesanan});
 
   @override
-  _DetailPembayaranPageState createState() => _DetailPembayaranPageState();
+  State<DetailPembayaranPage> createState() => _DetailPembayaranPageState();
 }
 
 class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
@@ -19,13 +21,6 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
   @override
   void initState() {
     super.initState();
-    // Mengatur status bar transparan dan warna ikon status bar putih
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-    ));
-
-    // Mulai timer
     _startTimer();
   }
 
@@ -36,7 +31,7 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
   }
 
   void _startTimer() {
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         if (_seconds > 0) {
           _seconds--;
@@ -61,39 +56,22 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        backgroundColor: Colors.pink,
-        elevation: 0,
-        title: Text(
-          'Detail Pembayaran',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        title: const Text('Detail Pembayaran'),
         centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildCountdownCard(),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             _buildMetodePembayaran(),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             _buildVirtualAccountInfo(),
-            SizedBox(height: 16),
-            _buildCaraPembayaran(),
-            SizedBox(height: 16),
-            _buildTotalTagihan(),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             _buildActionButtons(),
-            SizedBox(height: 24),
+            const SizedBox(height: 64),
           ],
         ),
       ),
@@ -102,13 +80,9 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
 
   Widget _buildCountdownCard() {
     return Card(
-      margin: EdgeInsets.all(16),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      elevation: 0,
+      margin: const EdgeInsets.all(16),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             Text(
@@ -118,16 +92,16 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
                 color: Colors.grey[700],
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               '${_hours.toString().padLeft(2, '0')}:${_minutes.toString().padLeft(2, '0')}:${_seconds.toString().padLeft(2, '0')}',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: Colors.pink,
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Row(
               children: [
                 Expanded(
@@ -140,13 +114,13 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
                     ),
                   ),
                 ),
-                Expanded(
+                const Expanded(
                   flex: 2,
                   child: Text(
                     'Paket Pernikahan Lengkap',
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey[800],
+                      color: Colors.black,
                       fontWeight: FontWeight.w500,
                     ),
                     textAlign: TextAlign.right,
@@ -154,7 +128,7 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
                 ),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(
               children: [
                 Expanded(
@@ -167,13 +141,13 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
                     ),
                   ),
                 ),
-                Expanded(
+                const Expanded(
                   flex: 2,
                   child: Text(
                     '11 Maret 2025',
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey[800],
+                      color: Colors.black,
                       fontWeight: FontWeight.w500,
                     ),
                     textAlign: TextAlign.right,
@@ -189,36 +163,37 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
 
   Widget _buildMetodePembayaran() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'Metode Pembayaran',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
+              color: Colors.black,
             ),
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           _buildBankOption(
             'BCA Virtual Account',
             'assets/images/bca.png',
             'BCA Virtual Account',
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 12),
           _buildBankOption(
             'Mandiri Virtual Account',
             'assets/images/mandiri.png',
             'Mandiri Virtual Account',
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 12),
           _buildBankOption(
             'BNI Virtual Account',
             'assets/images/bni.png',
             'BNI Virtual Account',
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 12),
           _buildBankOption(
             'BRI Virtual Account',
             'assets/images/bri.png',
@@ -239,42 +214,24 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
         });
       },
       child: Container(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           border: Border.all(
-            color: isSelected ? Colors.pink : Colors.grey[300]!,
+            color: Colors.pink,
             width: 1,
           ),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
           children: [
-            // Simulating logo with Container as placeholder
-            Container(
+            SizedBox(
               width: 20,
               height: 20,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: isSelected ? Colors.pink : Colors.grey,
-                  width: 1,
-                ),
+              child: Image.asset(
+                isSelected ? 'assets/checked.png' : 'assets/unchecked.png',
               ),
-              child: isSelected
-                  ? Center(
-                      child: Container(
-                        width: 12,
-                        height: 12,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.pink,
-                        ),
-                      ),
-                    )
-                  : null,
             ),
-            SizedBox(width: 16),
-            // Bank Logo (placeholder)
+            const SizedBox(width: 16),
             Container(
               width: 60,
               height: 20,
@@ -288,11 +245,11 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
                 ),
               ),
             ),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             Expanded(
               child: Text(
                 title,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),
@@ -306,27 +263,24 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
 
   Widget _buildVirtualAccountInfo() {
     return Card(
-      margin: EdgeInsets.symmetric(horizontal: 16),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      elevation: 0,
+      margin: const EdgeInsets.symmetric(horizontal: 16),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Nomor Virtual Account',
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.grey[700],
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(
               children: [
-                Expanded(
+                const Expanded(
                   child: Text(
                     '82771627899172563',
                     style: TextStyle(
@@ -334,15 +288,16 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
                       fontWeight: FontWeight.bold,
                       color: Colors.pink,
                     ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
                 IconButton(
                   icon: Icon(Icons.copy, color: Colors.grey[700]),
                   onPressed: () {
-                    // Copy to clipboard functionality
-                    Clipboard.setData(ClipboardData(text: '82771627899172563'));
+                    Clipboard.setData(
+                        const ClipboardData(text: '82771627899172563'));
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
+                      const SnackBar(
                         content: Text('Nomor VA berhasil disalin'),
                         duration: Duration(seconds: 2),
                       ),
@@ -351,43 +306,36 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
                 ),
               ],
             ),
+            Text(
+              'Cara Pembayaran:',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey.shade700,
+              ),
+            ),
+            const SizedBox(height: 8),
+            _buildCaraPembayaranStep(
+                '1. Buka aplikasi m-banking BCA Virtual Account'),
+            _buildCaraPembayaranStep(
+                '2. Pilih menu "Transfer" atau "Pembayaran"'),
+            _buildCaraPembayaranStep('3. Pilih "Virtual Account"'),
+            _buildCaraPembayaranStep(
+                '4. Masukkan nomor Virtual Account di atas'),
+            _buildCaraPembayaranStep('5. Periksa detail pembayaran'),
+            _buildCaraPembayaranStep('6. Masukkan PIN untuk konfirmasi'),
+            _buildCaraPembayaranStep('7. Pembayaran selesai'),
+            const SizedBox(height: 8),
+            _buildTotalTagihan(),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildCaraPembayaran() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Cara Pembayaran:',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          SizedBox(height: 8),
-          _buildCaraPembayaranStep(
-              '1. Buka aplikasi m-banking BCA Virtual Account'),
-          _buildCaraPembayaranStep(
-              '2. Pilih menu "Transfer" atau "Pembayaran"'),
-          _buildCaraPembayaranStep('3. Pilih "Virtual Account"'),
-          _buildCaraPembayaranStep('4. Masukkan nomor Virtual Account di atas'),
-          _buildCaraPembayaranStep('5. Periksa detail pembayaran'),
-          _buildCaraPembayaranStep('6. Masukkan PIN untuk konfirmasi'),
-          _buildCaraPembayaranStep('7. Pembayaran selesai'),
-        ],
-      ),
-    );
-  }
-
   Widget _buildCaraPembayaranStep(String step) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 4),
+      padding: const EdgeInsets.only(bottom: 4),
       child: Text(
         step,
         style: TextStyle(
@@ -400,13 +348,12 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
 
   Widget _buildTotalTagihan() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16),
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Color(0xFFFFF9D2),
-        borderRadius: BorderRadius.circular(12),
+        color: const Color(0xFFFFF9D2),
+        borderRadius: BorderRadius.circular(8),
       ),
-      child: Row(
+      child: const Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
@@ -421,6 +368,7 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
+              color: Colors.black,
             ),
           ),
         ],
@@ -430,13 +378,12 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
 
   Widget _buildActionButtons() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
           Expanded(
             child: OutlinedButton(
               onPressed: () {
-                // Implementasi tombol batal
                 Navigator.pop(context);
               },
               style: OutlinedButton.styleFrom(
@@ -444,7 +391,7 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-                padding: EdgeInsets.symmetric(vertical: 16),
+                padding: const EdgeInsets.symmetric(vertical: 16),
               ),
               child: Text(
                 'Batal',
@@ -455,20 +402,18 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
               ),
             ),
           ),
-          SizedBox(width: 16),
+          const SizedBox(width: 16),
           Expanded(
             child: ElevatedButton(
-              onPressed: () {
-                // Implementasi tombol sudah bayar
-              },
+              onPressed: () {},
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.pink,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-                padding: EdgeInsets.symmetric(vertical: 16),
+                padding: const EdgeInsets.symmetric(vertical: 16),
               ),
-              child: Text(
+              child: const Text(
                 'Sudah Bayar',
                 style: TextStyle(
                   fontSize: 16,

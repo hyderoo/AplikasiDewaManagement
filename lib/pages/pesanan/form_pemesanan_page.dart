@@ -1,23 +1,22 @@
+import 'package:dewa_wo_app/models/layanan_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class FormPemesananPage extends StatefulWidget {
-  final String? paketId;
-  final String? paketName;
+  final LayananModel layanan;
 
   const FormPemesananPage({
-    Key? key,
-    this.paketId,
-    this.paketName,
-  }) : super(key: key);
+    super.key,
+    required this.layanan,
+  });
 
   @override
-  _FormPemesananPageState createState() => _FormPemesananPageState();
+  State<FormPemesananPage> createState() => _FormPemesananPageState();
 }
 
 class _FormPemesananPageState extends State<FormPemesananPage> {
-  // Controller untuk form input
   final _namaPriaController = TextEditingController();
   final _namaWanitaController = TextEditingController();
   final _jumlahTamuController = TextEditingController();
@@ -33,8 +32,8 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
   @override
   void initState() {
     super.initState();
-    // Mengatur status bar transparan dan warna ikon status bar putih
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
     ));
@@ -53,17 +52,17 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
     super.dispose();
   }
 
-  // Membuka date picker
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _selectedDate ?? DateTime.now().add(Duration(days: 60)),
-      firstDate: DateTime.now().add(Duration(days: 30)),
-      lastDate: DateTime.now().add(Duration(days: 365 * 2)),
+      initialDate:
+          _selectedDate ?? DateTime.now().add(const Duration(days: 60)),
+      firstDate: DateTime.now().add(const Duration(days: 30)),
+      lastDate: DateTime.now().add(const Duration(days: 365 * 2)),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
+            colorScheme: const ColorScheme.light(
               primary: Colors.pink,
               onPrimary: Colors.white,
               onSurface: Colors.black,
@@ -86,7 +85,6 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
     }
   }
 
-  // Format tanggal untuk ditampilkan
   String get _formattedDate {
     if (_selectedDate == null) {
       return 'Tanggal Pernikahan';
@@ -94,13 +92,13 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
     return DateFormat('dd MMMM yyyy', 'id_ID').format(_selectedDate!);
   }
 
-  // Submit form
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      // Kirim data form ke API atau halaman berikutnya
-      print('Form valid, lanjut ke proses berikutnya');
+      if (kDebugMode) {
+        print('Form valid, lanjut ke proses berikutnya');
+      }
 
-      // Contoh data yang dikirim
+      // ignore: unused_local_variable
       final formData = {
         'nama_pria': _namaPriaController.text,
         'nama_wanita': _namaWanitaController.text,
@@ -111,20 +109,19 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
         'email': _emailController.text,
         'whatsapp': _whatsappController.text,
         'telepon': _teleponController.text,
-        'paket_id': widget.paketId,
-        'paket_name': widget.paketName,
+        'paket_id': widget.layanan.id,
+        'paket_name': widget.layanan.title,
       };
 
-      // Navigate to next page (konfirmasi pesanan)
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => Scaffold(
             appBar: AppBar(
-              title: Text('Konfirmasi Pesanan'),
+              title: const Text('Konfirmasi Pesanan'),
               backgroundColor: Colors.pink,
             ),
-            body: Center(
+            body: const Center(
               child: Text('Halaman konfirmasi pesanan'),
             ),
           ),
@@ -138,30 +135,18 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.pink,
-        elevation: 0,
-        title: Text(
-          'Form Pemesanan',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        title: const Text('Form Pemesanan'),
         centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
       ),
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildSectionTitle('Informasi Pasangan'),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               _buildTextField(
                 controller: _namaPriaController,
                 hintText: 'Nama Pengantin Pria',
@@ -172,7 +157,7 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
                   return null;
                 },
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               _buildTextField(
                 controller: _namaWanitaController,
                 hintText: 'Nama Pengantin Wanita',
@@ -185,7 +170,7 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
               ),
               _buildDivider(),
               _buildSectionTitle('Informasi Acara'),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               _buildDateField(
                 hintText: _formattedDate,
                 onTap: () => _selectDate(context),
@@ -196,7 +181,7 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
                   return null;
                 },
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               _buildTextField(
                 controller: _jumlahTamuController,
                 hintText: 'Estimasi Jumlah Tamu',
@@ -208,7 +193,7 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
                   return null;
                 },
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               _buildTextField(
                 controller: _lokasiController,
                 hintText: 'Lokasi Acara (Nama Gedung/Tempat Acara)',
@@ -219,7 +204,7 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
                   return null;
                 },
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               _buildTextField(
                 controller: _alamatController,
                 hintText: 'Alamat Lengkap Lokasi',
@@ -233,7 +218,7 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
               ),
               _buildDivider(),
               _buildSectionTitle('Informasi Kontak'),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               _buildTextField(
                 controller: _emailController,
                 hintText: 'Email',
@@ -249,7 +234,7 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
                   return null;
                 },
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               _buildTextField(
                 controller: _whatsappController,
                 hintText: 'Nomor WhatsApp',
@@ -261,14 +246,15 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
                   return null;
                 },
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               _buildTextField(
                 controller: _teleponController,
                 hintText: 'Nomor Telepon Alternatif',
                 keyboardType: TextInputType.phone,
               ),
-              SizedBox(height: 32),
+              const SizedBox(height: 32),
               _buildActionButtons(),
+              const SizedBox(height: 32),
             ],
           ),
         ),
@@ -276,11 +262,10 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
     );
   }
 
-  // Widget untuk judul setiap section
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: TextStyle(
+      style: const TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.bold,
         color: Colors.black,
@@ -288,7 +273,6 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
     );
   }
 
-  // Widget untuk text field umum
   Widget _buildTextField({
     required TextEditingController controller,
     required String hintText,
@@ -303,7 +287,7 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
         hintStyle: TextStyle(
           color: Colors.grey[400],
         ),
-        contentPadding: EdgeInsets.symmetric(
+        contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 16,
         ),
@@ -321,13 +305,13 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(
+          borderSide: const BorderSide(
             color: Colors.pink,
           ),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(
+          borderSide: const BorderSide(
             color: Colors.red,
           ),
         ),
@@ -338,7 +322,6 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
     );
   }
 
-  // Widget untuk date field
   Widget _buildDateField({
     required String hintText,
     required Function() onTap,
@@ -353,7 +336,7 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
             hintStyle: TextStyle(
               color: _selectedDate != null ? Colors.black : Colors.grey[400],
             ),
-            contentPadding: EdgeInsets.symmetric(
+            contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 16,
             ),
@@ -371,17 +354,17 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(
+              borderSide: const BorderSide(
                 color: Colors.pink,
               ),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(
+              borderSide: const BorderSide(
                 color: Colors.red,
               ),
             ),
-            suffixIcon: Icon(
+            suffixIcon: const Icon(
               Icons.keyboard_arrow_down,
               color: Colors.grey,
             ),
@@ -392,16 +375,14 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
     );
   }
 
-  // Widget untuk divider
   Widget _buildDivider() {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 24),
+      margin: const EdgeInsets.symmetric(vertical: 24),
       height: 1,
       color: Colors.grey[200],
     );
   }
 
-  // Widget untuk tombol aksi
   Widget _buildActionButtons() {
     return Row(
       children: [
@@ -413,7 +394,7 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
-              padding: EdgeInsets.symmetric(vertical: 16),
+              padding: const EdgeInsets.symmetric(vertical: 16),
             ),
             child: Text(
               'Batal',
@@ -424,7 +405,7 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
             ),
           ),
         ),
-        SizedBox(width: 16),
+        const SizedBox(width: 16),
         Expanded(
           child: ElevatedButton(
             onPressed: _submitForm,
@@ -433,9 +414,9 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
-              padding: EdgeInsets.symmetric(vertical: 16),
+              padding: const EdgeInsets.symmetric(vertical: 16),
             ),
-            child: Text(
+            child: const Text(
               'Pesan Paket',
               style: TextStyle(
                 fontSize: 16,

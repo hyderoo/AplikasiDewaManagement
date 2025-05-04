@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
@@ -49,7 +50,9 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
                       });
                     }
                   } catch (e) {
-                    print('Error picking image: $e');
+                    if (kDebugMode) {
+                      print('Error picking image: $e');
+                    }
                   }
                 },
               ),
@@ -67,7 +70,9 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
                       });
                     }
                   } catch (e) {
-                    print('Error picking image: $e');
+                    if (kDebugMode) {
+                      print('Error picking image: $e');
+                    }
                   }
                 },
               ),

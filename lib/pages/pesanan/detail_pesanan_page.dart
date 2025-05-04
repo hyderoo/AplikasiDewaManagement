@@ -1,45 +1,44 @@
+import 'package:dewa_wo_app/models/pesanan_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
-class DetailPesananPage extends StatelessWidget {
+class DetailPesananPage extends StatefulWidget {
   final PesananModel pesanan;
 
-  const DetailPesananPage({Key? key, required this.pesanan}) : super(key: key);
+  const DetailPesananPage({super.key, required this.pesanan});
 
   @override
-  Widget build(BuildContext context) {
-    // Mengatur status bar transparan dan warna ikon status bar putih
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-    ));
+  State<DetailPesananPage> createState() => _DetailPesananPageState();
+}
 
+class _DetailPesananPageState extends State<DetailPesananPage> {
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.pink,
-        elevation: 0,
-        title: Text(
-          'Detail Pesanan',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        title: const Text('Detail Pesanan'),
         centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildHeader(pesanan),
-            _buildDetailInfo(pesanan),
-            _buildLayananTermasuk(pesanan),
-            if (pesanan.status == 'Menunggu Pembayaran') _buildPaymentButton(),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Card(
+                child: Column(
+                  children: [
+                    _buildHeader(widget.pesanan),
+                    _buildDetailInfo(widget.pesanan),
+                    _buildLayananTermasuk(widget.pesanan),
+                  ],
+                ),
+              ),
+            ),
+            if (widget.pesanan.status == 'Menunggu Pembayaran')
+              _buildPaymentButton(),
           ],
         ),
       ),
@@ -55,12 +54,8 @@ class DetailPesananPage extends StatelessWidget {
         ? Colors.green.shade700
         : Colors.orange.shade700;
 
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
-      ),
+    return Padding(
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -69,16 +64,17 @@ class DetailPesananPage extends StatelessWidget {
             children: [
               Text(
                 pesanan.userName,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 decoration: BoxDecoration(
                   color: statusColor,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   pesanan.status,
@@ -91,7 +87,7 @@ class DetailPesananPage extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Text(
             pesanan.paketName,
             style: TextStyle(
@@ -106,14 +102,14 @@ class DetailPesananPage extends StatelessWidget {
 
   Widget _buildDetailInfo(PesananModel pesanan) {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16).copyWith(top: 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Icon(Icons.calendar_today, size: 20, color: Colors.grey[600]),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text(
                 pesanan.tanggal,
                 style: TextStyle(
@@ -123,13 +119,13 @@ class DetailPesananPage extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           Row(
             children: [
               Icon(Icons.monetization_on, size: 20, color: Colors.grey[600]),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text(
-                pesanan.harga,
+                pesanan.totalHarga.toString(),
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.grey[800],
@@ -137,11 +133,11 @@ class DetailPesananPage extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           Row(
             children: [
               Icon(Icons.location_on, size: 20, color: Colors.grey[600]),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text(
                 pesanan.lokasi,
                 style: TextStyle(
@@ -151,11 +147,11 @@ class DetailPesananPage extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           Row(
             children: [
               Icon(Icons.people, size: 20, color: Colors.grey[600]),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text(
                 pesanan.estimasiTamu,
                 style: TextStyle(
@@ -172,11 +168,11 @@ class DetailPesananPage extends StatelessWidget {
 
   Widget _buildLayananTermasuk(PesananModel pesanan) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'Layanan Termasuk',
             style: TextStyle(
               fontSize: 16,
@@ -184,28 +180,26 @@ class DetailPesananPage extends StatelessWidget {
               color: Colors.black87,
             ),
           ),
-          SizedBox(height: 8),
-          ...pesanan.layananTermasuk
-              .map((layanan) => Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Icon(Icons.check, size: 16, color: Colors.grey[600]),
-                        SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            layanan,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[800],
-                            ),
-                          ),
+          const SizedBox(height: 8),
+          ...pesanan.layananTermasuk.map((layanan) => Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(Icons.check, size: 16, color: Colors.grey[600]),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        layanan,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[800],
                         ),
-                      ],
+                      ),
                     ),
-                  ))
-              .toList(),
+                  ],
+                ),
+              )),
         ],
       ),
     );
@@ -213,19 +207,19 @@ class DetailPesananPage extends StatelessWidget {
 
   Widget _buildPaymentButton() {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16).copyWith(top: 0),
       child: ElevatedButton(
         onPressed: () {
-          // Implementasi bayar sekarang
+          context.push('/pesanan/bayar', extra: widget.pesanan);
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.orange,
-          padding: EdgeInsets.symmetric(vertical: 12),
+          padding: const EdgeInsets.symmetric(vertical: 12),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
         ),
-        child: Row(
+        child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
@@ -242,63 +236,3 @@ class DetailPesananPage extends StatelessWidget {
     );
   }
 }
-
-// Model Data
-class PesananModel {
-  final String id;
-  final String userName;
-  final String paketName;
-  final String status;
-  final String tanggal;
-  final String harga;
-  final String lokasi;
-  final String estimasiTamu;
-  final List<String> layananTermasuk;
-
-  PesananModel({
-    required this.id,
-    required this.userName,
-    required this.paketName,
-    required this.status,
-    required this.tanggal,
-    required this.harga,
-    required this.lokasi,
-    required this.estimasiTamu,
-    required this.layananTermasuk,
-  });
-}
-
-// Contoh Data Pesanan
-final pesananLunas = PesananModel(
-  id: '1',
-  userName: 'Budi & Sarah',
-  paketName: 'Paket Pernikahan Lengkap',
-  status: 'Lunas',
-  tanggal: '14 Februari 2025',
-  harga: 'Rp 75.000.000',
-  lokasi: 'Grand Ballroom Hotel Mulia',
-  estimasiTamu: 'Estimasi Tamu 500 Orang',
-  layananTermasuk: [
-    'Dekorasi Lengkap',
-    'Katering 500 pax',
-    'Dokumentasi Full',
-    'Entertainment',
-  ],
-);
-
-final pesananMenunggu = PesananModel(
-  id: '2',
-  userName: 'Budi & Sarah',
-  paketName: 'Paket Pernikahan Lengkap',
-  status: 'Menunggu Pembayaran',
-  tanggal: '14 Februari 2025',
-  harga: 'Rp 75.000.000',
-  lokasi: 'Grand Ballroom Hotel Mulia',
-  estimasiTamu: 'Estimasi Tamu 500 Orang',
-  layananTermasuk: [
-    'Dekorasi Lengkap',
-    'Katering 500 pax',
-    'Dokumentasi Full',
-    'Entertainment',
-  ],
-);
