@@ -172,8 +172,12 @@ class MyApp extends StatelessWidget {
           margin: const EdgeInsets.all(2),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
+            side: BorderSide(
+              color: Colors.pink.shade100,
+              width: 1,
+            ),
           ),
-          shadowColor: Colors.pink[100],
+          shadowColor: Colors.grey.shade100,
         ),
       ),
     );

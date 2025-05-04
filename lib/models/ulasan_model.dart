@@ -23,7 +23,7 @@ List<UlasanModel> ulasanData = [
     userAvatar: 'assets/images/avatar1.jpg',
     rating: 4.8,
     review:
-        'Pelayanan sangat memuaskan! Tim Dewa Management sangat profesional dan detail dalam menangani pernikahan kami. Semua berjalan sesuai keinginan kami.',
+        'Pelayanan sangat memuaskan! Tim Dewa Management sangat profesional dan detail dalam menangani pernikahan kami. Semua berjalan sesuai keinginan kami.Pelayanan sangat memuaskan! Tim Dewa Management sangat profesional dan detail dalam menangani pernikahan kami. Semua berjalan sesuai keinginan kami.',
     date: '15 April 2025',
   ),
   UlasanModel(

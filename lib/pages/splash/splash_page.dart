@@ -41,7 +41,7 @@ class _SplashPageState extends State<SplashPage>
     _animationController.forward();
 
     Timer(const Duration(seconds: 3), () {
-      context.pushReplacementNamed('login');
+      context.pushReplacementNamed('home');
     });
   }
 
