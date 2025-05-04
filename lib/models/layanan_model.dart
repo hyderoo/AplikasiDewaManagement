@@ -16,8 +16,6 @@ class LayananModel {
   });
 }
 
-// Mock Data
-
 List<LayananModel> layananData = [
   LayananModel(
     id: '1',

@@ -81,8 +81,6 @@ List<PortofolioModel> portofolioData = [
     category: 'Prewedding',
     images: [
       'assets/images/prewed1_1.jpg',
-      'assets/images/prewed1_2.jpg',
-      'assets/images/prewed1_3.jpg',
     ],
     description:
         'Sesi foto prewedding dengan konsep urban di pusat kota Jakarta. Mengambil latar belakang gedung pencakar langit dan sudut-sudut artistik kota.',
