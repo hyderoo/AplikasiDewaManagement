@@ -1,36 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
 class PengaturanProfilePage extends StatefulWidget {
-  const PengaturanProfilePage({Key? key}) : super(key: key);
+  const PengaturanProfilePage({super.key});
 
   @override
-  _PengaturanProfilePageState createState() => _PengaturanProfilePageState();
+  State<PengaturanProfilePage> createState() => _PengaturanProfilePageState();
 }
 
 class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
-  // Controller untuk form input
   final _namaController = TextEditingController(text: "Bambang Eko");
   final _emailController = TextEditingController(text: "LoremIpsum@gmail.com");
   final _passwordController = TextEditingController(text: "********");
 
-  // Status password visibility
   bool _passwordVisible = false;
 
-  // Image untuk profile picture
   File? _profileImage;
-
-  @override
-  void initState() {
-    super.initState();
-    // Mengatur status bar transparan dan warna ikon status bar putih
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-    ));
-  }
 
   @override
   void dispose() {
@@ -40,9 +26,8 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
     super.dispose();
   }
 
-  // Fungsi untuk memilih gambar dari galeri atau kamera
   Future<void> _pickImage() async {
-    final ImagePicker _picker = ImagePicker();
+    final ImagePicker picker = ImagePicker();
 
     showModalBottomSheet(
       context: context,
@@ -51,13 +36,13 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
           child: Wrap(
             children: <Widget>[
               ListTile(
-                leading: Icon(Icons.photo_library),
-                title: Text('Galeri'),
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Galeri'),
                 onTap: () async {
                   Navigator.pop(context);
                   try {
                     final XFile? image =
-                        await _picker.pickImage(source: ImageSource.gallery);
+                        await picker.pickImage(source: ImageSource.gallery);
                     if (image != null) {
                       setState(() {
                         _profileImage = File(image.path);
@@ -69,13 +54,13 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
                 },
               ),
               ListTile(
-                leading: Icon(Icons.photo_camera),
-                title: Text('Kamera'),
+                leading: const Icon(Icons.photo_camera),
+                title: const Text('Kamera'),
                 onTap: () async {
                   Navigator.pop(context);
                   try {
                     final XFile? image =
-                        await _picker.pickImage(source: ImageSource.camera);
+                        await picker.pickImage(source: ImageSource.camera);
                     if (image != null) {
                       setState(() {
                         _profileImage = File(image.path);
@@ -93,12 +78,10 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
     );
   }
 
-  // Fungsi untuk menyimpan perubahan profil
   void _saveProfile() {
-    // Validasi input
     if (_namaController.text.isEmpty || _emailController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Nama dan Email tidak boleh kosong'),
           backgroundColor: Colors.red,
         ),
@@ -106,17 +89,14 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
       return;
     }
 
-    // Proses penyimpanan data ke server/database
-    // Simulasi loading dan selesai
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      const SnackBar(
         content: Text('Profil berhasil disimpan'),
         backgroundColor: Colors.green,
       ),
     );
 
-    // Kembali ke halaman sebelumnya setelah berhasil
-    Future.delayed(Duration(milliseconds: 1500), () {
+    Future.delayed(const Duration(milliseconds: 1500), () {
       Navigator.pop(context);
     });
   }
@@ -126,31 +106,19 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.pink,
-        elevation: 0,
-        title: Text(
+        title: const Text(
           'Pengaturan Profile',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
         ),
         centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Profile picture dengan tombol edit
             Center(
               child: Stack(
                 children: [
-                  // Profile picture
                   Container(
                     width: 100,
                     height: 100,
@@ -162,13 +130,12 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
                               image: FileImage(_profileImage!),
                               fit: BoxFit.cover,
                             )
-                          : DecorationImage(
+                          : const DecorationImage(
                               image: AssetImage('assets/images/profile.jpg'),
                               fit: BoxFit.cover,
                             ),
                     ),
                   ),
-                  // Edit button
                   Positioned(
                     bottom: 0,
                     right: 0,
@@ -177,11 +144,11 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
                       child: Container(
                         width: 34,
                         height: 34,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.pink,
                         ),
-                        child: Icon(
+                        child: const Icon(
                           Icons.camera_alt,
                           color: Colors.white,
                           size: 20,
@@ -192,17 +159,16 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
                 ],
               ),
             ),
-            SizedBox(height: 32),
-
-            // Nama Lengkap
-            Text(
+            const SizedBox(height: 32),
+            const Text(
               'Nama Lengkap',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
+                color: Colors.black,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             TextField(
               controller: _namaController,
               decoration: InputDecoration(
@@ -221,25 +187,24 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: Colors.pink,
                   ),
                 ),
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               ),
             ),
-            SizedBox(height: 16),
-
-            // Email
-            Text(
+            const SizedBox(height: 16),
+            const Text(
               'Email',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
+                color: Colors.black,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             TextField(
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
@@ -259,25 +224,24 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: Colors.pink,
                   ),
                 ),
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               ),
             ),
-            SizedBox(height: 16),
-
-            // Password
-            Text(
+            const SizedBox(height: 16),
+            const Text(
               'Password',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
+                color: Colors.black,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             TextField(
               controller: _passwordController,
               obscureText: !_passwordVisible,
@@ -297,12 +261,12 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: Colors.pink,
                   ),
                 ),
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 suffixIcon: IconButton(
                   icon: Icon(
                     _passwordVisible ? Icons.visibility : Icons.visibility_off,
@@ -316,21 +280,19 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
                 ),
               ),
             ),
-            SizedBox(height: 32),
-
-            // Tombol Simpan
+            const SizedBox(height: 32),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: _saveProfile,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.pink,
-                  padding: EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   'Simpan',
                   style: TextStyle(
                     fontSize: 16,

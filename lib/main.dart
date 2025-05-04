@@ -1,3 +1,5 @@
+import 'package:dewa_wo_app/pages/akun/pengaturan_akun_page.dart';
+import 'package:dewa_wo_app/pages/akun/pengaturan_profile_page.dart';
 import 'package:dewa_wo_app/pages/auth/forgot/forgot_password_page.dart';
 import 'package:dewa_wo_app/pages/auth/login/login_page.dart';
 import 'package:dewa_wo_app/pages/auth/register/register_page.dart';
@@ -85,6 +87,22 @@ final GoRouter _router = GoRouter(
           path: 'term-and-condition',
           name: 'term-and-condition',
           builder: (context, state) => const TermsConditionsPage(),
+        ),
+      ],
+    ),
+    GoRoute(
+      path: '/account',
+      builder: (context, state) => const SizedBox.shrink(),
+      routes: [
+        GoRoute(
+          path: 'setting',
+          name: 'setting',
+          builder: (context, state) => const PengaturanAkunPage(),
+        ),
+        GoRoute(
+          path: 'profile',
+          name: 'profile',
+          builder: (context, state) => const PengaturanProfilePage(),
         ),
       ],
     ),

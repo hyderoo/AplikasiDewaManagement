@@ -1,39 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
 class PengaturanAkunPage extends StatelessWidget {
-  const PengaturanAkunPage({Key? key}) : super(key: key);
+  const PengaturanAkunPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Mengatur status bar transparan dan warna ikon status bar putih
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-    ));
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.pink,
-        elevation: 0,
-        title: Text(
-          'Pengaturan Akun',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        title: const Text('Pengaturan Akun'),
         centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
       ),
       body: Column(
         children: [
           _buildProfileHeader(),
-          Divider(height: 1, color: Colors.grey[200]),
           _buildMenuItems(context),
         ],
       ),
@@ -42,18 +23,16 @@ class PengaturanAkunPage extends StatelessWidget {
 
   Widget _buildProfileHeader() {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 24),
+      padding: const EdgeInsets.symmetric(vertical: 24),
       child: Column(
         children: [
-          // Foto Profil
           CircleAvatar(
             radius: 50,
             backgroundColor: Colors.grey[300],
-            backgroundImage: AssetImage('assets/images/profile.jpg'),
+            backgroundImage: const AssetImage('assets/logo.png'),
           ),
-          SizedBox(height: 16),
-          // Nama Pengguna
-          Text(
+          const SizedBox(height: 16),
+          const Text(
             'Bambang Eko',
             style: TextStyle(
               fontSize: 18,
@@ -61,8 +40,7 @@ class PengaturanAkunPage extends StatelessWidget {
               color: Colors.pink,
             ),
           ),
-          SizedBox(height: 4),
-          // Email
+          const SizedBox(height: 4),
           Text(
             'LoremIpsum@gmail.com',
             style: TextStyle(
@@ -82,43 +60,59 @@ class PengaturanAkunPage extends StatelessWidget {
           icon: Icons.person_outline,
           label: 'Pengaturan Profile',
           onTap: () {
-            // Navigate to profile settings page
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => DummyPage('Pengaturan Profile')),
-            );
+            context.pushNamed('profile');
           },
         ),
-        Divider(height: 1, indent: 16, endIndent: 16, color: Colors.grey[200]),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Divider(
+            height: 1,
+            indent: 16,
+            endIndent: 16,
+            color: Colors.grey[200],
+          ),
+        ),
         _buildMenuItem(
           icon: Icons.privacy_tip_outlined,
           label: 'Privacy Policy',
           onTap: () {
-            // Navigate to privacy policy page
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => DummyPage('Privacy Policy')),
+                  builder: (context) => const DummyPage('Privacy Policy')),
             );
           },
         ),
-        Divider(height: 1, indent: 16, endIndent: 16, color: Colors.grey[200]),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Divider(
+            height: 1,
+            indent: 16,
+            endIndent: 16,
+            color: Colors.grey[200],
+          ),
+        ),
         _buildMenuItem(
           icon: Icons.star_outline,
           label: 'Beri Rating dan Review',
           onTap: () {
-            // Show rating dialog
             _showRatingDialog(context);
           },
         ),
-        Divider(height: 1, indent: 16, endIndent: 16, color: Colors.grey[200]),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Divider(
+            height: 1,
+            indent: 16,
+            endIndent: 16,
+            color: Colors.grey[200],
+          ),
+        ),
         _buildMenuItem(
           icon: Icons.logout,
           label: 'Keluar',
           isLogout: true,
           onTap: () {
-            // Show logout confirmation
             _showLogoutConfirmation(context);
           },
         ),
@@ -135,7 +129,7 @@ class PengaturanAkunPage extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: Row(
           children: [
             Icon(
@@ -143,7 +137,7 @@ class PengaturanAkunPage extends StatelessWidget {
               size: 24,
               color: isLogout ? Colors.red : Colors.grey[700],
             ),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
             Text(
               label,
               style: TextStyle(
@@ -162,28 +156,26 @@ class PengaturanAkunPage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Beri Rating'),
+        title: const Text('Beri Rating'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Berikan rating untuk aplikasi kami'),
-            SizedBox(height: 16),
+            const Text('Berikan rating untuk aplikasi kami'),
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
                 5,
                 (index) => IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.star,
                     color: Colors.amber,
                   ),
                   onPressed: () {
-                    // Handle star rating
                     Navigator.pop(context);
 
-                    // Show thank you message
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
+                      const SnackBar(
                         content: Text('Terima kasih atas penilaian Anda!'),
                         backgroundColor: Colors.green,
                       ),
@@ -197,7 +189,7 @@ class PengaturanAkunPage extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Batal'),
+            child: const Text('Batal'),
           ),
         ],
       ),
@@ -208,24 +200,22 @@ class PengaturanAkunPage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Keluar'),
-        content: Text('Apakah Anda yakin ingin keluar dari akun?'),
+        title: const Text('Keluar'),
+        content: const Text('Apakah Anda yakin ingin keluar dari akun?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Batal'),
+            child: const Text('Batal'),
           ),
           TextButton(
             onPressed: () {
-              // Handle logout logic
-              Navigator.pop(context); // Close dialog
-              Navigator.popUntil(
-                  context, (route) => route.isFirst); // Back to first page
+              Navigator.pop(context);
+              context.goNamed('home');
             },
             style: TextButton.styleFrom(
-              foregroundColor: Colors.red,
+              foregroundColor: Colors.grey,
             ),
-            child: Text('Keluar'),
+            child: const Text('Keluar'),
           ),
         ],
       ),
@@ -233,7 +223,6 @@ class PengaturanAkunPage extends StatelessWidget {
   }
 }
 
-// Halaman dummy untuk navigasi
 class DummyPage extends StatelessWidget {
   final String title;
 

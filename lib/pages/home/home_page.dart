@@ -133,7 +133,7 @@ class _HomePageState extends State<HomePage> {
                   height: 32,
                 ),
                 onPressed: () {
-                  context.goNamed('settings');
+                  context.goNamed('setting');
                 },
               ),
             ],
