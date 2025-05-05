@@ -14,6 +14,7 @@ class PengaturanAkunPage extends StatefulWidget {
 class _PengaturanAkunPageState extends State<PengaturanAkunPage> {
   String _userName = '';
   String _userEmail = '';
+  String _userPhone = '';
   bool _isLoggingOut = false;
 
   @override
@@ -28,6 +29,8 @@ class _PengaturanAkunPageState extends State<PengaturanAkunPage> {
         if (mounted) {
           context.goNamed('home');
         }
+      } else if (state is AuthAuthenticated) {
+        _getUserInfo();
       }
     });
   }
@@ -38,6 +41,7 @@ class _PengaturanAkunPageState extends State<PengaturanAkunPage> {
       setState(() {
         _userName = authState.user.fullName;
         _userEmail = authState.user.email;
+        _userPhone = authState.user.phone;
       });
     }
   }
@@ -74,8 +78,17 @@ class _PengaturanAkunPageState extends State<PengaturanAkunPage> {
         children: [
           CircleAvatar(
             radius: 50,
-            backgroundColor: Colors.grey[300],
-            backgroundImage: const AssetImage('assets/logo.png'),
+            backgroundColor: Colors.pink[100],
+            child: _userName.isNotEmpty
+                ? Text(
+                    _userName.substring(0, 1).toUpperCase(),
+                    style: const TextStyle(
+                      fontSize: 42,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.pink,
+                    ),
+                  )
+                : const Icon(Icons.person, size: 50, color: Colors.pink),
           ),
           const SizedBox(height: 16),
           Text(
@@ -94,6 +107,15 @@ class _PengaturanAkunPageState extends State<PengaturanAkunPage> {
               color: Colors.pink[300],
             ),
           ),
+          const SizedBox(height: 4),
+          if (_userPhone.isNotEmpty)
+            Text(
+              _userPhone,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[600],
+              ),
+            ),
         ],
       ),
     );

@@ -13,7 +13,6 @@ class AuthCubit extends Cubit<AuthState> {
       : _authRepository = authRepository,
         super(const AuthState.initial());
 
-  // Check current authentication status
   Future<void> checkAuthStatus() async {
     final token = _authRepository.getToken();
     final user = _authRepository.getUser();
@@ -25,7 +24,6 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  // Login user
   Future<void> login({required String email, required String password}) async {
     emit(const AuthState.loading());
 
@@ -47,7 +45,6 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  // Register user
   Future<void> register({
     required String name,
     required String email,
@@ -78,7 +75,6 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  // Logout user
   Future<void> logout() async {
     emit(const AuthState.loading());
 
@@ -86,7 +82,6 @@ class AuthCubit extends Cubit<AuthState> {
     emit(const AuthState.unauthenticated());
   }
 
-  // Refresh user data
   Future<void> refreshUserData() async {
     final currentState = state;
     if (currentState is AuthAuthenticated) {
@@ -100,7 +95,6 @@ class AuthCubit extends Cubit<AuthState> {
           token: currentState.token,
         ));
       } else if (response.status == 'error') {
-        // If token is invalid or expired
         emit(const AuthState.unauthenticated());
       }
     }
