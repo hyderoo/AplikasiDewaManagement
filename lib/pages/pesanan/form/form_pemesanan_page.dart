@@ -1,11 +1,11 @@
-import 'package:dewa_wo_app/models/layanan_model.dart';
+import 'package:dewa_wo_app/models/service_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class FormPemesananPage extends StatefulWidget {
-  final LayananModel layanan;
+  final ServiceModel layanan;
 
   const FormPemesananPage({
     super.key,

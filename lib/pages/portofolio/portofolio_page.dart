@@ -1,4 +1,4 @@
-import 'package:dewa_wo_app/models/portofolio_model.dart';
+import 'package:dewa_wo_app/models/portfolio_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
@@ -23,7 +23,8 @@ class _PortofolioPageState extends State<PortofolioPage> {
   ];
   bool _isLoading = true;
 
-  List<PortofolioModel> _filteredPortofolio = [];
+  List<PortfolioModel> portofolioData = [];
+  List<PortfolioModel> _filteredPortofolio = [];
 
   @override
   void initState() {
@@ -304,7 +305,7 @@ class _PortofolioPageState extends State<PortofolioPage> {
     );
   }
 
-  Widget _buildPortofolioCard(PortofolioModel portofolio) {
+  Widget _buildPortofolioCard(PortfolioModel portofolio) {
     return Card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -339,7 +340,7 @@ class _PortofolioPageState extends State<PortofolioPage> {
     );
   }
 
-  Widget _buildImageGallery(List<String> images) {
+  Widget _buildImageGallery(List<PortfolioImage> images) {
     final imagesToShow = images.length > 3 ? images.sublist(0, 3) : images;
 
     return ClipRRect(

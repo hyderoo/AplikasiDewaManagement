@@ -1,7 +1,7 @@
 import 'package:dewa_wo_app/core/di/dependency_injection.dart';
 import 'package:dewa_wo_app/cubits/auth/auth_cubit.dart';
-import 'package:dewa_wo_app/models/layanan_model.dart';
 import 'package:dewa_wo_app/models/pesanan_model.dart';
+import 'package:dewa_wo_app/models/service_model.dart';
 import 'package:dewa_wo_app/pages/akun/pengaturan_akun_page.dart';
 import 'package:dewa_wo_app/pages/akun/pengaturan_profile_page.dart';
 import 'package:dewa_wo_app/pages/auth/forgot/forgot_password_page.dart';
@@ -71,7 +71,7 @@ final GoRouter _router = GoRouter(
           path: 'form',
           name: 'form',
           builder: (context, state) => FormPemesananPage(
-            layanan: state.extra as LayananModel,
+            layanan: state.extra as ServiceModel,
           ),
         ),
         GoRoute(

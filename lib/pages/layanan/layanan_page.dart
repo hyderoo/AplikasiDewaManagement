@@ -1,4 +1,4 @@
-import 'package:dewa_wo_app/models/layanan_model.dart';
+import 'package:dewa_wo_app/models/service_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -25,7 +25,8 @@ class _LayananPageState extends State<LayananPage> {
   DateTime _selectedDay = DateTime.now();
   CalendarFormat _calendarFormat = CalendarFormat.month;
 
-  List<LayananModel> _filteredLayanan = [];
+  List<ServiceModel> layananData = [];
+  List<ServiceModel> _filteredLayanan = [];
 
   @override
   void initState() {
@@ -39,9 +40,8 @@ class _LayananPageState extends State<LayananPage> {
       if (category == 'Semua') {
         _filteredLayanan = layananData;
       } else {
-        _filteredLayanan = layananData
-            .where((layanan) => layanan.category == category)
-            .toList();
+        _filteredLayanan =
+            layananData.where((layanan) => layanan.type == category).toList();
       }
     });
   }
@@ -55,7 +55,7 @@ class _LayananPageState extends State<LayananPage> {
     final filteredByCategory = _selectedCategory == 'Semua'
         ? layananData
         : layananData
-            .where((layanan) => layanan.category == _selectedCategory)
+            .where((layanan) => layanan.type == _selectedCategory)
             .toList();
 
     setState(() {
@@ -239,7 +239,7 @@ class _LayananPageState extends State<LayananPage> {
     );
   }
 
-  Widget _buildLayananCard(LayananModel layanan) {
+  Widget _buildLayananCard(ServiceModel layanan) {
     return Card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -275,7 +275,7 @@ class _LayananPageState extends State<LayananPage> {
                     ),
                     Expanded(
                       child: Text(
-                        layanan.priceRange,
+                        'layanan.price',
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
@@ -294,7 +294,7 @@ class _LayananPageState extends State<LayananPage> {
                   child: ElevatedButton(
                     onPressed: () => context.goNamed(
                       'layanan_detail',
-                      pathParameters: {'id': layanan.id},
+                      pathParameters: {'id': layanan.id.toString()},
                     ),
                     child: const Text('Pilih Paket'),
                   ),

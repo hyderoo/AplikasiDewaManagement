@@ -1,4 +1,4 @@
-import 'package:dewa_wo_app/models/tim_model.dart';
+import 'package:dewa_wo_app/models/team_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
@@ -15,7 +15,8 @@ class _TimPageState extends State<TimPage> {
   final TextEditingController _searchController = TextEditingController();
   bool _isLoading = true;
 
-  List<TimModel> _filteredTim = [];
+  List<TeamModel> timData = [];
+  List<TeamModel> _filteredTim = [];
 
   @override
   void initState() {
@@ -43,7 +44,7 @@ class _TimPageState extends State<TimPage> {
       _filteredTim = timData
           .where((tim) =>
               tim.name.toLowerCase().contains(query.toLowerCase()) ||
-              tim.position.toLowerCase().contains(query.toLowerCase()))
+              tim.role.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
   }
@@ -239,7 +240,7 @@ class _TimPageState extends State<TimPage> {
     );
   }
 
-  Widget _buildTimCard(TimModel tim) {
+  Widget _buildTimCard(TeamModel tim) {
     return Card(
       child: InkWell(
         onTap: () => _showTimDetail(tim),
@@ -274,7 +275,7 @@ class _TimPageState extends State<TimPage> {
                       ),
                     ),
                     Text(
-                      tim.position,
+                      tim.role,
                       style: const TextStyle(
                         fontSize: 14,
                         color: Colors.grey,
@@ -302,7 +303,7 @@ class _TimPageState extends State<TimPage> {
     );
   }
 
-  void _showTimDetail(TimModel tim) {
+  void _showTimDetail(TeamModel tim) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -347,40 +348,12 @@ class _TimPageState extends State<TimPage> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        tim.position,
+                        tim.role,
                         style: const TextStyle(
                           fontSize: 16,
                           color: Colors.pink,
                           fontWeight: FontWeight.w500,
                         ),
-                      ),
-                      const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          Icon(Icons.phone, size: 16, color: Colors.grey[600]),
-                          const SizedBox(width: 8),
-                          Text(
-                            tim.phone,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Icon(Icons.email, size: 16, color: Colors.grey[600]),
-                          const SizedBox(width: 8),
-                          Text(
-                            tim.email,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ],
                       ),
                     ],
                   ),
@@ -430,7 +403,7 @@ class _TimPageState extends State<TimPage> {
     );
   }
 
-  Widget _buildExperienceList(TimModel tim) {
+  Widget _buildExperienceList(TeamModel tim) {
     final List<String> experiences = [
       'Event planning & koordinasi',
       'Manajemen vendor',
