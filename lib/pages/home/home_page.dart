@@ -1,3 +1,5 @@
+import 'package:dewa_wo_app/core/di/dependency_injection.dart';
+import 'package:dewa_wo_app/cubits/auth/auth_cubit.dart';
 import 'package:dewa_wo_app/resources/resources.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -36,6 +38,95 @@ class _HomePageState extends State<HomePage> {
         });
       }
     });
+  }
+
+  // Check if user is authenticated
+  bool _isAuthenticated() {
+    final authState = getIt<AuthCubit>().state;
+    return authState is AuthAuthenticated;
+  }
+
+  // Show login required dialog
+  void _showLoginRequiredDialog({required String actionName}) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text(
+          'Login Diperlukan',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.lock_outline,
+              size: 64,
+              color: Colors.pink[300],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Untuk $actionName, Anda perlu login terlebih dahulu.',
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Silakan login ke akun Anda atau daftar jika belum memiliki akun.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[700],
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.grey[800],
+            ),
+            child: const Text('Batal'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              context.pushNamed('login');
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.pink,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: const Text('Login'),
+          ),
+        ],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        contentPadding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      ),
+    );
+  }
+
+  // Handle authenticated actions
+  void _handleAuthenticatedAction(
+      {required VoidCallback action, required String actionName}) {
+    if (_isAuthenticated()) {
+      // User is authenticated, proceed with action
+      action();
+    } else {
+      // User is not authenticated, show login dialog
+      _showLoginRequiredDialog(actionName: actionName);
+    }
   }
 
   @override
@@ -133,7 +224,10 @@ class _HomePageState extends State<HomePage> {
                   height: 32,
                 ),
                 onPressed: () {
-                  context.pushNamed('setting');
+                  _handleAuthenticatedAction(
+                    action: () => context.pushNamed('setting'),
+                    actionName: 'mengakses pengaturan',
+                  );
                 },
               ),
             ],
@@ -167,7 +261,10 @@ class _HomePageState extends State<HomePage> {
           _buildMenuCircle(
             icon: AppMenu.pesanan,
             label: 'Pesanan',
-            onTap: () => context.pushNamed('pesanan'),
+            onTap: () => _handleAuthenticatedAction(
+              action: () => context.pushNamed('pesanan'),
+              actionName: 'melihat pesanan',
+            ),
           ),
         ],
       ),
@@ -392,9 +489,12 @@ class _HomePageState extends State<HomePage> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () => context.push(
-                          '/pesanan/form',
-                          extra: layanan,
+                        onPressed: () => _handleAuthenticatedAction(
+                          action: () => context.push(
+                            '/pesanan/form',
+                            extra: layanan,
+                          ),
+                          actionName: 'memesan paket',
                         ),
                         child: const Text('Pilih Paket'),
                       ),

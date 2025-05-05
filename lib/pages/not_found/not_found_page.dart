@@ -1,6 +1,5 @@
 import 'package:dewa_wo_app/resources/resources.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 
 class NotFoundPage extends StatelessWidget {
   final String? message;
@@ -20,14 +19,6 @@ class NotFoundPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(
-                height: 250,
-                child: Lottie.asset(
-                  AppAnimations.notfound,
-                  repeat: true,
-                ),
-              ),
-              const SizedBox(height: 32),
               const Text(
                 '404',
                 style: TextStyle(

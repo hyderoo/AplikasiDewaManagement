@@ -1,31 +1,55 @@
 name: dewa_wo_app
-description: "A new Flutter project."
-
+description: Wedding Organizer App with Authentication Features.
 publish_to: "none"
-
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.5.3
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  cupertino_icons: ^1.0.5
 
-  cupertino_icons: ^1.0.8
+  # Routing
   go_router: ^15.1.1
+
+  # State Management
+  flutter_bloc: ^9.1.1
+  bloc: ^9.0.0
+
+  # HTTP client
+  dio: ^5.8.0+1
+
+  # Dependency Injection
+  get_it: ^8.0.3
+
+  # Local storage
+  hive_ce: ^2.11.1
+  hive_ce_flutter: ^2.3.0
+  path_provider: ^2.1.5
+
+  # JSON serialization
+  freezed_annotation: ^3.0.0
+  json_annotation: ^4.9.0
+
+  # UI
+  google_fonts: ^6.2.1
   shimmer: ^3.0.0
   intl: ^0.20.2
   table_calendar: ^3.2.0
   image_picker: ^1.1.2
-  lottie: ^3.2.0
-  google_fonts: ^6.2.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_lints: ^5.0.0
 
-  flutter_lints: ^4.0.0
+  # Code generation
+  build_runner: ^2.4.15
+  freezed: ^3.0.6
+  json_serializable: ^6.9.5
+  hive_ce_generator: ^1.9.1
 
 flutter:
   uses-material-design: true
@@ -34,10 +58,9 @@ flutter:
     - assets/
     - assets/icons/
     - assets/menu/
-    - assets/animations/
 
 spider:
-  generate_tests: true
+  generate_tests: false
   no_comments: true
   export: true
   use_part_of: true

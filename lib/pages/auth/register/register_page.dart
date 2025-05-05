@@ -1,3 +1,5 @@
+import 'package:dewa_wo_app/core/di/dependency_injection.dart';
+import 'package:dewa_wo_app/cubits/auth/auth_cubit.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -12,6 +14,7 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final _namaController = TextEditingController();
   final _emailController = TextEditingController();
+  final _phoneController = TextEditingController(); // Added phone field
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
@@ -19,15 +22,49 @@ class _RegisterPageState extends State<RegisterPage> {
   bool _confirmPasswordVisible = false;
 
   bool _agreeTerms = false;
-
   bool _isLoading = false;
+  String? _errorMessage;
 
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Listen to auth state changes
+    getIt<AuthCubit>().stream.listen((state) {
+      if (state is AuthAuthenticated) {
+        // Show success dialog when registered successfully
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+          _showSuccessDialog();
+        }
+      } else if (state is AuthError) {
+        // Show error message
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+            _errorMessage = state.message;
+          });
+        }
+      } else if (state is AuthLoading) {
+        // Show loading indicator
+        if (mounted) {
+          setState(() {
+            _isLoading = true;
+          });
+        }
+      }
+    });
+  }
 
   @override
   void dispose() {
     _namaController.dispose();
     _emailController.dispose();
+    _phoneController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
@@ -35,17 +72,19 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void _register() {
     if (_formKey.currentState!.validate() && _agreeTerms) {
+      // Clear any previous error
       setState(() {
-        _isLoading = true;
+        _errorMessage = null;
       });
 
-      Future.delayed(const Duration(seconds: 2), () {
-        setState(() {
-          _isLoading = false;
-        });
-
-        _showSuccessDialog();
-      });
+      // Use the Cubit to handle registration
+      getIt<AuthCubit>().register(
+        name: _namaController.text,
+        email: _emailController.text,
+        phone: _phoneController.text,
+        password: _passwordController.text,
+        passwordConfirmation: _confirmPasswordController.text,
+      );
     } else if (!_agreeTerms) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -149,7 +188,32 @@ class _RegisterPageState extends State<RegisterPage> {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 24),
+
+                    // Error message if registration fails
+                    if (_errorMessage != null)
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        margin: const EdgeInsets.only(bottom: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.red[50],
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.red.shade200),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.error_outline, color: Colors.red[700]),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                _errorMessage!,
+                                style: TextStyle(color: Colors.red[700]),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
                     const Text(
                       'Nama Lengkap',
                       style: TextStyle(
@@ -239,6 +303,52 @@ class _RegisterPageState extends State<RegisterPage> {
                         if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
                             .hasMatch(value)) {
                           return 'Masukkan email yang valid';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    // Phone field
+                    const Text(
+                      'Nomor Telepon',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _phoneController,
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
+                        hintText: 'Masukkan nomor telepon',
+                        prefixIcon: const Icon(Icons.phone, color: Colors.grey),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: Colors.grey[300]!,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: Colors.grey[300]!,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(
+                            color: Colors.pink,
+                          ),
+                        ),
+                        contentPadding:
+                            const EdgeInsets.symmetric(vertical: 16),
+                        filled: true,
+                        fillColor: Colors.grey[50],
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Nomor telepon tidak boleh kosong';
                         }
                         return null;
                       },

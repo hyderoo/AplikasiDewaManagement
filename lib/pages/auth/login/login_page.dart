@@ -1,3 +1,5 @@
+import 'package:dewa_wo_app/core/di/dependency_injection.dart';
+import 'package:dewa_wo_app/cubits/auth/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -14,10 +16,9 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
 
   bool _rememberMe = false;
-
   bool _passwordVisible = false;
-
   bool _isLoading = false;
+  String? _errorMessage;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -29,6 +30,38 @@ class _LoginPageState extends State<LoginPage> {
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
     ));
+
+    // Listen to auth state changes
+    getIt<AuthCubit>().stream.listen((state) {
+      if (state is AuthAuthenticated) {
+        // Navigate to home page when authenticated
+        if (mounted) {
+          context.goNamed('home');
+        }
+      } else if (state is AuthError) {
+        // Show error message
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+            _errorMessage = state.message;
+          });
+        }
+      } else if (state is AuthLoading) {
+        // Show loading indicator
+        if (mounted) {
+          setState(() {
+            _isLoading = true;
+          });
+        }
+      } else if (state is AuthUnauthenticated) {
+        // Reset loading state when unauthenticated
+        if (mounted && _isLoading) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+      }
+    });
   }
 
   @override
@@ -40,17 +73,16 @@ class _LoginPageState extends State<LoginPage> {
 
   void _login() {
     if (_formKey.currentState!.validate()) {
+      // Clear any previous error
       setState(() {
-        _isLoading = true;
+        _errorMessage = null;
       });
 
-      Future.delayed(const Duration(seconds: 2), () {
-        setState(() {
-          _isLoading = false;
-        });
-
-        context.goNamed('home');
-      });
+      // Use the Cubit to handle login
+      getIt<AuthCubit>().login(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
     }
   }
 
@@ -106,6 +138,31 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     const SizedBox(height: 40),
+
+                    // Error message
+                    if (_errorMessage != null)
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        margin: const EdgeInsets.only(bottom: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.red[50],
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.red.shade200),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.error_outline, color: Colors.red[700]),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                _errorMessage!,
+                                style: TextStyle(color: Colors.red[700]),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
                     const Text(
                       'Email',
                       style: TextStyle(

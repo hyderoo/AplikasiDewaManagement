@@ -1,9 +1,54 @@
+import 'package:dewa_wo_app/core/di/dependency_injection.dart';
+import 'package:dewa_wo_app/cubits/auth/auth_cubit.dart';
 import 'package:dewa_wo_app/resources/resources.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class PengaturanAkunPage extends StatelessWidget {
+class PengaturanAkunPage extends StatefulWidget {
   const PengaturanAkunPage({super.key});
+
+  @override
+  State<PengaturanAkunPage> createState() => _PengaturanAkunPageState();
+}
+
+class _PengaturanAkunPageState extends State<PengaturanAkunPage> {
+  String _userName = '';
+  String _userEmail = '';
+  bool _isLoggingOut = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserInfo();
+
+    getIt<AuthCubit>().stream.listen((state) {
+      if (state is AuthUnauthenticated && _isLoggingOut) {
+        _isLoggingOut = false;
+
+        if (mounted) {
+          context.goNamed('home');
+        }
+      }
+    });
+  }
+
+  void _getUserInfo() {
+    final authState = getIt<AuthCubit>().state;
+    if (authState is AuthAuthenticated) {
+      setState(() {
+        _userName = authState.user.fullName;
+        _userEmail = authState.user.email;
+      });
+    }
+  }
+
+  Future<void> _logout() async {
+    setState(() {
+      _isLoggingOut = true;
+    });
+
+    await getIt<AuthCubit>().logout();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,9 +78,9 @@ class PengaturanAkunPage extends StatelessWidget {
             backgroundImage: const AssetImage('assets/logo.png'),
           ),
           const SizedBox(height: 16),
-          const Text(
-            'Bambang Eko',
-            style: TextStyle(
+          Text(
+            _userName.isNotEmpty ? _userName : 'User',
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: Colors.pink,
@@ -43,7 +88,7 @@ class PengaturanAkunPage extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            'LoremIpsum@gmail.com',
+            _userEmail.isNotEmpty ? _userEmail : 'user@example.com',
             style: TextStyle(
               fontSize: 14,
               color: Colors.pink[300],
@@ -143,6 +188,17 @@ class PengaturanAkunPage extends StatelessWidget {
                 color: isLogout ? Colors.red : Colors.black87,
               ),
             ),
+            if (_isLoggingOut && isLogout) ...[
+              const Spacer(),
+              SizedBox(
+                width: 16,
+                height: 16,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.red[300]!),
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -207,10 +263,10 @@ class PengaturanAkunPage extends StatelessWidget {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              context.goNamed('home');
+              _logout();
             },
             style: TextButton.styleFrom(
-              foregroundColor: Colors.grey,
+              foregroundColor: Colors.red,
             ),
             child: const Text('Keluar'),
           ),
