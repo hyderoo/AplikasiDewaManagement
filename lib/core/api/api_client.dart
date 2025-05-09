@@ -1,4 +1,5 @@
 // lib/core/api/api_client.dart
+import 'package:dewa_wo_app/core/consts/app_consts.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive_ce/hive.dart';
@@ -6,7 +7,6 @@ import 'package:injectable/injectable.dart';
 
 @lazySingleton
 class ApiClient {
-  static const String baseUrl = 'https://wo.flutteriam.com/api/v1';
   static const String _authBoxName = 'auth_box';
   static const String _tokenKey = 'auth_token';
 
@@ -15,7 +15,7 @@ class ApiClient {
   ApiClient()
       : _dio = Dio(
           BaseOptions(
-            baseUrl: baseUrl,
+            baseUrl: AppConsts.apiUrl,
             contentType: 'application/json',
             headers: {
               'Accept': 'application/json',

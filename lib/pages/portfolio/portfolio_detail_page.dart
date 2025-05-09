@@ -1,3 +1,6 @@
+// ignore_for_file: deprecated_member_use
+
+import 'package:dewa_wo_app/core/consts/app_consts.dart';
 import 'package:dewa_wo_app/models/portfolio_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -53,10 +56,11 @@ class _PortfolioDetailPageState extends State<PortfolioDetailPage> {
           : AppBar(
               backgroundColor: Colors.transparent,
               elevation: 0,
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
+              leading: BackButton(
+                color: Colors.white,
                 onPressed: () => Navigator.of(context).pop(),
               ),
+              surfaceTintColor: Colors.transparent,
               actions: [
                 IconButton(
                   icon: const Icon(Icons.fullscreen, color: Colors.white),
@@ -94,7 +98,7 @@ class _PortfolioDetailPageState extends State<PortfolioDetailPage> {
               return GestureDetector(
                 onTap: _toggleFullscreen,
                 child: Image.network(
-                  'https://wo.flutteriam.com${widget.portfolio.images[index].imagePath}',
+                  '${AppConsts.baseUrl}${widget.portfolio.images[index].imagePath}',
                   fit: BoxFit.cover,
                   height: double.infinity,
                   width: double.infinity,
@@ -194,7 +198,7 @@ class _PortfolioDetailPageState extends State<PortfolioDetailPage> {
             ),
           // Image counter
           Positioned(
-            top: 16 + MediaQuery.of(context).padding.top,
+            bottom: 16,
             right: 16,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -238,7 +242,7 @@ class _PortfolioDetailPageState extends State<PortfolioDetailPage> {
                     minScale: 0.5,
                     maxScale: 3.0,
                     child: Image.network(
-                      'https://wo.flutteriam.com${widget.portfolio.images[index].imagePath}',
+                      '${AppConsts.baseUrl}${widget.portfolio.images[index].imagePath}',
                       fit: BoxFit.contain,
                       errorBuilder: (context, error, stackTrace) {
                         return const Center(
@@ -468,7 +472,7 @@ class _PortfolioDetailPageState extends State<PortfolioDetailPage> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: Image.network(
-                        'https://wo.flutteriam.com${widget.portfolio.images[index].imagePath}',
+                        '${AppConsts.baseUrl}${widget.portfolio.images[index].imagePath}',
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
@@ -489,97 +493,9 @@ class _PortfolioDetailPageState extends State<PortfolioDetailPage> {
               },
             ),
           ),
-          const SizedBox(height: 24),
-          Text(
-            'Detail Informasi',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.pink[800],
-            ),
-          ),
-          const SizedBox(height: 8),
-          _buildInfoItem('Kategori', widget.portfolio.category),
-          _buildInfoItem(
-              'Tanggal Dibuat', _formatDate(widget.portfolio.createdAt)),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: () {
-                // Here you can implement sharing functionality
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text('Fitur berbagi akan segera hadir')),
-                );
-              },
-              icon: const Icon(Icons.share),
-              label: const Text('Bagikan Portofolio'),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 64),
         ],
       ),
     );
-  }
-
-  Widget _buildInfoItem(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 100,
-            child: Text(
-              label,
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  String _formatDate(String dateString) {
-    try {
-      final date = DateTime.parse(dateString);
-      final months = [
-        'Januari',
-        'Februari',
-        'Maret',
-        'April',
-        'Mei',
-        'Juni',
-        'Juli',
-        'Agustus',
-        'September',
-        'Oktober',
-        'November',
-        'Desember'
-      ];
-      return '${date.day} ${months[date.month - 1]} ${date.year}';
-    } catch (e) {
-      return dateString;
-    }
   }
 }

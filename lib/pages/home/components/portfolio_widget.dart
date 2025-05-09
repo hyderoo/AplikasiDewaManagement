@@ -1,3 +1,4 @@
+import 'package:dewa_wo_app/core/consts/app_consts.dart';
 import 'package:dewa_wo_app/cubits/portfolio/portfolio_cubit.dart';
 import 'package:dewa_wo_app/models/portfolio_model.dart';
 import 'package:flutter/material.dart';
@@ -141,7 +142,7 @@ class _PortfolioWidgetState extends State<PortfolioWidget> {
                   topRight: Radius.circular(16),
                 ),
                 child: Image.network(
-                  'https://wo.flutteriam.com${portfolio.images.first.imagePath}',
+                  '${AppConsts.baseUrl}${portfolio.images.first.imagePath}',
                   height: 150,
                   width: double.infinity,
                   fit: BoxFit.cover,

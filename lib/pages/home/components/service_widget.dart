@@ -1,3 +1,4 @@
+import 'package:dewa_wo_app/core/consts/app_consts.dart';
 import 'package:dewa_wo_app/cubits/service/service_cubit.dart';
 import 'package:dewa_wo_app/dialogs/login_required_dialog.dart';
 import 'package:dewa_wo_app/models/catalog_model.dart';
@@ -139,7 +140,7 @@ class _ServiceWidgetState extends State<ServiceWidget> {
                 topRight: Radius.circular(16),
               ),
               child: Image.network(
-                'https://wo.flutteriam.com${service.image}',
+                '${AppConsts.baseUrl}${service.image}',
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Container(

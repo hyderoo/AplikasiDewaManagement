@@ -1,6 +1,7 @@
-import 'package:dewa_wo_app/core/di/dependency_injection.dart';
+import 'package:dewa_wo_app/core/consts/app_consts.dart';
 import 'package:dewa_wo_app/cubits/portfolio/portfolio_cubit.dart';
 import 'package:dewa_wo_app/models/portfolio_model.dart';
+import 'package:dewa_wo_app/pages/portfolio/portfolio_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -430,52 +431,62 @@ class _PortfolioPageState extends State<PortfolioPage> {
 
   Widget _buildPortofolioCard(PortfolioModel portfolio) {
     return Card(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildImageGallery(portfolio.images),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  portfolio.title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.pink[50],
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    portfolio.category,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.pink[700],
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PortfolioDetailPage(portfolio: portfolio),
+            ),
+          );
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildImageGallery(portfolio.images),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    portfolio.title,
+                    style: const TextStyle(
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  portfolio.description,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    height: 1.5,
+                  const SizedBox(height: 4),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.pink[50],
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      portfolio.category,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.pink[700],
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 8),
+                  Text(
+                    portfolio.description,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      height: 1.5,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -499,7 +510,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
               )
             : imagesToShow.length == 1
                 ? Image.network(
-                    'https://wo.flutteriam.com${imagesToShow[0].imagePath}',
+                    '${AppConsts.baseUrl}${imagesToShow[0].imagePath}',
                     width: double.infinity,
                     height: 200,
                     fit: BoxFit.cover,
@@ -521,7 +532,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                             margin: EdgeInsets.only(
                                 right: i < imagesToShow.length - 1 ? 2 : 0),
                             child: Image.network(
-                              'https://wo.flutteriam.com${imagesToShow[i].imagePath}',
+                              '${AppConsts.baseUrl}${imagesToShow[i].imagePath}',
                               width: double.infinity,
                               height: 200,
                               fit: BoxFit.cover,
