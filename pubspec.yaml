@@ -40,9 +40,12 @@ dependencies:
   intl: ^0.20.2
   table_calendar: ^3.2.0
   image_picker: ^1.1.2
-  url_launcher: ^6.3.1
   toastify_flutter: ^2.1.1
   font_awesome_flutter: ^10.8.0
+  cached_network_image: ^3.3.1
+
+  # URL Launcher
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_test:

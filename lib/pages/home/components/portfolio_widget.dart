@@ -1,6 +1,7 @@
 import 'package:dewa_wo_app/core/consts/app_consts.dart';
 import 'package:dewa_wo_app/cubits/portfolio/portfolio_cubit.dart';
 import 'package:dewa_wo_app/models/portfolio_model.dart';
+import 'package:dewa_wo_app/pages/portfolio/portfolio_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -43,7 +44,7 @@ class _PortfolioWidgetState extends State<PortfolioWidget> {
                 style: TextButton.styleFrom(
                   padding: EdgeInsets.zero,
                 ),
-                onPressed: () => context.goNamed('portofolio'),
+                onPressed: () => context.pushNamed('portofolio'),
                 child: const Text('Lihat Selengkapnya'),
               ),
             ],
@@ -128,7 +129,14 @@ class _PortfolioWidgetState extends State<PortfolioWidget> {
 
   Widget _buildPortfolioCard(PortfolioModel portfolio) {
     return GestureDetector(
-      onTap: () => context.push('/portofolio/${portfolio.id}'),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PortfolioDetailPage(portfolio: portfolio),
+          ),
+        );
+      },
       child: Container(
         width: 220,
         margin: const EdgeInsets.symmetric(horizontal: 8),

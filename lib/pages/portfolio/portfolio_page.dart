@@ -33,6 +33,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
   void initState() {
     super.initState();
     _portfolioCubit = context.read<PortfolioCubit>();
+    _portfolioCubit.getPortfolios();
   }
 
   @override

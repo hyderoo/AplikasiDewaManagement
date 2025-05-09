@@ -33,7 +33,7 @@ class WhatsappWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
-      backgroundColor: Colors.green.shade800,
+      backgroundColor: Colors.green.shade400,
       shape: CircleBorder(),
       onPressed: () {
         _openWhatsApp(context);

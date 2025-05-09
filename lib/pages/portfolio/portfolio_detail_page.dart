@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:dewa_wo_app/core/consts/app_consts.dart';
 import 'package:dewa_wo_app/models/portfolio_model.dart';
 import 'package:flutter/material.dart';
