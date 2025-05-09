@@ -38,7 +38,7 @@ final GoRouter _router = GoRouter(
           path: 'form',
           name: 'form',
           builder: (context, state) => FormPemesananPage(
-            layanan: state.extra as ServiceModel,
+            layanan: state.extra as CatalogModel,
           ),
         ),
         GoRoute(
