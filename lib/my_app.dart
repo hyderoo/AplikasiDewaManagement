@@ -10,6 +10,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => getIt<AuthCubit>()),
         BlocProvider(create: (context) => getIt<AvailabilityCubit>()),
+        BlocProvider(create: (context) => getIt<TeamCubit>()),
         BlocProvider(create: (context) => getIt<ProfileCubit>()),
         BlocProvider(create: (context) => getIt<PortfolioCubit>()),
         BlocProvider(create: (context) => getIt<ServiceCubit>()),

@@ -20,8 +20,8 @@ mixin _$TeamModel {
   String get role;
   String get description;
   String get image;
-  String get instagram;
-  String get linkedin;
+  String? get instagram;
+  String? get linkedin;
   @JsonKey(name: 'is_highlighted')
   bool get isHighlighted;
   @JsonKey(name: 'created_at')
@@ -99,8 +99,8 @@ abstract mixin class $TeamModelCopyWith<$Res> {
       String role,
       String description,
       String image,
-      String instagram,
-      String linkedin,
+      String? instagram,
+      String? linkedin,
       @JsonKey(name: 'is_highlighted') bool isHighlighted,
       @JsonKey(name: 'created_at') String createdAt,
       @JsonKey(name: 'updated_at') String updatedAt,
@@ -124,8 +124,8 @@ class _$TeamModelCopyWithImpl<$Res> implements $TeamModelCopyWith<$Res> {
     Object? role = null,
     Object? description = null,
     Object? image = null,
-    Object? instagram = null,
-    Object? linkedin = null,
+    Object? instagram = freezed,
+    Object? linkedin = freezed,
     Object? isHighlighted = null,
     Object? createdAt = null,
     Object? updatedAt = null,
@@ -152,14 +152,14 @@ class _$TeamModelCopyWithImpl<$Res> implements $TeamModelCopyWith<$Res> {
           ? _self.image
           : image // ignore: cast_nullable_to_non_nullable
               as String,
-      instagram: null == instagram
+      instagram: freezed == instagram
           ? _self.instagram
           : instagram // ignore: cast_nullable_to_non_nullable
-              as String,
-      linkedin: null == linkedin
+              as String?,
+      linkedin: freezed == linkedin
           ? _self.linkedin
           : linkedin // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       isHighlighted: null == isHighlighted
           ? _self.isHighlighted
           : isHighlighted // ignore: cast_nullable_to_non_nullable
@@ -209,9 +209,9 @@ class _TeamModel implements TeamModel {
   @override
   final String image;
   @override
-  final String instagram;
+  final String? instagram;
   @override
-  final String linkedin;
+  final String? linkedin;
   @override
   @JsonKey(name: 'is_highlighted')
   final bool isHighlighted;
@@ -301,8 +301,8 @@ abstract mixin class _$TeamModelCopyWith<$Res>
       String role,
       String description,
       String image,
-      String instagram,
-      String linkedin,
+      String? instagram,
+      String? linkedin,
       @JsonKey(name: 'is_highlighted') bool isHighlighted,
       @JsonKey(name: 'created_at') String createdAt,
       @JsonKey(name: 'updated_at') String updatedAt,
@@ -326,8 +326,8 @@ class __$TeamModelCopyWithImpl<$Res> implements _$TeamModelCopyWith<$Res> {
     Object? role = null,
     Object? description = null,
     Object? image = null,
-    Object? instagram = null,
-    Object? linkedin = null,
+    Object? instagram = freezed,
+    Object? linkedin = freezed,
     Object? isHighlighted = null,
     Object? createdAt = null,
     Object? updatedAt = null,
@@ -354,14 +354,14 @@ class __$TeamModelCopyWithImpl<$Res> implements _$TeamModelCopyWith<$Res> {
           ? _self.image
           : image // ignore: cast_nullable_to_non_nullable
               as String,
-      instagram: null == instagram
+      instagram: freezed == instagram
           ? _self.instagram
           : instagram // ignore: cast_nullable_to_non_nullable
-              as String,
-      linkedin: null == linkedin
+              as String?,
+      linkedin: freezed == linkedin
           ? _self.linkedin
           : linkedin // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       isHighlighted: null == isHighlighted
           ? _self.isHighlighted
           : isHighlighted // ignore: cast_nullable_to_non_nullable

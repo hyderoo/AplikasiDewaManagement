@@ -1,7 +1,14 @@
+// tim_page.dart
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dewa_wo_app/core/consts/app_consts.dart';
+import 'package:dewa_wo_app/cubits/team/team_cubit.dart';
 import 'package:dewa_wo_app/models/team_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class TimPage extends StatefulWidget {
   const TimPage({super.key});
@@ -13,38 +20,36 @@ class TimPage extends StatefulWidget {
 class _TimPageState extends State<TimPage> {
   bool _isSearchMode = false;
   final TextEditingController _searchController = TextEditingController();
-  bool _isLoading = true;
 
-  List<TeamModel> timData = [];
-  List<TeamModel> _filteredTim = [];
+  late final TeamCubit _teamCubit;
+  List<TeamModel> _filteredTeam = [];
 
   @override
   void initState() {
     super.initState();
-    _filteredTim = timData;
-
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    });
+    _teamCubit = context.read<TeamCubit>();
+    _teamCubit.getTeam();
   }
 
-  void _searchTim(String query) {
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _searchTeam(List<TeamModel> team, String query) {
     if (query.isEmpty) {
       setState(() {
-        _filteredTim = timData;
+        _filteredTeam = team;
       });
       return;
     }
 
     setState(() {
-      _filteredTim = timData
-          .where((tim) =>
-              tim.name.toLowerCase().contains(query.toLowerCase()) ||
-              tim.role.toLowerCase().contains(query.toLowerCase()))
+      _filteredTeam = team
+          .where((member) =>
+              member.name.toLowerCase().contains(query.toLowerCase()) ||
+              member.role.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
   }
@@ -66,11 +71,30 @@ class _TimPageState extends State<TimPage> {
         children: [
           SizedBox(height: MediaQuery.of(context).padding.top + 60),
           Expanded(
-            child: _isLoading
-                ? _buildShimmerList()
-                : _filteredTim.isEmpty
-                    ? _buildEmptyState()
-                    : _buildTimList(),
+            child: BlocConsumer<TeamCubit, TeamState>(
+              bloc: _teamCubit,
+              listener: (context, state) {
+                if (state is TeamSuccess) {
+                  _searchTeam(state.team, _searchController.text);
+                }
+              },
+              builder: (context, state) {
+                if (state is TeamLoading || state is TeamInitial) {
+                  return _buildShimmerList();
+                } else if (state is TeamSuccess) {
+                  return RefreshIndicator(
+                    onRefresh: () => _teamCubit.getTeam(),
+                    child: _filteredTeam.isEmpty
+                        ? _buildEmptyStateWithRefresh()
+                        : _buildTeamList(),
+                  );
+                } else if (state is TeamError) {
+                  return _buildErrorState(state.message);
+                }
+
+                return _buildShimmerList();
+              },
+            ),
           ),
         ],
       ),
@@ -93,7 +117,12 @@ class _TimPageState extends State<TimPage> {
                     setState(() {
                       _isSearchMode = false;
                       _searchController.clear();
-                      _searchTim('');
+
+                      // Reset search when exiting search mode
+                      if (_teamCubit.state is TeamSuccess) {
+                        final team = (_teamCubit.state as TeamSuccess).team;
+                        _searchTeam(team, '');
+                      }
                     });
                   },
                 ),
@@ -125,7 +154,12 @@ class _TimPageState extends State<TimPage> {
                         ),
                       ),
                     ),
-                    onChanged: _searchTim,
+                    onChanged: (query) {
+                      if (_teamCubit.state is TeamSuccess) {
+                        final team = (_teamCubit.state as TeamSuccess).team;
+                        _searchTeam(team, query);
+                      }
+                    },
                     autofocus: true,
                   ),
                 ),
@@ -133,7 +167,10 @@ class _TimPageState extends State<TimPage> {
                   icon: const Icon(Icons.clear, color: Colors.white),
                   onPressed: () {
                     _searchController.clear();
-                    _searchTim('');
+                    if (_teamCubit.state is TeamSuccess) {
+                      final team = (_teamCubit.state as TeamSuccess).team;
+                      _searchTeam(team, '');
+                    }
                   },
                 ),
               ],
@@ -194,45 +231,124 @@ class _TimPageState extends State<TimPage> {
     );
   }
 
-  Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+  Widget _buildEmptyStateWithRefresh() {
+    return ListView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      children: [
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.6,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.people_outline,
+                  size: 80,
+                  color: Colors.grey[400],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Tidak ada anggota tim yang ditemukan',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Coba ubah kata kunci pencarian',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[600],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  'Tarik ke bawah untuk menyegarkan',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[500],
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildErrorState(String message) {
+    return RefreshIndicator(
+      onRefresh: () => _teamCubit.getTeam(),
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
         children: [
-          Icon(
-            Icons.people_outline,
-            size: 80,
-            color: Colors.grey[400],
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Tidak ada anggota tim yang ditemukan',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[600],
-              fontWeight: FontWeight.bold,
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.7,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.error_outline,
+                    size: 80,
+                    color: Colors.red,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Terjadi kesalahan',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[800],
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    child: Text(
+                      message,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[600],
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: () => _teamCubit.getTeam(),
+                    child: const Text('Coba Lagi'),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'atau tarik ke bawah untuk menyegarkan',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[500],
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Coba ubah kata kunci pencarian',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[600],
-            ),
-            textAlign: TextAlign.center,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildTimList() {
+  Widget _buildTeamList() {
     return ListView.separated(
-      padding: const EdgeInsets.all(16),
-      itemCount: _filteredTim.length,
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.all(16).copyWith(bottom: 64),
+      itemCount: _filteredTeam.length,
       itemBuilder: (context, index) {
-        return _buildTimCard(_filteredTim[index]);
+        return _buildTeamCard(_filteredTeam[index]);
       },
       separatorBuilder: (BuildContext context, int index) {
         return const SizedBox(height: 16);
@@ -240,10 +356,10 @@ class _TimPageState extends State<TimPage> {
     );
   }
 
-  Widget _buildTimCard(TeamModel tim) {
+  Widget _buildTeamCard(TeamModel member) {
     return Card(
       child: InkWell(
-        onTap: () => _showTimDetail(tim),
+        onTap: () => _showTeamDetail(member),
         borderRadius: BorderRadius.circular(16),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -252,12 +368,28 @@ class _TimPageState extends State<TimPage> {
               borderRadius: const BorderRadius.horizontal(
                 left: Radius.circular(16),
               ),
-              child: Container(
+              child: CachedNetworkImage(
+                imageUrl: "${AppConsts.baseUrl}${member.image}",
                 width: 150,
                 height: 200,
-                color: Colors.pink[100],
-                alignment: Alignment.center,
-                child: Icon(Icons.person, size: 50, color: Colors.pink[300]),
+                fit: BoxFit.cover,
+                placeholder: (context, url) => Container(
+                  width: 150,
+                  height: 200,
+                  color: Colors.grey[200],
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.pink),
+                    ),
+                  ),
+                ),
+                errorWidget: (context, url, error) => Container(
+                  width: 150,
+                  height: 200,
+                  color: Colors.pink[100],
+                  alignment: Alignment.center,
+                  child: Icon(Icons.person, size: 50, color: Colors.pink[300]),
+                ),
               ),
             ),
             Expanded(
@@ -266,32 +398,75 @@ class _TimPageState extends State<TimPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      tim.name,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                    Text(
-                      tim.role,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              member.name,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              member.role,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      tim.description,
+                      member.description,
                       style: const TextStyle(
                         fontSize: 13,
                         height: 1.4,
                         color: Colors.black87,
                       ),
-                      maxLines: 5,
+                      maxLines: 4,
                       overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        if (member.instagram?.isNotEmpty == true)
+                          Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.pink[50],
+                              shape: BoxShape.circle,
+                            ),
+                            child: FaIcon(
+                              FontAwesomeIcons.instagram,
+                              size: 16,
+                              color: Colors.pink[400],
+                            ),
+                          ),
+                        if (member.linkedin?.isNotEmpty == true)
+                          Container(
+                            margin: const EdgeInsets.only(left: 8),
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.blue[50],
+                              shape: BoxShape.circle,
+                            ),
+                            child: FaIcon(
+                              FontAwesomeIcons.linkedin,
+                              size: 16,
+                              color: Colors.blue[400],
+                            ),
+                          ),
+                      ],
                     ),
                   ],
                 ),
@@ -303,134 +478,144 @@ class _TimPageState extends State<TimPage> {
     );
   }
 
-  void _showTimDetail(TeamModel tim) {
-    showModalBottomSheet(
+  void _showTeamDetail(TeamModel member) {
+    showDialog(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(24),
-            topRight: Radius.circular(24),
-          ),
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
         ),
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: Container(
-                    width: 120,
-                    height: 150,
-                    color: Colors.pink[100],
-                    alignment: Alignment.center,
-                    child:
-                        Icon(Icons.person, size: 60, color: Colors.pink[300]),
-                  ),
+                Stack(
+                  children: [
+                    CachedNetworkImage(
+                      imageUrl: "${AppConsts.baseUrl}${member.image}",
+                      width: double.infinity,
+                      height: 250,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Container(
+                        height: 250,
+                        color: Colors.grey[200],
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.pink),
+                          ),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Container(
+                        height: 250,
+                        color: Colors.pink[100],
+                        alignment: Alignment.center,
+                        child: Icon(Icons.person,
+                            size: 80, color: Colors.pink[300]),
+                      ),
+                    ),
+                    Positioned(
+                      top: 16,
+                      right: 16,
+                      child: IconButton(
+                        icon: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.5),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.close,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 16),
-                Expanded(
+                Padding(
+                  padding: const EdgeInsets.all(20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        tim.name,
+                        member.name,
                         style: const TextStyle(
-                          fontSize: 22,
+                          fontSize: 24,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        tim.role,
+                        member.role,
                         style: const TextStyle(
                           fontSize: 16,
                           color: Colors.pink,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
+                      const Divider(),
+                      Text(
+                        'Tentang ${member.name}',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        member.description,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          height: 1.5,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      Row(
+                        children: [
+                          if (member.instagram?.isNotEmpty == true)
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  launchUrlString(member.instagram!);
+                                },
+                                icon: FaIcon(FontAwesomeIcons.instagram),
+                                label: const Text('Instagram'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.pink,
+                                ),
+                              ),
+                            ),
+                          if (member.linkedin?.isNotEmpty == true) ...[
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  launchUrlString(member.linkedin!);
+                                },
+                                icon: FaIcon(FontAwesomeIcons.linkedin),
+                                label: const Text('LinkedIn'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.blue[700],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
                     ],
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 24),
-            Text(
-              'Tentang ${tim.name}',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              tim.description,
-              style: const TextStyle(
-                fontSize: 14,
-                height: 1.5,
-              ),
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              'Pengalaman & Keahlian',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
-            _buildExperienceList(tim),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Hubungi Langsung'),
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
+          ),
         ),
       ),
-    );
-  }
-
-  Widget _buildExperienceList(TeamModel tim) {
-    final List<String> experiences = [
-      'Event planning & koordinasi',
-      'Manajemen vendor',
-      'Desain konsep pernikahan',
-      'Wedding day coordination',
-      'Timeline & budget planning',
-    ];
-
-    return Column(
-      children: experiences.map((experience) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Icon(Icons.check_circle, size: 16, color: Colors.pink),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  experience,
-                  style: const TextStyle(fontSize: 14),
-                ),
-              ),
-            ],
-          ),
-        );
-      }).toList(),
     );
   }
 }

@@ -19,6 +19,7 @@ import '../../cubits/portfolio/portfolio_cubit.dart' as _i453;
 import '../../cubits/profile/profile_cubit.dart' as _i1056;
 import '../../cubits/review/review_cubit.dart' as _i668;
 import '../../cubits/service/service_cubit.dart' as _i327;
+import '../../cubits/team/team_cubit.dart' as _i22;
 import '../../data/repositories/auth_repository.dart' as _i481;
 import '../../data/repositories/availability_repository.dart' as _i798;
 import '../../data/repositories/content_repository.dart' as _i785;
@@ -53,6 +54,8 @@ _i174.GetIt init(
       _i453.PortfolioCubit(contentRepository: gh<_i785.ContentRepository>()));
   gh.lazySingleton<_i327.ServiceCubit>(() =>
       _i327.ServiceCubit(contentRepository: gh<_i785.ContentRepository>()));
+  gh.lazySingleton<_i22.TeamCubit>(
+      () => _i22.TeamCubit(contentRepository: gh<_i785.ContentRepository>()));
   gh.lazySingleton<_i971.ProfileRepository>(() => _i971.ProfileRepository(
         apiClient: gh<_i277.ApiClient>(),
         authRepository: gh<_i481.AuthRepository>(),

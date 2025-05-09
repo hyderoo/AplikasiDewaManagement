@@ -24,8 +24,8 @@ class TermsConditionsPage extends StatelessWidget {
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+        leading: BackButton(
+          color: Colors.white,
           onPressed: () => Navigator.pop(context),
         ),
       ),

@@ -134,8 +134,8 @@ class _PortfolioPageState extends State<PortfolioPage> {
       child: _isSearchMode
           ? Row(
               children: [
-                IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                BackButton(
+                  color: Colors.white,
                   onPressed: () {
                     setState(() {
                       _isSearchMode = false;
@@ -207,8 +207,8 @@ class _PortfolioPageState extends State<PortfolioPage> {
           : Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                BackButton(
+                  color: Colors.white,
                   onPressed: () => context.pop(),
                 ),
                 const Text(
