@@ -45,7 +45,7 @@ class _ServiceWidgetState extends State<ServiceWidget> {
                 style: TextButton.styleFrom(
                   padding: EdgeInsets.zero,
                 ),
-                onPressed: () => context.goNamed('layanan'),
+                onPressed: () => context.pushNamed('layanan'),
                 child: const Text('Lihat Selengkapnya'),
               ),
             ],

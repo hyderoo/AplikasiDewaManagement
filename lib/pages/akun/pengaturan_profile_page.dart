@@ -2,7 +2,6 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dewa_wo_app/core/consts/app_consts.dart';
-import 'package:dewa_wo_app/core/di/dependency_injection.dart';
 import 'package:dewa_wo_app/cubits/auth/auth_cubit.dart';
 import 'package:dewa_wo_app/cubits/profile/profile_cubit.dart';
 import 'package:dewa_wo_app/helpers/image_compressor.dart';
@@ -500,7 +499,7 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
                               ? ClipOval(
                                   child: CachedNetworkImage(
                                     imageUrl:
-                                        '${AppConsts.baseUrl}${user!.avatar}',
+                                        '${AppConsts.baseUrl}${user.avatar}',
                                     fit: BoxFit.cover,
                                     placeholder: (context, url) => Center(
                                       child: CircularProgressIndicator(

@@ -274,6 +274,7 @@ class _PengaturanAkunPageState extends State<PengaturanAkunPage> {
     );
   }
 
+  // ignore: unused_element
   void _showRatingDialog(BuildContext context) {
     showDialog(
       context: context,
