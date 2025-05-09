@@ -1,6 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dewa_wo_app/core/consts/app_consts.dart';
 import 'package:dewa_wo_app/core/di/dependency_injection.dart';
 import 'package:dewa_wo_app/cubits/auth/auth_cubit.dart';
 import 'package:dewa_wo_app/cubits/profile/profile_cubit.dart';
+import 'package:dewa_wo_app/helpers/image_compressor.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,6 +40,7 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
   bool _deletePasswordVisible = false;
 
   File? _profileImage;
+  bool _isCompressingImage = false;
 
   int _selectedTabIndex = 0;
 
@@ -42,7 +48,7 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
   void initState() {
     super.initState();
 
-    _profileCubit = getIt<ProfileCubit>();
+    _profileCubit = context.read<ProfileCubit>();
 
     _loadUserData();
   }
@@ -67,7 +73,6 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
     _newPasswordController.dispose();
     _confirmPasswordController.dispose();
     _deletePasswordController.dispose();
-
     super.dispose();
   }
 
@@ -89,9 +94,7 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
                     final XFile? image =
                         await picker.pickImage(source: ImageSource.gallery);
                     if (image != null) {
-                      setState(() {
-                        _profileImage = File(image.path);
-                      });
+                      await _processSelectedImage(File(image.path));
                     }
                   } catch (e) {
                     if (kDebugMode) {
@@ -109,9 +112,7 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
                     final XFile? image =
                         await picker.pickImage(source: ImageSource.camera);
                     if (image != null) {
-                      setState(() {
-                        _profileImage = File(image.path);
-                      });
+                      await _processSelectedImage(File(image.path));
                     }
                   } catch (e) {
                     if (kDebugMode) {
@@ -127,6 +128,76 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
     );
   }
 
+  Future<void> _processSelectedImage(File imageFile) async {
+    setState(() {
+      _isCompressingImage = true;
+    });
+
+    try {
+      // Check file size
+      final fileSize = await imageFile.length();
+      final fileSizeInMB = fileSize / (1024 * 1024);
+
+      if (kDebugMode) {
+        print('Original file size: ${fileSizeInMB.toStringAsFixed(2)} MB');
+      }
+
+      File processedImage;
+
+      // If image is larger than 2MB, compress it
+      if (fileSizeInMB > 2.0) {
+        ToastifyFlutter.info(
+          context,
+          message: 'Mengompres gambar...',
+        );
+
+        processedImage = await ImageCompressor.compressImageFile(imageFile);
+
+        // Double check final size
+        final compressedSize = await processedImage.length();
+        final compressedSizeInMB = compressedSize / (1024 * 1024);
+
+        if (kDebugMode) {
+          print(
+              'Compressed file size: ${compressedSizeInMB.toStringAsFixed(2)} MB');
+        }
+
+        if (compressedSizeInMB > 2.0) {
+          // Still too large after compression
+          ToastifyFlutter.warning(
+            context,
+            message: 'Gambar terlalu besar, maksimal 2MB',
+          );
+          setState(() {
+            _isCompressingImage = false;
+          });
+          return;
+        }
+      } else {
+        // Image is already within size limit
+        processedImage = imageFile;
+      }
+
+      setState(() {
+        _profileImage = processedImage;
+        _isCompressingImage = false;
+      });
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error processing image: $e');
+      }
+
+      ToastifyFlutter.error(
+        context,
+        message: 'Gagal memproses gambar',
+      );
+
+      setState(() {
+        _isCompressingImage = false;
+      });
+    }
+  }
+
   void _updateProfile() {
     if (_namaController.text.isEmpty ||
         _emailController.text.isEmpty ||
@@ -139,7 +210,7 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
       name: _namaController.text,
       email: _emailController.text,
       phone: _phoneController.text,
-      avatar: null,
+      avatar: _profileImage?.path,
     );
   }
 
@@ -211,12 +282,7 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
           TextButton(
             onPressed: () {
               if (_deletePasswordController.text.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Password harus diisi'),
-                    backgroundColor: Colors.red,
-                  ),
-                );
+                ToastifyFlutter.error(context, message: 'Password harus diisi');
                 return;
               }
 
@@ -245,90 +311,56 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => _profileCubit,
-      child: BlocConsumer<ProfileCubit, ProfileState>(
-        listener: (context, state) {
-          if (state is ProfileSuccess) {
-            getIt<AuthCubit>().refreshUserData();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Colors.green,
-              ),
-            );
-          } else if (state is ProfileError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Colors.red,
-              ),
-            );
-          } else if (state is PasswordChangeSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Colors.green,
-              ),
-            );
-            _resetPasswordFields();
-          } else if (state is PasswordChangeError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Colors.red,
-              ),
-            );
-          } else if (state is DeleteAccountSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Colors.green,
-              ),
-            );
+    return BlocConsumer<ProfileCubit, ProfileState>(
+      listener: (context, state) {
+        if (state is ProfileSuccess) {
+          context.read<AuthCubit>().refreshUserData();
+          ToastifyFlutter.success(context, message: state.message);
+        } else if (state is ProfileError) {
+          ToastifyFlutter.error(context, message: state.message);
+        } else if (state is PasswordChangeSuccess) {
+          ToastifyFlutter.success(context, message: state.message);
+          _resetPasswordFields();
+        } else if (state is PasswordChangeError) {
+          ToastifyFlutter.error(context, message: state.message);
+        } else if (state is DeleteAccountSuccess) {
+          ToastifyFlutter.success(context, message: state.message);
+          context.read<AuthCubit>().logout();
+          context.goNamed('home');
+        } else if (state is DeleteAccountError) {
+          ToastifyFlutter.error(context, message: state.message);
+        }
+      },
+      builder: (context, state) {
+        final bool isProfileLoading = state is ProfileLoading;
+        final bool isPasswordLoading = state is PasswordChangeLoading;
+        final bool isDeleteLoading = state is DeleteAccountLoading;
 
-            getIt<AuthCubit>().logout();
-            context.goNamed('home');
-          } else if (state is DeleteAccountError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Colors.red,
-              ),
-            );
-          }
-        },
-        builder: (context, state) {
-          final bool isProfileLoading = state is ProfileLoading;
-          final bool isPasswordLoading = state is PasswordChangeLoading;
-          final bool isDeleteLoading = state is DeleteAccountLoading;
-
-          return Scaffold(
-            backgroundColor: Colors.white,
-            appBar: AppBar(
-              title: const Text(
-                'Pengaturan Profile',
-              ),
-              centerTitle: true,
+        return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            title: const Text(
+              'Pengaturan Profile',
             ),
-            body: Column(
-              children: [
-                _buildTabSelector(),
-                Expanded(
-                  child: IndexedStack(
-                    index: _selectedTabIndex,
-                    children: [
-                      _buildProfileTab(isProfileLoading),
-                      _buildPasswordTab(isPasswordLoading),
-                      _buildDeleteAccountTab(isDeleteLoading),
-                    ],
-                  ),
+            centerTitle: true,
+          ),
+          body: Column(
+            children: [
+              _buildTabSelector(),
+              Expanded(
+                child: IndexedStack(
+                  index: _selectedTabIndex,
+                  children: [
+                    _buildProfileTab(isProfileLoading),
+                    _buildPasswordTab(isPasswordLoading),
+                    _buildDeleteAccountTab(isDeleteLoading),
+                  ],
                 ),
-              ],
-            ),
-          );
-        },
-      ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -428,6 +460,9 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
   }
 
   Widget _buildProfileTab(bool isLoading) {
+    final user = _profileCubit.getCurrentUser();
+    final hasAvatar = user?.avatar != null && user!.avatar!.isNotEmpty;
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -442,6 +477,7 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.pink[100],
+                    // Only add image decoration if using a local file
                     image: _profileImage != null
                         ? DecorationImage(
                             image: FileImage(_profileImage!),
@@ -449,44 +485,97 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
                           )
                         : null,
                   ),
-                  child: _profileImage == null
+                  // Show different content based on state
+                  child: _isCompressingImage
                       ? Center(
-                          child: Text(
-                            _namaController.text.isNotEmpty
-                                ? _namaController.text[0].toUpperCase()
-                                : 'U',
-                            style: TextStyle(
-                              fontSize: 42,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.pink[700],
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.pink[700]!,
                             ),
                           ),
                         )
-                      : null,
+                      : _profileImage == null
+                          ? hasAvatar
+                              // Show cached network image for existing avatar
+                              ? ClipOval(
+                                  child: CachedNetworkImage(
+                                    imageUrl:
+                                        '${AppConsts.baseUrl}${user!.avatar}',
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) => Center(
+                                      child: CircularProgressIndicator(
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                          Colors.pink[700]!,
+                                        ),
+                                      ),
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        Center(
+                                      child: Text(
+                                        _namaController.text.isNotEmpty
+                                            ? _namaController.text[0]
+                                                .toUpperCase()
+                                            : 'U',
+                                        style: TextStyle(
+                                          fontSize: 42,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.pink[700],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              // Show initial if no avatar and no local file
+                              : Center(
+                                  child: Text(
+                                    _namaController.text.isNotEmpty
+                                        ? _namaController.text[0].toUpperCase()
+                                        : 'U',
+                                    style: TextStyle(
+                                      fontSize: 42,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.pink[700],
+                                    ),
+                                  ),
+                                )
+                          : null,
                 ),
                 Positioned(
                   bottom: 0,
                   right: 0,
                   child: GestureDetector(
-                    onTap: _pickImage,
+                    onTap: _isCompressingImage ? null : _pickImage,
                     child: Container(
                       width: 34,
                       height: 34,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.pink,
+                        color: _isCompressingImage ? Colors.grey : Colors.pink,
                       ),
-                      child: const Icon(
-                        Icons.camera_alt,
-                        color: Colors.white,
-                        size: 20,
-                      ),
+                      child: _isCompressingImage
+                          ? const SizedBox(
+                              width: 12,
+                              height: 12,
+                              child: CircularProgressIndicator(
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                                strokeWidth: 2,
+                              ),
+                            )
+                          : const Icon(
+                              Icons.camera_alt,
+                              color: Colors.white,
+                              size: 20,
+                            ),
                     ),
                   ),
                 ),
               ],
             ),
           ),
+
+          // The rest of the method remains unchanged
           const SizedBox(height: 32),
           const Text(
             'Nama Lengkap',
@@ -496,6 +585,7 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
               color: Colors.black,
             ),
           ),
+
           const SizedBox(height: 8),
           TextField(
             controller: _namaController,
@@ -602,7 +692,8 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: isLoading ? null : _updateProfile,
+              onPressed:
+                  isLoading || _isCompressingImage ? null : _updateProfile,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.pink,
                 padding: const EdgeInsets.symmetric(vertical: 16),
@@ -624,6 +715,7 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
             ),

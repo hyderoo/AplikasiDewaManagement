@@ -15,13 +15,12 @@ class AuthCubit extends Cubit<AuthState> {
       : _authRepository = authRepository,
         super(const AuthState.initial());
 
-  @PostConstruct()
   Future<void> checkAuthStatus() async {
     final token = _authRepository.getToken();
     final user = _authRepository.getUser();
 
     if (token != null && user != null) {
-      emit(AuthState.authenticated(user: user, token: token));
+      emit(AuthState.authenticated(user: user));
     } else {
       emit(const AuthState.unauthenticated());
     }
@@ -39,10 +38,7 @@ class AuthCubit extends Cubit<AuthState> {
         response.data != null &&
         response.data!.user != null &&
         response.data!.token != null) {
-      emit(AuthState.authenticated(
-        user: response.data!.user!,
-        token: response.data!.token!,
-      ));
+      emit(AuthState.authenticated(user: response.data!.user!));
     } else {
       emit(AuthState.error(message: response.message));
     }
@@ -69,10 +65,7 @@ class AuthCubit extends Cubit<AuthState> {
         response.data != null &&
         response.data!.user != null &&
         response.data!.token != null) {
-      emit(AuthState.authenticated(
-        user: response.data!.user!,
-        token: response.data!.token!,
-      ));
+      emit(AuthState.authenticated(user: response.data!.user!));
     } else {
       emit(AuthState.error(message: response.message));
     }
@@ -90,13 +83,9 @@ class AuthCubit extends Cubit<AuthState> {
     if (currentState is AuthAuthenticated) {
       final response = await _authRepository.getCurrentUser();
 
-      if (response.status == 'success' &&
-          response.data != null &&
-          response.data!.user != null) {
-        emit(AuthState.authenticated(
-          user: response.data!.user!,
-          token: currentState.token,
-        ));
+      if (response.status == 'success' && response.data != null) {
+        emit(AuthState.initial());
+        emit(AuthState.authenticated(user: response.data!));
       } else if (response.status == 'error') {
         emit(const AuthState.unauthenticated());
       }

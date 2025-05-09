@@ -19,7 +19,6 @@ class AuthRepository {
 
   AuthRepository(this._apiClient);
 
-  @PostConstruct()
   Future<void> init() async {
     if (_isInitialized) return;
 
@@ -160,15 +159,13 @@ class AuthRepository {
     }
   }
 
-  Future<AuthResponse> getCurrentUser() async {
+  Future<UserResponse> getCurrentUser() async {
     try {
       final response = await _apiClient.get('/user');
-      final authResponse = AuthResponse.fromJson(response.data);
+      final authResponse = UserResponse.fromJson(response.data);
 
-      if (authResponse.status == 'success' &&
-          authResponse.data != null &&
-          authResponse.data!.user != null) {
-        await saveUser(authResponse.data!.user!);
+      if (authResponse.status == 'success' && authResponse.data != null) {
+        await saveUser(authResponse.data!);
       }
 
       return authResponse;
@@ -177,13 +174,13 @@ class AuthRepository {
         await clearAuthData();
       }
 
-      return AuthResponse(
+      return UserResponse(
         status: 'error',
         message: e.message ?? 'Failed to get user data',
         data: null,
       );
     } catch (e) {
-      return AuthResponse(
+      return UserResponse(
         status: 'error',
         message: e.toString(),
         data: null,

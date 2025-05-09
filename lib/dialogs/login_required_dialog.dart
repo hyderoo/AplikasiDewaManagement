@@ -1,14 +1,14 @@
-import 'package:dewa_wo_app/core/di/dependency_injection.dart';
 import 'package:dewa_wo_app/cubits/auth/auth_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class LoginRequiredDialog extends StatelessWidget {
   final String actionName;
   const LoginRequiredDialog({super.key, required this.actionName});
 
-  static bool _isAuthenticated() {
-    final authState = getIt<AuthCubit>().state;
+  static bool _isAuthenticated(BuildContext context) {
+    final authState = context.read<AuthCubit>().state;
     return authState is AuthAuthenticated;
   }
 
@@ -17,7 +17,7 @@ class LoginRequiredDialog extends StatelessWidget {
     required VoidCallback action,
     required String actionName,
   }) {
-    if (_isAuthenticated()) {
+    if (_isAuthenticated(context)) {
       action();
     } else {
       showDialog(

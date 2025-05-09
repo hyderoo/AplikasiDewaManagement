@@ -78,10 +78,9 @@ class AuthLoading implements AuthState {
 /// @nodoc
 
 class AuthAuthenticated implements AuthState {
-  const AuthAuthenticated({required this.user, required this.token});
+  const AuthAuthenticated({required this.user});
 
   final UserModel user;
-  final String token;
 
   /// Create a copy of AuthState
   /// with the given fields replaced by the non-null parameter values.
@@ -95,16 +94,15 @@ class AuthAuthenticated implements AuthState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is AuthAuthenticated &&
-            (identical(other.user, user) || other.user == user) &&
-            (identical(other.token, token) || other.token == token));
+            (identical(other.user, user) || other.user == user));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, user, token);
+  int get hashCode => Object.hash(runtimeType, user);
 
   @override
   String toString() {
-    return 'AuthState.authenticated(user: $user, token: $token)';
+    return 'AuthState.authenticated(user: $user)';
   }
 }
 
@@ -115,7 +113,7 @@ abstract mixin class $AuthAuthenticatedCopyWith<$Res>
           AuthAuthenticated value, $Res Function(AuthAuthenticated) _then) =
       _$AuthAuthenticatedCopyWithImpl;
   @useResult
-  $Res call({UserModel user, String token});
+  $Res call({UserModel user});
 
   $UserModelCopyWith<$Res> get user;
 }
@@ -133,17 +131,12 @@ class _$AuthAuthenticatedCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   $Res call({
     Object? user = null,
-    Object? token = null,
   }) {
     return _then(AuthAuthenticated(
       user: null == user
           ? _self.user
           : user // ignore: cast_nullable_to_non_nullable
               as UserModel,
-      token: null == token
-          ? _self.token
-          : token // ignore: cast_nullable_to_non_nullable
-              as String,
     ));
   }
 

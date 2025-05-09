@@ -22,6 +22,22 @@ Map<String, dynamic> _$AuthResponseToJson(_AuthResponse instance) =>
       'data': instance.data,
     };
 
+_UserResponse _$UserResponseFromJson(Map<String, dynamic> json) =>
+    _UserResponse(
+      status: json['status'] as String,
+      message: json['message'] as String,
+      data: json['data'] == null
+          ? null
+          : UserModel.fromJson(json['data'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$UserResponseToJson(_UserResponse instance) =>
+    <String, dynamic>{
+      'status': instance.status,
+      'message': instance.message,
+      'data': instance.data,
+    };
+
 _AuthData _$AuthDataFromJson(Map<String, dynamic> json) => _AuthData(
       user: json['user'] == null
           ? null

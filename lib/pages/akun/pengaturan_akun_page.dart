@@ -1,7 +1,9 @@
-import 'package:dewa_wo_app/core/di/dependency_injection.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dewa_wo_app/core/consts/app_consts.dart';
 import 'package:dewa_wo_app/cubits/auth/auth_cubit.dart';
 import 'package:dewa_wo_app/resources/resources.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class PengaturanAkunPage extends StatefulWidget {
@@ -15,6 +17,7 @@ class _PengaturanAkunPageState extends State<PengaturanAkunPage> {
   String _userName = '';
   String _userEmail = '';
   String _userPhone = '';
+  String? _userAvatar;
   bool _isLoggingOut = false;
 
   @override
@@ -22,7 +25,7 @@ class _PengaturanAkunPageState extends State<PengaturanAkunPage> {
     super.initState();
     _getUserInfo();
 
-    getIt<AuthCubit>().stream.listen((state) {
+    context.read<AuthCubit>().stream.listen((state) {
       if (state is AuthUnauthenticated && _isLoggingOut) {
         _isLoggingOut = false;
 
@@ -36,12 +39,13 @@ class _PengaturanAkunPageState extends State<PengaturanAkunPage> {
   }
 
   void _getUserInfo() {
-    final authState = getIt<AuthCubit>().state;
+    final authState = context.read<AuthCubit>().state;
     if (authState is AuthAuthenticated) {
       setState(() {
         _userName = authState.user.fullName;
         _userEmail = authState.user.email;
         _userPhone = authState.user.phone;
+        _userAvatar = authState.user.avatar;
       });
     }
   }
@@ -51,7 +55,7 @@ class _PengaturanAkunPageState extends State<PengaturanAkunPage> {
       _isLoggingOut = true;
     });
 
-    await getIt<AuthCubit>().logout();
+    await context.read<AuthCubit>().logout();
   }
 
   @override
@@ -72,24 +76,65 @@ class _PengaturanAkunPageState extends State<PengaturanAkunPage> {
   }
 
   Widget _buildProfileHeader() {
+    final bool hasAvatar = _userAvatar != null && _userAvatar!.isNotEmpty;
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 24),
       child: Column(
         children: [
-          CircleAvatar(
-            radius: 50,
-            backgroundColor: Colors.pink[100],
-            child: _userName.isNotEmpty
-                ? Text(
-                    _userName.substring(0, 1).toUpperCase(),
-                    style: const TextStyle(
-                      fontSize: 42,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.pink,
+          hasAvatar
+              ? CircleAvatar(
+                  radius: 50,
+                  backgroundColor: Colors.grey[200],
+                  child: ClipOval(
+                    child: CachedNetworkImage(
+                      imageUrl: '${AppConsts.baseUrl}$_userAvatar',
+                      width: 100,
+                      height: 100,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Container(
+                        color: Colors.pink[50],
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.pink[300]!,
+                            ),
+                          ),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Container(
+                        color: Colors.pink[100],
+                        child: Center(
+                          child: _userName.isNotEmpty
+                              ? Text(
+                                  _userName.substring(0, 1).toUpperCase(),
+                                  style: const TextStyle(
+                                    fontSize: 42,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.pink,
+                                  ),
+                                )
+                              : const Icon(Icons.person,
+                                  size: 50, color: Colors.pink),
+                        ),
+                      ),
                     ),
-                  )
-                : const Icon(Icons.person, size: 50, color: Colors.pink),
-          ),
+                  ),
+                )
+              : CircleAvatar(
+                  radius: 50,
+                  backgroundColor: Colors.pink[100],
+                  child: _userName.isNotEmpty
+                      ? Text(
+                          _userName.substring(0, 1).toUpperCase(),
+                          style: const TextStyle(
+                            fontSize: 42,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.pink,
+                          ),
+                        )
+                      : const Icon(Icons.person, size: 50, color: Colors.pink),
+                ),
           const SizedBox(height: 16),
           Text(
             _userName.isNotEmpty ? _userName : 'User',
@@ -128,7 +173,9 @@ class _PengaturanAkunPageState extends State<PengaturanAkunPage> {
           icon: AppIcons.profile,
           label: 'Pengaturan Profile',
           onTap: () {
-            context.pushNamed('profile');
+            context.pushNamed('profile').then((value) {
+              _getUserInfo();
+            });
           },
         ),
         Padding(
@@ -156,22 +203,22 @@ class _PengaturanAkunPageState extends State<PengaturanAkunPage> {
             color: Colors.grey[200],
           ),
         ),
-        _buildMenuItem(
-          icon: AppIcons.review,
-          label: 'Beri Rating dan Review',
-          onTap: () {
-            _showRatingDialog(context);
-          },
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Divider(
-            height: 1,
-            indent: 16,
-            endIndent: 16,
-            color: Colors.grey[200],
-          ),
-        ),
+        // _buildMenuItem(
+        //   icon: AppIcons.review,
+        //   label: 'Beri Rating dan Review',
+        //   onTap: () {
+        //     _showRatingDialog(context);
+        //   },
+        // ),
+        // Padding(
+        //   padding: const EdgeInsets.symmetric(horizontal: 16),
+        //   child: Divider(
+        //     height: 1,
+        //     indent: 16,
+        //     endIndent: 16,
+        //     color: Colors.grey[200],
+        //   ),
+        // ),
         _buildMenuItem(
           icon: AppIcons.logout,
           label: 'Keluar',

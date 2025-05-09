@@ -220,6 +220,212 @@ class __$AuthResponseCopyWithImpl<$Res>
 }
 
 /// @nodoc
+mixin _$UserResponse {
+  String get status;
+  String get message;
+  UserModel? get data;
+
+  /// Create a copy of UserResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $UserResponseCopyWith<UserResponse> get copyWith =>
+      _$UserResponseCopyWithImpl<UserResponse>(
+          this as UserResponse, _$identity);
+
+  /// Serializes this UserResponse to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is UserResponse &&
+            (identical(other.status, status) || other.status == status) &&
+            (identical(other.message, message) || other.message == message) &&
+            (identical(other.data, data) || other.data == data));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, status, message, data);
+
+  @override
+  String toString() {
+    return 'UserResponse(status: $status, message: $message, data: $data)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $UserResponseCopyWith<$Res> {
+  factory $UserResponseCopyWith(
+          UserResponse value, $Res Function(UserResponse) _then) =
+      _$UserResponseCopyWithImpl;
+  @useResult
+  $Res call({String status, String message, UserModel? data});
+
+  $UserModelCopyWith<$Res>? get data;
+}
+
+/// @nodoc
+class _$UserResponseCopyWithImpl<$Res> implements $UserResponseCopyWith<$Res> {
+  _$UserResponseCopyWithImpl(this._self, this._then);
+
+  final UserResponse _self;
+  final $Res Function(UserResponse) _then;
+
+  /// Create a copy of UserResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? status = null,
+    Object? message = null,
+    Object? data = freezed,
+  }) {
+    return _then(_self.copyWith(
+      status: null == status
+          ? _self.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as String,
+      message: null == message
+          ? _self.message
+          : message // ignore: cast_nullable_to_non_nullable
+              as String,
+      data: freezed == data
+          ? _self.data
+          : data // ignore: cast_nullable_to_non_nullable
+              as UserModel?,
+    ));
+  }
+
+  /// Create a copy of UserResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $UserModelCopyWith<$Res>? get data {
+    if (_self.data == null) {
+      return null;
+    }
+
+    return $UserModelCopyWith<$Res>(_self.data!, (value) {
+      return _then(_self.copyWith(data: value));
+    });
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _UserResponse implements UserResponse {
+  const _UserResponse({required this.status, required this.message, this.data});
+  factory _UserResponse.fromJson(Map<String, dynamic> json) =>
+      _$UserResponseFromJson(json);
+
+  @override
+  final String status;
+  @override
+  final String message;
+  @override
+  final UserModel? data;
+
+  /// Create a copy of UserResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$UserResponseCopyWith<_UserResponse> get copyWith =>
+      __$UserResponseCopyWithImpl<_UserResponse>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$UserResponseToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _UserResponse &&
+            (identical(other.status, status) || other.status == status) &&
+            (identical(other.message, message) || other.message == message) &&
+            (identical(other.data, data) || other.data == data));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, status, message, data);
+
+  @override
+  String toString() {
+    return 'UserResponse(status: $status, message: $message, data: $data)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$UserResponseCopyWith<$Res>
+    implements $UserResponseCopyWith<$Res> {
+  factory _$UserResponseCopyWith(
+          _UserResponse value, $Res Function(_UserResponse) _then) =
+      __$UserResponseCopyWithImpl;
+  @override
+  @useResult
+  $Res call({String status, String message, UserModel? data});
+
+  @override
+  $UserModelCopyWith<$Res>? get data;
+}
+
+/// @nodoc
+class __$UserResponseCopyWithImpl<$Res>
+    implements _$UserResponseCopyWith<$Res> {
+  __$UserResponseCopyWithImpl(this._self, this._then);
+
+  final _UserResponse _self;
+  final $Res Function(_UserResponse) _then;
+
+  /// Create a copy of UserResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? status = null,
+    Object? message = null,
+    Object? data = freezed,
+  }) {
+    return _then(_UserResponse(
+      status: null == status
+          ? _self.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as String,
+      message: null == message
+          ? _self.message
+          : message // ignore: cast_nullable_to_non_nullable
+              as String,
+      data: freezed == data
+          ? _self.data
+          : data // ignore: cast_nullable_to_non_nullable
+              as UserModel?,
+    ));
+  }
+
+  /// Create a copy of UserResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $UserModelCopyWith<$Res>? get data {
+    if (_self.data == null) {
+      return null;
+    }
+
+    return $UserModelCopyWith<$Res>(_self.data!, (value) {
+      return _then(_self.copyWith(data: value));
+    });
+  }
+}
+
+/// @nodoc
 mixin _$AuthData {
   UserModel? get user;
   String? get token;

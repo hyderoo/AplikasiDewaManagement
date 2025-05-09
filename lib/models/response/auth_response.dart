@@ -17,6 +17,18 @@ abstract class AuthResponse with _$AuthResponse {
 }
 
 @freezed
+abstract class UserResponse with _$UserResponse {
+  const factory UserResponse({
+    required String status,
+    required String message,
+    UserModel? data,
+  }) = _UserResponse;
+
+  factory UserResponse.fromJson(Map<String, dynamic> json) =>
+      _$UserResponseFromJson(json);
+}
+
+@freezed
 abstract class AuthData with _$AuthData {
   const factory AuthData({
     UserModel? user,

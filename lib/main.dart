@@ -1,6 +1,7 @@
 import 'package:dewa_wo_app/core/di/dependency_injection.dart';
 import 'package:dewa_wo_app/cubits/auth/auth_cubit.dart';
 import 'package:dewa_wo_app/cubits/portfolio/portfolio_cubit.dart';
+import 'package:dewa_wo_app/cubits/profile/profile_cubit.dart';
 import 'package:dewa_wo_app/cubits/review/review_cubit.dart';
 import 'package:dewa_wo_app/cubits/service/service_cubit.dart';
 import 'package:dewa_wo_app/models/pesanan_model.dart';

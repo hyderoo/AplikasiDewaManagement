@@ -37,10 +37,8 @@ _i174.GetIt init(
   gh.lazySingleton<_i277.ApiClient>(() => _i277.ApiClient());
   gh.lazySingleton<_i785.ContentRepository>(
       () => _i785.ContentRepository(apiClient: gh<_i277.ApiClient>()));
-  gh.lazySingletonAsync<_i481.AuthRepository>(() {
-    final i = _i481.AuthRepository(gh<_i277.ApiClient>());
-    return i.init().then((_) => i);
-  });
+  gh.lazySingleton<_i481.AuthRepository>(
+      () => _i481.AuthRepository(gh<_i277.ApiClient>()));
   gh.lazySingleton<_i196.HomeCubit>(
       () => _i196.HomeCubit(contentRepository: gh<_i785.ContentRepository>()));
   gh.lazySingleton<_i668.ReviewCubit>(() =>
@@ -49,17 +47,13 @@ _i174.GetIt init(
       _i453.PortfolioCubit(contentRepository: gh<_i785.ContentRepository>()));
   gh.lazySingleton<_i327.ServiceCubit>(() =>
       _i327.ServiceCubit(contentRepository: gh<_i785.ContentRepository>()));
-  gh.lazySingletonAsync<_i971.ProfileRepository>(
-      () async => _i971.ProfileRepository(
-            apiClient: gh<_i277.ApiClient>(),
-            authRepository: await gh.getAsync<_i481.AuthRepository>(),
-          ));
-  gh.lazySingletonAsync<_i685.AuthCubit>(() async {
-    final i = _i685.AuthCubit(
-        authRepository: await gh.getAsync<_i481.AuthRepository>());
-    return i.checkAuthStatus().then((_) => i);
-  });
-  gh.lazySingletonAsync<_i1056.ProfileCubit>(() async => _i1056.ProfileCubit(
-      profileRepository: await gh.getAsync<_i971.ProfileRepository>()));
+  gh.lazySingleton<_i971.ProfileRepository>(() => _i971.ProfileRepository(
+        apiClient: gh<_i277.ApiClient>(),
+        authRepository: gh<_i481.AuthRepository>(),
+      ));
+  gh.lazySingleton<_i685.AuthCubit>(
+      () => _i685.AuthCubit(authRepository: gh<_i481.AuthRepository>()));
+  gh.lazySingleton<_i1056.ProfileCubit>(() =>
+      _i1056.ProfileCubit(profileRepository: gh<_i971.ProfileRepository>()));
   return getIt;
 }
