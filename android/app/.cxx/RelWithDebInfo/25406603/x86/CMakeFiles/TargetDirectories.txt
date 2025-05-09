@@ -1,0 +1,2 @@
+/Users/haula/Sites/dewa_wo_app/android/app/.cxx/RelWithDebInfo/25406603/x86/CMakeFiles/edit_cache.dir
+/Users/haula/Sites/dewa_wo_app/android/app/.cxx/RelWithDebInfo/25406603/x86/CMakeFiles/rebuild_cache.dir
