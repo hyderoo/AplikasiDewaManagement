@@ -6,7 +6,9 @@ import 'package:dewa_wo_app/models/response/service_response.dart';
 import 'package:dewa_wo_app/models/response/team_response.dart';
 import 'package:dewa_wo_app/models/response/catalog_response.dart';
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 
+@lazySingleton
 class ContentRepository {
   final ApiClient _apiClient;
 

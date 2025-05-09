@@ -2,10 +2,12 @@ import 'package:bloc/bloc.dart';
 import 'package:dewa_wo_app/data/repositories/content_repository.dart';
 import 'package:dewa_wo_app/models/portfolio_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:injectable/injectable.dart';
 
 part 'portfolio_state.dart';
 part 'portfolio_cubit.freezed.dart';
 
+@lazySingleton
 class PortfolioCubit extends Cubit<PortfolioState> {
   final ContentRepository _contentRepository;
 

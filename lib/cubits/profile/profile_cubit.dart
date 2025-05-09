@@ -3,10 +3,12 @@ import 'package:dewa_wo_app/data/repositories/profile_repository.dart';
 import 'package:dewa_wo_app/models/request/profile_request.dart';
 import 'package:dewa_wo_app/models/user_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:injectable/injectable.dart';
 
 part 'profile_state.dart';
 part 'profile_cubit.freezed.dart';
 
+@lazySingleton
 class ProfileCubit extends Cubit<ProfileState> {
   final ProfileRepository _profileRepository;
 

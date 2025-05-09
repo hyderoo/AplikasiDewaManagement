@@ -5,7 +5,9 @@ import 'package:dewa_wo_app/models/response/profile_response.dart';
 import 'package:dewa_wo_app/models/user_model.dart';
 import 'package:dewa_wo_app/data/repositories/auth_repository.dart';
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 
+@lazySingleton
 class ProfileRepository {
   final ApiClient _apiClient;
   final AuthRepository _authRepository;
@@ -109,7 +111,6 @@ class ProfileRepository {
 
       if (genericResponse.status == 'success') {
         await _authRepository.clearAuthData();
-        _apiClient.removeToken();
       }
 
       return genericResponse;

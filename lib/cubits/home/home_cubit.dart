@@ -7,10 +7,12 @@ import 'package:dewa_wo_app/models/response/service_response.dart';
 import 'package:dewa_wo_app/models/review_model.dart';
 import 'package:dewa_wo_app/models/service_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:injectable/injectable.dart';
 
 part 'home_state.dart';
 part 'home_cubit.freezed.dart';
 
+@lazySingleton
 class HomeCubit extends Cubit<HomeState> {
   final ContentRepository _contentRepository;
 

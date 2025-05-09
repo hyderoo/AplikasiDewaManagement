@@ -1,10 +1,13 @@
+// lib/data/repositories/auth_repository.dart
 import 'package:dewa_wo_app/core/api/api_client.dart';
 import 'package:dewa_wo_app/models/response/auth_response.dart';
 import 'package:dewa_wo_app/models/response/validation_error_response.dart';
 import 'package:dewa_wo_app/models/user_model.dart';
 import 'package:dio/dio.dart';
 import 'package:hive_ce/hive.dart';
+import 'package:injectable/injectable.dart';
 
+@lazySingleton
 class AuthRepository {
   static const String _authBoxName = 'auth_box';
   static const String _userKey = 'current_user';
@@ -12,20 +15,20 @@ class AuthRepository {
 
   final ApiClient _apiClient;
   late Box<dynamic> _authBox;
+  bool _isInitialized = false;
 
-  AuthRepository({required ApiClient apiClient}) : _apiClient = apiClient;
+  AuthRepository(this._apiClient);
 
+  @PostConstruct()
   Future<void> init() async {
+    if (_isInitialized) return;
+
     if (!Hive.isAdapterRegistered(1)) {
       Hive.registerAdapter(UserModelAdapter());
     }
 
     _authBox = await Hive.openBox<dynamic>(_authBoxName);
-
-    final token = getToken();
-    if (token != null) {
-      _apiClient.updateToken(token);
-    }
+    _isInitialized = true;
   }
 
   Future<AuthResponse> login(
@@ -44,8 +47,6 @@ class AuthRepository {
           authResponse.data!.token != null) {
         await saveUser(authResponse.data!.user!);
         await saveToken(authResponse.data!.token!);
-
-        _apiClient.updateToken(authResponse.data!.token!);
       }
 
       return authResponse;
@@ -100,8 +101,6 @@ class AuthRepository {
           authResponse.data!.token != null) {
         await saveUser(authResponse.data!.user!);
         await saveToken(authResponse.data!.token!);
-
-        _apiClient.updateToken(authResponse.data!.token!);
       }
 
       return authResponse;
@@ -148,12 +147,10 @@ class AuthRepository {
       final authResponse = AuthResponse.fromJson(response.data);
 
       await clearAuthData();
-      _apiClient.removeToken();
 
       return authResponse;
     } catch (_) {
       await clearAuthData();
-      _apiClient.removeToken();
 
       return const AuthResponse(
         status: 'success',
@@ -178,7 +175,6 @@ class AuthRepository {
     } on DioException catch (e) {
       if (e.response != null && e.response!.statusCode == 401) {
         await clearAuthData();
-        _apiClient.removeToken();
       }
 
       return AuthResponse(

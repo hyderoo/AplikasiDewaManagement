@@ -1,27 +1,52 @@
+// lib/core/api/api_client.dart
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:hive_ce/hive.dart';
+import 'package:injectable/injectable.dart';
 
+@lazySingleton
 class ApiClient {
   static const String baseUrl = 'https://wo.flutteriam.com/api/v1';
+  static const String _authBoxName = 'auth_box';
+  static const String _tokenKey = 'auth_token';
 
-  late final Dio _dio;
+  final Dio _dio;
 
-  ApiClient({String? token}) {
-    _dio = Dio(
-      BaseOptions(
-        baseUrl: baseUrl,
-        contentType: 'application/json',
-        headers: {
-          'Accept': 'application/json',
-          if (token != null) 'Authorization': 'Bearer $token',
-        },
-        validateStatus: (status) {
-          return status! < 500;
+  ApiClient()
+      : _dio = Dio(
+          BaseOptions(
+            baseUrl: baseUrl,
+            contentType: 'application/json',
+            headers: {
+              'Accept': 'application/json',
+            },
+            validateStatus: (status) {
+              return status! < 500;
+            },
+          ),
+        ) {
+    _setupInterceptors();
+  }
+
+  void _setupInterceptors() {
+    // Add auth interceptor
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          // Get token directly from Hive
+          final token = await _getTokenFromStorage();
+
+          // If token exists, add it to headers
+          if (token != null && token.isNotEmpty) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
+
+          return handler.next(options);
         },
       ),
     );
 
-    // Add logging interceptor for debug mode
+    // Add logging interceptor in debug mode
     if (kDebugMode) {
       _dio.interceptors.add(LogInterceptor(
         requestBody: true,
@@ -30,14 +55,19 @@ class ApiClient {
     }
   }
 
-  // Update token
-  void updateToken(String token) {
-    _dio.options.headers['Authorization'] = 'Bearer $token';
-  }
+  Future<String?> _getTokenFromStorage() async {
+    try {
+      // Check if the box is open
+      if (!Hive.isBoxOpen(_authBoxName)) {
+        await Hive.openBox<dynamic>(_authBoxName);
+      }
 
-  // Remove token (for logout)
-  void removeToken() {
-    _dio.options.headers.remove('Authorization');
+      final box = Hive.box<dynamic>(_authBoxName);
+      return box.get(_tokenKey) as String?;
+    } catch (e) {
+      // Handle case where Hive may not be initialized yet or other errors
+      return null;
+    }
   }
 
   // GET request

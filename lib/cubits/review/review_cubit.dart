@@ -2,10 +2,12 @@ import 'package:bloc/bloc.dart';
 import 'package:dewa_wo_app/data/repositories/content_repository.dart';
 import 'package:dewa_wo_app/models/review_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:injectable/injectable.dart';
 
 part 'review_state.dart';
 part 'review_cubit.freezed.dart';
 
+@lazySingleton
 class ReviewCubit extends Cubit<ReviewState> {
   final ContentRepository _contentRepository;
 

@@ -2,10 +2,12 @@ import 'package:bloc/bloc.dart';
 import 'package:dewa_wo_app/data/repositories/auth_repository.dart';
 import 'package:dewa_wo_app/models/user_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:injectable/injectable.dart';
 
 part 'auth_state.dart';
 part 'auth_cubit.freezed.dart';
 
+@lazySingleton
 class AuthCubit extends Cubit<AuthState> {
   final AuthRepository _authRepository;
 
@@ -13,6 +15,7 @@ class AuthCubit extends Cubit<AuthState> {
       : _authRepository = authRepository,
         super(const AuthState.initial());
 
+  @PostConstruct()
   Future<void> checkAuthStatus() async {
     final token = _authRepository.getToken();
     final user = _authRepository.getUser();

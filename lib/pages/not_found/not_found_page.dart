@@ -1,4 +1,3 @@
-import 'package:dewa_wo_app/resources/resources.dart';
 import 'package:flutter/material.dart';
 
 class NotFoundPage extends StatelessWidget {
