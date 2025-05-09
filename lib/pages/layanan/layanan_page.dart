@@ -19,14 +19,14 @@ class LayananPage extends StatefulWidget {
 class _LayananPageState extends State<LayananPage> {
   bool _isSearchMode = false;
   final TextEditingController _searchController = TextEditingController();
-  String _selectedCategory = 'Semua';
-  final List<String> _categories = [
-    'Semua',
-    'Dokumentasi',
-    'Dekorasi',
-    'Catering',
-    'Venue'
+  String _selectedCategory = 'semua';
+  final List<Map<String, String>> _serviceTypes = [
+    {"value": "semua", "label": "Semua"},
+    {"value": "all-in-one", "label": "Paket Lengkap"},
+    {"value": "decoration", "label": "Dekorasi"},
+    {"value": "documentation", "label": "Dokumentasi"},
   ];
+
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
   CalendarFormat _calendarFormat = CalendarFormat.month;
@@ -47,14 +47,22 @@ class _LayananPageState extends State<LayananPage> {
     super.dispose();
   }
 
-  void _filterLayanan(List<CatalogModel> services, String category) {
+  String _getServiceTypeLabel(String typeValue) {
+    final typeMap = _serviceTypes.firstWhere(
+      (type) => type["value"] == typeValue,
+      orElse: () => {"value": typeValue, "label": typeValue},
+    );
+    return typeMap["label"]!;
+  }
+
+  void _filterLayanan(List<CatalogModel> services, String categoryValue) {
     setState(() {
-      _selectedCategory = category;
-      if (category == 'Semua') {
+      _selectedCategory = categoryValue;
+      if (categoryValue == 'semua') {
         _filteredLayanan = services;
       } else {
         _filteredLayanan =
-            services.where((service) => service.type == category).toList();
+            services.where((service) => service.type == categoryValue).toList();
       }
     });
   }
@@ -65,7 +73,7 @@ class _LayananPageState extends State<LayananPage> {
       return;
     }
 
-    final filteredByCategory = _selectedCategory == 'Semua'
+    final filteredByCategory = _selectedCategory == 'semua'
         ? services
         : services
             .where((service) => service.type == _selectedCategory)
@@ -212,17 +220,17 @@ class _LayananPageState extends State<LayananPage> {
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 12),
-        itemCount: _categories.length,
+        itemCount: _serviceTypes.length,
         itemBuilder: (context, index) {
-          final category = _categories[index];
-          final isSelected = category == _selectedCategory;
+          final category = _serviceTypes[index];
+          final isSelected = category["value"] == _selectedCategory;
 
           return GestureDetector(
             onTap: () {
               if (_serviceCubit.state is ServiceSuccess) {
                 final services =
                     (_serviceCubit.state as ServiceSuccess).services;
-                _filterLayanan(services, category);
+                _filterLayanan(services, category["value"]!);
               }
             },
             child: Container(
@@ -238,7 +246,7 @@ class _LayananPageState extends State<LayananPage> {
               ),
               alignment: Alignment.center,
               child: Text(
-                category,
+                category["label"]!,
                 style: TextStyle(
                   color: isSelected ? Colors.pink[700] : Colors.grey[700],
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
@@ -481,12 +489,20 @@ class _LayananPageState extends State<LayananPage> {
                   ],
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  service.type,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.pink[700],
-                    fontWeight: FontWeight.bold,
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.pink[50],
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    _getServiceTypeLabel(service.type),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.pink[700],
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 8),
