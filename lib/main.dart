@@ -1,5 +1,6 @@
 import 'package:dewa_wo_app/core/di/dependency_injection.dart';
 import 'package:dewa_wo_app/cubits/auth/auth_cubit.dart';
+import 'package:dewa_wo_app/cubits/availability/availability_cubit.dart';
 import 'package:dewa_wo_app/cubits/portfolio/portfolio_cubit.dart';
 import 'package:dewa_wo_app/cubits/profile/profile_cubit.dart';
 import 'package:dewa_wo_app/cubits/review/review_cubit.dart';

@@ -13,12 +13,14 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
 import '../../cubits/auth/auth_cubit.dart' as _i685;
+import '../../cubits/availability/availability_cubit.dart' as _i291;
 import '../../cubits/home/home_cubit.dart' as _i196;
 import '../../cubits/portfolio/portfolio_cubit.dart' as _i453;
 import '../../cubits/profile/profile_cubit.dart' as _i1056;
 import '../../cubits/review/review_cubit.dart' as _i668;
 import '../../cubits/service/service_cubit.dart' as _i327;
 import '../../data/repositories/auth_repository.dart' as _i481;
+import '../../data/repositories/availability_repository.dart' as _i798;
 import '../../data/repositories/content_repository.dart' as _i785;
 import '../../data/repositories/profile_repository.dart' as _i971;
 import '../api/api_client.dart' as _i277;
@@ -37,8 +39,12 @@ _i174.GetIt init(
   gh.lazySingleton<_i277.ApiClient>(() => _i277.ApiClient());
   gh.lazySingleton<_i785.ContentRepository>(
       () => _i785.ContentRepository(apiClient: gh<_i277.ApiClient>()));
+  gh.lazySingleton<_i798.AvailabilityRepository>(
+      () => _i798.AvailabilityRepository(apiClient: gh<_i277.ApiClient>()));
   gh.lazySingleton<_i481.AuthRepository>(
       () => _i481.AuthRepository(gh<_i277.ApiClient>()));
+  gh.lazySingleton<_i291.AvailabilityCubit>(() => _i291.AvailabilityCubit(
+      availabilityRepository: gh<_i798.AvailabilityRepository>()));
   gh.lazySingleton<_i196.HomeCubit>(
       () => _i196.HomeCubit(contentRepository: gh<_i785.ContentRepository>()));
   gh.lazySingleton<_i668.ReviewCubit>(() =>

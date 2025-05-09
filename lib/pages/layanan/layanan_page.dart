@@ -1,13 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dewa_wo_app/core/consts/app_consts.dart';
+import 'package:dewa_wo_app/cubits/availability/availability_cubit.dart';
 import 'package:dewa_wo_app/cubits/service/service_cubit.dart';
 import 'package:dewa_wo_app/dialogs/login_required_dialog.dart';
 import 'package:dewa_wo_app/models/catalog_model.dart';
+import 'package:dewa_wo_app/pages/layanan/wedding_calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:table_calendar/table_calendar.dart';
 
 class LayananPage extends StatefulWidget {
   const LayananPage({super.key});
@@ -27,18 +28,18 @@ class _LayananPageState extends State<LayananPage> {
     {"value": "documentation", "label": "Dokumentasi"},
   ];
 
-  DateTime _focusedDay = DateTime.now();
-  DateTime _selectedDay = DateTime.now();
-  CalendarFormat _calendarFormat = CalendarFormat.month;
-
   List<CatalogModel> _filteredLayanan = [];
   late final ServiceCubit _serviceCubit;
+  late final AvailabilityCubit _availabilityCubit;
 
   @override
   void initState() {
     super.initState();
     _serviceCubit = context.read<ServiceCubit>();
+    _availabilityCubit = context.read<AvailabilityCubit>();
     _serviceCubit.getServices();
+    // Load availability data when screen is opened
+    _availabilityCubit.getBookedDates();
   }
 
   @override
@@ -658,200 +659,20 @@ class _LayananPageState extends State<LayananPage> {
                 ),
               ),
               const SizedBox(height: 16),
-              TableCalendar(
-                firstDay: DateTime.utc(2020, 1, 1),
-                lastDay: DateTime.utc(2030, 12, 31),
-                focusedDay: _focusedDay,
-                calendarFormat: _calendarFormat,
-                startingDayOfWeek: StartingDayOfWeek.monday,
-                headerStyle: HeaderStyle(
-                  formatButtonVisible: false,
-                  titleCentered: true,
-                  leftChevronIcon: const Icon(
-                    Icons.chevron_left,
-                    color: Colors.black,
-                    size: 32,
-                  ),
-                  rightChevronIcon: const Icon(
-                    Icons.chevron_right,
-                    color: Colors.black,
-                    size: 32,
-                  ),
-                  titleTextStyle: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey.shade600,
-                  ),
-                ),
-                calendarStyle: CalendarStyle(
-                  todayDecoration: BoxDecoration(
-                    color: Colors.pink[300],
-                    shape: BoxShape.circle,
-                  ),
-                  selectedDecoration: const BoxDecoration(
-                    color: Colors.pink,
-                    shape: BoxShape.circle,
-                  ),
-                  markersMaxCount: 3,
-                  weekendTextStyle: TextStyle(color: Colors.red[300]),
-                ),
-                selectedDayPredicate: (day) {
-                  return isSameDay(_selectedDay, day);
-                },
-                onDaySelected: (selectedDay, focusedDay) {
-                  setState(() {
-                    _selectedDay = selectedDay;
-                    _focusedDay = focusedDay;
-                  });
 
-                  // Show a bottom sheet with availability details
-                  _showDateAvailabilityDetails(selectedDay);
+              // Kalender
+              BlocBuilder<AvailabilityCubit, AvailabilityState>(
+                bloc: _availabilityCubit,
+                builder: (context, state) {
+                  return WeddingCalendar(
+                    onDateSelected: (date) {},
+                  );
                 },
-                onFormatChanged: (format) {
-                  setState(() {
-                    _calendarFormat = format;
-                  });
-                },
-                onPageChanged: (focusedDay) {
-                  _focusedDay = focusedDay;
-                },
-              ),
-              const SizedBox(height: 16),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.pink[50],
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.info_outline, color: Colors.pink[700], size: 20),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        'Pilih tanggal untuk memeriksa ketersediaan atau menghubungi tim kami untuk informasi lebih lanjut.',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.pink[700],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
               ),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  void _showDateAvailabilityDetails(DateTime date) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        return Container(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Detail Ketersediaan',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Tanggal: ${date.day}/${date.month}/${date.year}',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Container(
-                            width: 12,
-                            height: 12,
-                            decoration: BoxDecoration(
-                              color: Colors.green,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          const Text(
-                            'Tersedia',
-                            style: TextStyle(fontSize: 14),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      const Text(
-                        'Ingin memesan untuk tanggal ini?',
-                        style: TextStyle(
-                          fontSize: 14,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            LoginRequiredDialog.check(
-                              context: context,
-                              action: () =>
-                                  context.push('/reserve-date', extra: date),
-                              actionName: 'mereservasi tanggal',
-                            );
-                          },
-                          child: const Text('Reservasi Tanggal'),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      SizedBox(
-                        width: double.infinity,
-                        child: OutlinedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          style: OutlinedButton.styleFrom(
-                            side: BorderSide(color: Colors.pink),
-                          ),
-                          child: const Text('Lihat Tanggal Lain'),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }
