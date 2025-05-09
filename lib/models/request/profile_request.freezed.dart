@@ -18,6 +18,7 @@ mixin _$UpdateProfileRequest {
   String get name;
   String get email;
   String get phone;
+  String? get avatar;
 
   /// Create a copy of UpdateProfileRequest
   /// with the given fields replaced by the non-null parameter values.
@@ -37,16 +38,17 @@ mixin _$UpdateProfileRequest {
             other is UpdateProfileRequest &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.email, email) || other.email == email) &&
-            (identical(other.phone, phone) || other.phone == phone));
+            (identical(other.phone, phone) || other.phone == phone) &&
+            (identical(other.avatar, avatar) || other.avatar == avatar));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, name, email, phone);
+  int get hashCode => Object.hash(runtimeType, name, email, phone, avatar);
 
   @override
   String toString() {
-    return 'UpdateProfileRequest(name: $name, email: $email, phone: $phone)';
+    return 'UpdateProfileRequest(name: $name, email: $email, phone: $phone, avatar: $avatar)';
   }
 }
 
@@ -56,7 +58,7 @@ abstract mixin class $UpdateProfileRequestCopyWith<$Res> {
           $Res Function(UpdateProfileRequest) _then) =
       _$UpdateProfileRequestCopyWithImpl;
   @useResult
-  $Res call({String name, String email, String phone});
+  $Res call({String name, String email, String phone, String? avatar});
 }
 
 /// @nodoc
@@ -75,6 +77,7 @@ class _$UpdateProfileRequestCopyWithImpl<$Res>
     Object? name = null,
     Object? email = null,
     Object? phone = null,
+    Object? avatar = freezed,
   }) {
     return _then(_self.copyWith(
       name: null == name
@@ -89,6 +92,10 @@ class _$UpdateProfileRequestCopyWithImpl<$Res>
           ? _self.phone
           : phone // ignore: cast_nullable_to_non_nullable
               as String,
+      avatar: freezed == avatar
+          ? _self.avatar
+          : avatar // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -97,7 +104,10 @@ class _$UpdateProfileRequestCopyWithImpl<$Res>
 @JsonSerializable()
 class _UpdateProfileRequest implements UpdateProfileRequest {
   const _UpdateProfileRequest(
-      {required this.name, required this.email, required this.phone});
+      {required this.name,
+      required this.email,
+      required this.phone,
+      required this.avatar});
   factory _UpdateProfileRequest.fromJson(Map<String, dynamic> json) =>
       _$UpdateProfileRequestFromJson(json);
 
@@ -107,6 +117,8 @@ class _UpdateProfileRequest implements UpdateProfileRequest {
   final String email;
   @override
   final String phone;
+  @override
+  final String? avatar;
 
   /// Create a copy of UpdateProfileRequest
   /// with the given fields replaced by the non-null parameter values.
@@ -131,16 +143,17 @@ class _UpdateProfileRequest implements UpdateProfileRequest {
             other is _UpdateProfileRequest &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.email, email) || other.email == email) &&
-            (identical(other.phone, phone) || other.phone == phone));
+            (identical(other.phone, phone) || other.phone == phone) &&
+            (identical(other.avatar, avatar) || other.avatar == avatar));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, name, email, phone);
+  int get hashCode => Object.hash(runtimeType, name, email, phone, avatar);
 
   @override
   String toString() {
-    return 'UpdateProfileRequest(name: $name, email: $email, phone: $phone)';
+    return 'UpdateProfileRequest(name: $name, email: $email, phone: $phone, avatar: $avatar)';
   }
 }
 
@@ -152,7 +165,7 @@ abstract mixin class _$UpdateProfileRequestCopyWith<$Res>
       __$UpdateProfileRequestCopyWithImpl;
   @override
   @useResult
-  $Res call({String name, String email, String phone});
+  $Res call({String name, String email, String phone, String? avatar});
 }
 
 /// @nodoc
@@ -171,6 +184,7 @@ class __$UpdateProfileRequestCopyWithImpl<$Res>
     Object? name = null,
     Object? email = null,
     Object? phone = null,
+    Object? avatar = freezed,
   }) {
     return _then(_UpdateProfileRequest(
       name: null == name
@@ -185,6 +199,10 @@ class __$UpdateProfileRequestCopyWithImpl<$Res>
           ? _self.phone
           : phone // ignore: cast_nullable_to_non_nullable
               as String,
+      avatar: freezed == avatar
+          ? _self.avatar
+          : avatar // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }

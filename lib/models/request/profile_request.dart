@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'profile_request.freezed.dart';
@@ -9,6 +11,7 @@ abstract class UpdateProfileRequest with _$UpdateProfileRequest {
     required String name,
     required String email,
     required String phone,
+    required String? avatar,
   }) = _UpdateProfileRequest;
 
   factory UpdateProfileRequest.fromJson(Map<String, dynamic> json) =>

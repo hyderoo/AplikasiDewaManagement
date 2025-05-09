@@ -36,6 +36,8 @@ mixin _$UserModel {
   @HiveField(8)
   @JsonKey(name: 'deleted_at')
   String? get deletedAt;
+  @HiveField(9)
+  String? get avatar;
 
   /// Create a copy of UserModel
   /// with the given fields replaced by the non-null parameter values.
@@ -64,17 +66,18 @@ mixin _$UserModel {
             (identical(other.updatedAt, updatedAt) ||
                 other.updatedAt == updatedAt) &&
             (identical(other.deletedAt, deletedAt) ||
-                other.deletedAt == deletedAt));
+                other.deletedAt == deletedAt) &&
+            (identical(other.avatar, avatar) || other.avatar == avatar));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, fullName, email, phone, role,
-      emailVerifiedAt, createdAt, updatedAt, deletedAt);
+      emailVerifiedAt, createdAt, updatedAt, deletedAt, avatar);
 
   @override
   String toString() {
-    return 'UserModel(fullName: $fullName, email: $email, phone: $phone, role: $role, emailVerifiedAt: $emailVerifiedAt, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt)';
+    return 'UserModel(fullName: $fullName, email: $email, phone: $phone, role: $role, emailVerifiedAt: $emailVerifiedAt, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, avatar: $avatar)';
   }
 }
 
@@ -91,7 +94,8 @@ abstract mixin class $UserModelCopyWith<$Res> {
       @HiveField(5) @JsonKey(name: 'email_verified_at') String? emailVerifiedAt,
       @HiveField(6) @JsonKey(name: 'created_at') String createdAt,
       @HiveField(7) @JsonKey(name: 'updated_at') String updatedAt,
-      @HiveField(8) @JsonKey(name: 'deleted_at') String? deletedAt});
+      @HiveField(8) @JsonKey(name: 'deleted_at') String? deletedAt,
+      @HiveField(9) String? avatar});
 }
 
 /// @nodoc
@@ -114,6 +118,7 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
     Object? createdAt = null,
     Object? updatedAt = null,
     Object? deletedAt = freezed,
+    Object? avatar = freezed,
   }) {
     return _then(_self.copyWith(
       fullName: null == fullName
@@ -148,6 +153,10 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
           ? _self.deletedAt
           : deletedAt // ignore: cast_nullable_to_non_nullable
               as String?,
+      avatar: freezed == avatar
+          ? _self.avatar
+          : avatar // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -163,7 +172,8 @@ class _UserModel extends UserModel {
       @HiveField(5) @JsonKey(name: 'email_verified_at') this.emailVerifiedAt,
       @HiveField(6) @JsonKey(name: 'created_at') required this.createdAt,
       @HiveField(7) @JsonKey(name: 'updated_at') required this.updatedAt,
-      @HiveField(8) @JsonKey(name: 'deleted_at') this.deletedAt})
+      @HiveField(8) @JsonKey(name: 'deleted_at') this.deletedAt,
+      @HiveField(9) required this.avatar})
       : super._();
   factory _UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);
@@ -197,6 +207,9 @@ class _UserModel extends UserModel {
   @HiveField(8)
   @JsonKey(name: 'deleted_at')
   final String? deletedAt;
+  @override
+  @HiveField(9)
+  final String? avatar;
 
   /// Create a copy of UserModel
   /// with the given fields replaced by the non-null parameter values.
@@ -230,17 +243,18 @@ class _UserModel extends UserModel {
             (identical(other.updatedAt, updatedAt) ||
                 other.updatedAt == updatedAt) &&
             (identical(other.deletedAt, deletedAt) ||
-                other.deletedAt == deletedAt));
+                other.deletedAt == deletedAt) &&
+            (identical(other.avatar, avatar) || other.avatar == avatar));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, fullName, email, phone, role,
-      emailVerifiedAt, createdAt, updatedAt, deletedAt);
+      emailVerifiedAt, createdAt, updatedAt, deletedAt, avatar);
 
   @override
   String toString() {
-    return 'UserModel(fullName: $fullName, email: $email, phone: $phone, role: $role, emailVerifiedAt: $emailVerifiedAt, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt)';
+    return 'UserModel(fullName: $fullName, email: $email, phone: $phone, role: $role, emailVerifiedAt: $emailVerifiedAt, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, avatar: $avatar)';
   }
 }
 
@@ -260,7 +274,8 @@ abstract mixin class _$UserModelCopyWith<$Res>
       @HiveField(5) @JsonKey(name: 'email_verified_at') String? emailVerifiedAt,
       @HiveField(6) @JsonKey(name: 'created_at') String createdAt,
       @HiveField(7) @JsonKey(name: 'updated_at') String updatedAt,
-      @HiveField(8) @JsonKey(name: 'deleted_at') String? deletedAt});
+      @HiveField(8) @JsonKey(name: 'deleted_at') String? deletedAt,
+      @HiveField(9) String? avatar});
 }
 
 /// @nodoc
@@ -283,6 +298,7 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
     Object? createdAt = null,
     Object? updatedAt = null,
     Object? deletedAt = freezed,
+    Object? avatar = freezed,
   }) {
     return _then(_UserModel(
       fullName: null == fullName
@@ -316,6 +332,10 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
       deletedAt: freezed == deletedAt
           ? _self.deletedAt
           : deletedAt // ignore: cast_nullable_to_non_nullable
+              as String?,
+      avatar: freezed == avatar
+          ? _self.avatar
+          : avatar // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }

@@ -16,15 +16,15 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ReviewModel {
   int get id;
-  @JsonKey(name: 'user_name')
+  @JsonKey(name: 'client_name')
   String get userName;
+  @JsonKey(name: 'client_avatar')
+  String? get avatar;
   double get rating;
+  @JsonKey(name: 'comment')
   String get review;
-  String get date;
   @JsonKey(name: 'created_at')
   String get createdAt;
-  @JsonKey(name: 'updated_at')
-  String get updatedAt;
 
   /// Create a copy of ReviewModel
   /// with the given fields replaced by the non-null parameter values.
@@ -44,23 +44,21 @@ mixin _$ReviewModel {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.userName, userName) ||
                 other.userName == userName) &&
+            (identical(other.avatar, avatar) || other.avatar == avatar) &&
             (identical(other.rating, rating) || other.rating == rating) &&
             (identical(other.review, review) || other.review == review) &&
-            (identical(other.date, date) || other.date == date) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt) &&
-            (identical(other.updatedAt, updatedAt) ||
-                other.updatedAt == updatedAt));
+                other.createdAt == createdAt));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, userName, rating, review, date, createdAt, updatedAt);
+  int get hashCode =>
+      Object.hash(runtimeType, id, userName, avatar, rating, review, createdAt);
 
   @override
   String toString() {
-    return 'ReviewModel(id: $id, userName: $userName, rating: $rating, review: $review, date: $date, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'ReviewModel(id: $id, userName: $userName, avatar: $avatar, rating: $rating, review: $review, createdAt: $createdAt)';
   }
 }
 
@@ -72,12 +70,11 @@ abstract mixin class $ReviewModelCopyWith<$Res> {
   @useResult
   $Res call(
       {int id,
-      @JsonKey(name: 'user_name') String userName,
+      @JsonKey(name: 'client_name') String userName,
+      @JsonKey(name: 'client_avatar') String? avatar,
       double rating,
-      String review,
-      String date,
-      @JsonKey(name: 'created_at') String createdAt,
-      @JsonKey(name: 'updated_at') String updatedAt});
+      @JsonKey(name: 'comment') String review,
+      @JsonKey(name: 'created_at') String createdAt});
 }
 
 /// @nodoc
@@ -94,11 +91,10 @@ class _$ReviewModelCopyWithImpl<$Res> implements $ReviewModelCopyWith<$Res> {
   $Res call({
     Object? id = null,
     Object? userName = null,
+    Object? avatar = freezed,
     Object? rating = null,
     Object? review = null,
-    Object? date = null,
     Object? createdAt = null,
-    Object? updatedAt = null,
   }) {
     return _then(_self.copyWith(
       id: null == id
@@ -109,6 +105,10 @@ class _$ReviewModelCopyWithImpl<$Res> implements $ReviewModelCopyWith<$Res> {
           ? _self.userName
           : userName // ignore: cast_nullable_to_non_nullable
               as String,
+      avatar: freezed == avatar
+          ? _self.avatar
+          : avatar // ignore: cast_nullable_to_non_nullable
+              as String?,
       rating: null == rating
           ? _self.rating
           : rating // ignore: cast_nullable_to_non_nullable
@@ -117,17 +117,9 @@ class _$ReviewModelCopyWithImpl<$Res> implements $ReviewModelCopyWith<$Res> {
           ? _self.review
           : review // ignore: cast_nullable_to_non_nullable
               as String,
-      date: null == date
-          ? _self.date
-          : date // ignore: cast_nullable_to_non_nullable
-              as String,
       createdAt: null == createdAt
           ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
-              as String,
-      updatedAt: null == updatedAt
-          ? _self.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }
@@ -138,32 +130,30 @@ class _$ReviewModelCopyWithImpl<$Res> implements $ReviewModelCopyWith<$Res> {
 class _ReviewModel implements ReviewModel {
   const _ReviewModel(
       {required this.id,
-      @JsonKey(name: 'user_name') required this.userName,
+      @JsonKey(name: 'client_name') required this.userName,
+      @JsonKey(name: 'client_avatar') required this.avatar,
       required this.rating,
-      required this.review,
-      required this.date,
-      @JsonKey(name: 'created_at') required this.createdAt,
-      @JsonKey(name: 'updated_at') required this.updatedAt});
+      @JsonKey(name: 'comment') required this.review,
+      @JsonKey(name: 'created_at') required this.createdAt});
   factory _ReviewModel.fromJson(Map<String, dynamic> json) =>
       _$ReviewModelFromJson(json);
 
   @override
   final int id;
   @override
-  @JsonKey(name: 'user_name')
+  @JsonKey(name: 'client_name')
   final String userName;
+  @override
+  @JsonKey(name: 'client_avatar')
+  final String? avatar;
   @override
   final double rating;
   @override
+  @JsonKey(name: 'comment')
   final String review;
-  @override
-  final String date;
   @override
   @JsonKey(name: 'created_at')
   final String createdAt;
-  @override
-  @JsonKey(name: 'updated_at')
-  final String updatedAt;
 
   /// Create a copy of ReviewModel
   /// with the given fields replaced by the non-null parameter values.
@@ -188,23 +178,21 @@ class _ReviewModel implements ReviewModel {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.userName, userName) ||
                 other.userName == userName) &&
+            (identical(other.avatar, avatar) || other.avatar == avatar) &&
             (identical(other.rating, rating) || other.rating == rating) &&
             (identical(other.review, review) || other.review == review) &&
-            (identical(other.date, date) || other.date == date) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt) &&
-            (identical(other.updatedAt, updatedAt) ||
-                other.updatedAt == updatedAt));
+                other.createdAt == createdAt));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, userName, rating, review, date, createdAt, updatedAt);
+  int get hashCode =>
+      Object.hash(runtimeType, id, userName, avatar, rating, review, createdAt);
 
   @override
   String toString() {
-    return 'ReviewModel(id: $id, userName: $userName, rating: $rating, review: $review, date: $date, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'ReviewModel(id: $id, userName: $userName, avatar: $avatar, rating: $rating, review: $review, createdAt: $createdAt)';
   }
 }
 
@@ -218,12 +206,11 @@ abstract mixin class _$ReviewModelCopyWith<$Res>
   @useResult
   $Res call(
       {int id,
-      @JsonKey(name: 'user_name') String userName,
+      @JsonKey(name: 'client_name') String userName,
+      @JsonKey(name: 'client_avatar') String? avatar,
       double rating,
-      String review,
-      String date,
-      @JsonKey(name: 'created_at') String createdAt,
-      @JsonKey(name: 'updated_at') String updatedAt});
+      @JsonKey(name: 'comment') String review,
+      @JsonKey(name: 'created_at') String createdAt});
 }
 
 /// @nodoc
@@ -240,11 +227,10 @@ class __$ReviewModelCopyWithImpl<$Res> implements _$ReviewModelCopyWith<$Res> {
   $Res call({
     Object? id = null,
     Object? userName = null,
+    Object? avatar = freezed,
     Object? rating = null,
     Object? review = null,
-    Object? date = null,
     Object? createdAt = null,
-    Object? updatedAt = null,
   }) {
     return _then(_ReviewModel(
       id: null == id
@@ -255,6 +241,10 @@ class __$ReviewModelCopyWithImpl<$Res> implements _$ReviewModelCopyWith<$Res> {
           ? _self.userName
           : userName // ignore: cast_nullable_to_non_nullable
               as String,
+      avatar: freezed == avatar
+          ? _self.avatar
+          : avatar // ignore: cast_nullable_to_non_nullable
+              as String?,
       rating: null == rating
           ? _self.rating
           : rating // ignore: cast_nullable_to_non_nullable
@@ -263,17 +253,9 @@ class __$ReviewModelCopyWithImpl<$Res> implements _$ReviewModelCopyWith<$Res> {
           ? _self.review
           : review // ignore: cast_nullable_to_non_nullable
               as String,
-      date: null == date
-          ? _self.date
-          : date // ignore: cast_nullable_to_non_nullable
-              as String,
       createdAt: null == createdAt
           ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
-              as String,
-      updatedAt: null == updatedAt
-          ? _self.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }

@@ -12,6 +12,7 @@ _UpdateProfileRequest _$UpdateProfileRequestFromJson(
       name: json['name'] as String,
       email: json['email'] as String,
       phone: json['phone'] as String,
+      avatar: json['avatar'] as String?,
     );
 
 Map<String, dynamic> _$UpdateProfileRequestToJson(
@@ -20,6 +21,7 @@ Map<String, dynamic> _$UpdateProfileRequestToJson(
       'name': instance.name,
       'email': instance.email,
       'phone': instance.phone,
+      'avatar': instance.avatar,
     };
 
 _ChangePasswordRequest _$ChangePasswordRequestFromJson(

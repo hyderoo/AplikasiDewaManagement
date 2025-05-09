@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dewa_wo_app/core/consts/app_consts.dart';
 import 'package:dewa_wo_app/cubits/service/service_cubit.dart';
 import 'package:dewa_wo_app/dialogs/login_required_dialog.dart';
@@ -139,23 +140,29 @@ class _ServiceWidgetState extends State<ServiceWidget> {
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
               ),
-              child: Image.network(
-                '${AppConsts.baseUrl}${service.image}',
+              child: CachedNetworkImage(
+                imageUrl: '${AppConsts.baseUrl}${service.image}',
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    height: 150,
-                    color: Colors.pink[100],
-                    alignment: Alignment.center,
-                    child: Icon(
-                      Icons.image,
-                      size: 50,
-                      color: Colors.pink[300],
-                    ),
-                  );
-                },
                 height: 150,
                 width: double.infinity,
+                placeholder: (context, url) => Container(
+                  color: Colors.grey[200],
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.pink),
+                    ),
+                  ),
+                ),
+                errorWidget: (context, url, error) => Container(
+                  height: 150,
+                  color: Colors.pink[100],
+                  alignment: Alignment.center,
+                  child: Icon(
+                    Icons.image,
+                    size: 50,
+                    color: Colors.pink[300],
+                  ),
+                ),
               ),
             ),
             Expanded(

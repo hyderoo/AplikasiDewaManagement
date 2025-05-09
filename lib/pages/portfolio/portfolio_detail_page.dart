@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dewa_wo_app/core/consts/app_consts.dart';
 import 'package:dewa_wo_app/models/portfolio_model.dart';
 import 'package:flutter/material.dart';
@@ -95,23 +96,30 @@ class _PortfolioDetailPageState extends State<PortfolioDetailPage> {
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: _toggleFullscreen,
-                child: Image.network(
-                  '${AppConsts.baseUrl}${widget.portfolio.images[index].imagePath}',
+                child: CachedNetworkImage(
+                  imageUrl:
+                      '${AppConsts.baseUrl}${widget.portfolio.images[index].imagePath}',
                   fit: BoxFit.cover,
                   height: double.infinity,
                   width: double.infinity,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: Colors.grey[300],
-                      child: const Center(
-                        child: Icon(
-                          Icons.broken_image,
-                          size: 50,
-                          color: Colors.grey,
-                        ),
+                  placeholder: (context, url) => Container(
+                    color: Colors.grey[200],
+                    child: const Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.pink),
                       ),
-                    );
-                  },
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    color: Colors.grey[300],
+                    child: const Center(
+                      child: Icon(
+                        Icons.broken_image,
+                        size: 50,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
                 ),
               );
             },
@@ -239,18 +247,23 @@ class _PortfolioDetailPageState extends State<PortfolioDetailPage> {
                   child: InteractiveViewer(
                     minScale: 0.5,
                     maxScale: 3.0,
-                    child: Image.network(
-                      '${AppConsts.baseUrl}${widget.portfolio.images[index].imagePath}',
+                    child: CachedNetworkImage(
+                      imageUrl:
+                          '${AppConsts.baseUrl}${widget.portfolio.images[index].imagePath}',
                       fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) {
-                        return const Center(
-                          child: Icon(
-                            Icons.broken_image,
-                            size: 100,
-                            color: Colors.grey,
-                          ),
-                        );
-                      },
+                      placeholder: (context, url) => const Center(
+                        child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => const Center(
+                        child: Icon(
+                          Icons.broken_image,
+                          size: 100,
+                          color: Colors.grey,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -469,21 +482,34 @@ class _PortfolioDetailPageState extends State<PortfolioDetailPage> {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
-                      child: Image.network(
-                        '${AppConsts.baseUrl}${widget.portfolio.images[index].imagePath}',
+                      child: CachedNetworkImage(
+                        imageUrl:
+                            '${AppConsts.baseUrl}${widget.portfolio.images[index].imagePath}',
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            color: Colors.grey[300],
-                            child: const Center(
-                              child: Icon(
-                                Icons.broken_image,
-                                size: 24,
-                                color: Colors.grey,
+                        placeholder: (context, url) => Container(
+                          color: Colors.grey[200],
+                          child: const Center(
+                            child: SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(Colors.pink),
                               ),
                             ),
-                          );
-                        },
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Container(
+                          color: Colors.grey[300],
+                          child: const Center(
+                            child: Icon(
+                              Icons.broken_image,
+                              size: 24,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),

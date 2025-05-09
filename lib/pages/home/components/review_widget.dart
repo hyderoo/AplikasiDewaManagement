@@ -1,7 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dewa_wo_app/core/consts/app_consts.dart';
 import 'package:dewa_wo_app/cubits/review/review_cubit.dart';
 import 'package:dewa_wo_app/models/review_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ReviewWidget extends StatefulWidget {
@@ -125,17 +128,7 @@ class _ReviewWidgetState extends State<ReviewWidget> {
             children: [
               Row(
                 children: [
-                  CircleAvatar(
-                    radius: 20,
-                    backgroundColor: Colors.pink[100],
-                    child: Text(
-                      review.userName.substring(0, 1),
-                      style: const TextStyle(
-                        color: Colors.pink,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                  _buildAvatar(review),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
@@ -150,11 +143,7 @@ class _ReviewWidgetState extends State<ReviewWidget> {
                         ),
                         Row(
                           children: [
-                            const Icon(
-                              Icons.star,
-                              color: Colors.yellow,
-                              size: 16,
-                            ),
+                            _buildRatingStars(review.rating),
                             const SizedBox(width: 4),
                             Text(
                               review.rating.toString(),
@@ -182,7 +171,7 @@ class _ReviewWidgetState extends State<ReviewWidget> {
               ),
               const SizedBox(height: 8),
               Text(
-                'Diulas pada: ${review.date}',
+                'Diulas pada: ${DateFormat('dd MMMM yyyy', 'id').format(DateTime.tryParse(review.createdAt) ?? DateTime.now())}',
                 style: const TextStyle(
                   fontSize: 12,
                   color: Colors.grey,
@@ -192,6 +181,84 @@ class _ReviewWidgetState extends State<ReviewWidget> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildAvatar(ReviewModel review) {
+    // If avatar is available, use it
+    if (review.avatar != null && review.avatar!.isNotEmpty) {
+      return CircleAvatar(
+        radius: 20,
+        backgroundColor: Colors.grey[200],
+        child: ClipOval(
+          child: CachedNetworkImage(
+            imageUrl: '${AppConsts.baseUrl}${review.avatar}',
+            fit: BoxFit.cover,
+            width: 40,
+            height: 40,
+            placeholder: (context, url) => Container(
+              color: Colors.grey[200],
+              child: const Center(
+                child: SizedBox(
+                  width: 15,
+                  height: 15,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.pink),
+                  ),
+                ),
+              ),
+            ),
+            errorWidget: (context, url, error) => _buildInitialAvatar(review),
+          ),
+        ),
+      );
+    } else {
+      // If no avatar, use initials
+      return _buildInitialAvatar(review);
+    }
+  }
+
+  Widget _buildInitialAvatar(ReviewModel review) {
+    return CircleAvatar(
+      radius: 20,
+      backgroundColor: Colors.pink[100],
+      child: Text(
+        review.userName.isNotEmpty ? review.userName.substring(0, 1) : '?',
+        style: const TextStyle(
+          color: Colors.pink,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRatingStars(double rating) {
+    return Row(
+      children: List.generate(5, (index) {
+        if (index < rating.floor()) {
+          // Full star
+          return const Icon(
+            Icons.star,
+            color: Colors.amber,
+            size: 16,
+          );
+        } else if (index == rating.floor() && rating % 1 > 0) {
+          // Half star
+          return const Icon(
+            Icons.star_half,
+            color: Colors.amber,
+            size: 16,
+          );
+        } else {
+          // Empty star
+          return const Icon(
+            Icons.star_border,
+            color: Colors.amber,
+            size: 16,
+          );
+        }
+      }),
     );
   }
 }

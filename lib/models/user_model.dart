@@ -17,6 +17,7 @@ abstract class UserModel with _$UserModel {
     @HiveField(6) @JsonKey(name: 'created_at') required String createdAt,
     @HiveField(7) @JsonKey(name: 'updated_at') required String updatedAt,
     @HiveField(8) @JsonKey(name: 'deleted_at') String? deletedAt,
+    @HiveField(9) required String? avatar,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>

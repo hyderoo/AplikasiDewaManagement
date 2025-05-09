@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dewa_wo_app/core/consts/app_consts.dart';
 import 'package:dewa_wo_app/cubits/portfolio/portfolio_cubit.dart';
 import 'package:dewa_wo_app/models/portfolio_model.dart';
@@ -482,6 +483,8 @@ class _PortfolioPageState extends State<PortfolioPage> {
                       fontSize: 14,
                       height: 1.5,
                     ),
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
@@ -510,20 +513,28 @@ class _PortfolioPageState extends State<PortfolioPage> {
                 child: Icon(Icons.image, size: 40, color: Colors.pink[300]),
               )
             : imagesToShow.length == 1
-                ? Image.network(
-                    '${AppConsts.baseUrl}${imagesToShow[0].imagePath}',
+                ? CachedNetworkImage(
+                    imageUrl:
+                        '${AppConsts.baseUrl}${imagesToShow[0].imagePath}',
                     width: double.infinity,
                     height: 200,
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        width: double.infinity,
-                        color: Colors.pink[100],
-                        alignment: Alignment.center,
-                        child: Icon(Icons.image,
-                            size: 40, color: Colors.pink[300]),
-                      );
-                    },
+                    placeholder: (context, url) => Container(
+                      color: Colors.grey[200],
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.pink),
+                        ),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      width: double.infinity,
+                      color: Colors.pink[100],
+                      alignment: Alignment.center,
+                      child:
+                          Icon(Icons.image, size: 40, color: Colors.pink[300]),
+                    ),
                   )
                 : Row(
                     children: [
@@ -532,19 +543,32 @@ class _PortfolioPageState extends State<PortfolioPage> {
                           child: Container(
                             margin: EdgeInsets.only(
                                 right: i < imagesToShow.length - 1 ? 2 : 0),
-                            child: Image.network(
-                              '${AppConsts.baseUrl}${imagesToShow[i].imagePath}',
+                            child: CachedNetworkImage(
+                              imageUrl:
+                                  '${AppConsts.baseUrl}${imagesToShow[i].imagePath}',
                               width: double.infinity,
                               height: 200,
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  color: Colors.pink[100],
-                                  alignment: Alignment.center,
-                                  child: Icon(Icons.image,
-                                      size: 40, color: Colors.pink[300]),
-                                );
-                              },
+                              placeholder: (context, url) => Container(
+                                color: Colors.grey[200],
+                                child: Center(
+                                  child: SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Colors.pink),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              errorWidget: (context, url, error) => Container(
+                                color: Colors.pink[100],
+                                alignment: Alignment.center,
+                                child: Icon(Icons.image,
+                                    size: 40, color: Colors.pink[300]),
+                              ),
                             ),
                           ),
                         ),

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:dewa_wo_app/data/repositories/profile_repository.dart';
 import 'package:dewa_wo_app/models/request/profile_request.dart';
@@ -24,6 +26,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     required String name,
     required String email,
     required String phone,
+    required String? avatar,
   }) async {
     emit(const ProfileState.loading());
 
@@ -31,6 +34,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       name: name,
       email: email,
       phone: phone,
+      avatar: avatar,
     );
 
     final response = await _profileRepository.updateProfile(request: request);

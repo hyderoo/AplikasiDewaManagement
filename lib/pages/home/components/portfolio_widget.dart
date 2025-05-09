@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dewa_wo_app/core/consts/app_consts.dart';
 import 'package:dewa_wo_app/cubits/portfolio/portfolio_cubit.dart';
 import 'package:dewa_wo_app/models/portfolio_model.dart';
@@ -149,23 +150,36 @@ class _PortfolioWidgetState extends State<PortfolioWidget> {
                   topLeft: Radius.circular(16),
                   topRight: Radius.circular(16),
                 ),
-                child: Image.network(
-                  '${AppConsts.baseUrl}${portfolio.images.first.imagePath}',
+                child: CachedNetworkImage(
+                  imageUrl:
+                      '${AppConsts.baseUrl}${portfolio.images.first.imagePath}',
                   height: 150,
                   width: double.infinity,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      height: 150,
-                      color: Colors.pink[100],
-                      alignment: Alignment.center,
-                      child: Icon(
-                        Icons.image,
-                        size: 50,
-                        color: Colors.pink[300],
+                  placeholder: (context, url) => Container(
+                    color: Colors.grey[200],
+                    child: const Center(
+                      child: SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.pink),
+                        ),
                       ),
-                    );
-                  },
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    height: 150,
+                    color: Colors.pink[100],
+                    alignment: Alignment.center,
+                    child: Icon(
+                      Icons.image,
+                      size: 50,
+                      color: Colors.pink[300],
+                    ),
+                  ),
                 ),
               ),
               Padding(

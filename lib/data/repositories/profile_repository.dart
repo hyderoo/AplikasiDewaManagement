@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dewa_wo_app/core/api/api_client.dart';
 import 'package:dewa_wo_app/models/request/profile_request.dart';
 import 'package:dewa_wo_app/models/response/generic_response.dart';
@@ -22,7 +24,13 @@ class ProfileRepository {
     required UpdateProfileRequest request,
   }) async {
     try {
-      final response = await _apiClient.put('/profile', data: request.toJson());
+      final data = request.toJson();
+      FormData formData = FormData.fromMap({
+        ...data,
+        if (request.avatar != null)
+          'avatar': await MultipartFile.fromFile(request.avatar!),
+      });
+      final response = await _apiClient.put('/profile', data: formData);
 
       final profileResponse = ProfileResponse.fromJson(response.data);
 

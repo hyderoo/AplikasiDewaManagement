@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:toastify_flutter/toastify_flutter.dart';
 
 class PengaturanProfilePage extends StatefulWidget {
   const PengaturanProfilePage({super.key});
@@ -130,12 +131,7 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
     if (_namaController.text.isEmpty ||
         _emailController.text.isEmpty ||
         _phoneController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Semua field harus diisi'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      ToastifyFlutter.warning(context, message: 'Semua field harus diisi');
       return;
     }
 
@@ -143,6 +139,7 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
       name: _namaController.text,
       email: _emailController.text,
       phone: _phoneController.text,
+      avatar: null,
     );
   }
 
@@ -150,22 +147,14 @@ class _PengaturanProfilePageState extends State<PengaturanProfilePage> {
     if (_currentPasswordController.text.isEmpty ||
         _newPasswordController.text.isEmpty ||
         _confirmPasswordController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Semua field password harus diisi'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      ToastifyFlutter.warning(context,
+          message: 'Semua field password harus diisi');
       return;
     }
 
     if (_newPasswordController.text != _confirmPasswordController.text) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Password baru dan konfirmasi harus sama'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      ToastifyFlutter.warning(context,
+          message: 'Password baru dan konfirmasi harus sama');
       return;
     }
 
