@@ -57,13 +57,16 @@ final GoRouter _router = GoRouter(
             ),
           ),
         ),
-        GoRoute(
-          path: 'bayar',
-          name: 'bayar',
-          builder: (context, state) => DetailPembayaranPage(
-            pesanan: state.extra as PesananModel,
-          ),
-        ),
+        // GoRoute(
+        //   path: 'payment/:id',
+        //   name: 'payment',
+        //   builder: (context, state) => BlocProvider(
+        //     create: (context) => getIt<PaymentDetailCubit>(),
+        //     child: DetailPembayaranPage(
+        //       orderId: int.tryParse(state.pathParameters['id'] ?? '0') ?? 0,
+        //     ),
+        //   ),
+        // ),
       ],
     ),
     GoRoute(

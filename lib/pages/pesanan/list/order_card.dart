@@ -145,7 +145,7 @@ class OrderCard extends StatelessWidget {
                       backgroundColor: Colors.orange,
                     ),
                     onPressed: () {
-                      context.push('/pesanan/bayar', extra: order);
+                      context.push('/pesanan/payment/${order.id}');
                     },
                     child: const Text('Bayar Sekarang'),
                   ),

@@ -18,6 +18,7 @@ import '../../cubits/home/home_cubit.dart' as _i196;
 import '../../cubits/order/order_cubit.dart' as _i184;
 import '../../cubits/order_detail/order_detail_cubit.dart' as _i865;
 import '../../cubits/order_form/order_form_cubit.dart' as _i702;
+import '../../cubits/payment_detail/payment_detail_cubit.dart' as _i807;
 import '../../cubits/portfolio/portfolio_cubit.dart' as _i453;
 import '../../cubits/profile/profile_cubit.dart' as _i1056;
 import '../../cubits/review/review_cubit.dart' as _i668;
@@ -55,6 +56,8 @@ _i174.GetIt init(
       () => _i702.OrderFormCubit(orderRepository: gh<_i893.OrderRepository>()));
   gh.factory<_i865.OrderDetailCubit>(() =>
       _i865.OrderDetailCubit(orderRepository: gh<_i893.OrderRepository>()));
+  gh.factory<_i807.PaymentDetailCubit>(() =>
+      _i807.PaymentDetailCubit(orderRepository: gh<_i893.OrderRepository>()));
   gh.lazySingleton<_i184.OrderCubit>(
       () => _i184.OrderCubit(orderRepository: gh<_i893.OrderRepository>()));
   gh.lazySingleton<_i481.AuthRepository>(

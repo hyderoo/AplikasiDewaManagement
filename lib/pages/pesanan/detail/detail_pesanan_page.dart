@@ -438,7 +438,7 @@ class _DetailPesananPageState extends State<DetailPesananPage> {
       padding: const EdgeInsets.all(16),
       child: ElevatedButton(
         onPressed: () {
-          context.push('/pesanan/bayar', extra: order);
+          context.push('/pesanan/payment/${order.id}');
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.orange,

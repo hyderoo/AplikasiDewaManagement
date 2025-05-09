@@ -1,57 +1,66 @@
-import 'package:dewa_wo_app/models/pesanan_model.dart';
+// detail_pembayaran_page.dart
+import 'package:dewa_wo_app/cubits/payment_detail/payment_detail_cubit.dart';
+import 'package:dewa_wo_app/models/order_model.dart';
+import 'package:dewa_wo_app/models/virtual_account_model.dart';
 import 'package:dewa_wo_app/resources/resources.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'dart:async';
 
 class DetailPembayaranPage extends StatefulWidget {
-  final PesananModel pesanan;
-  const DetailPembayaranPage({super.key, required this.pesanan});
+  final int orderId;
+  const DetailPembayaranPage({super.key, required this.orderId});
 
   @override
   State<DetailPembayaranPage> createState() => _DetailPembayaranPageState();
 }
 
 class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
-  String _selectedBank = 'BCA Virtual Account';
-  int _hours = 23;
-  int _minutes = 58;
-  int _seconds = 18;
-  late Timer _timer;
+  late final PaymentDetailCubit _paymentDetailCubit;
+  Timer? _timer;
+  Duration _remainingTime = Duration.zero;
 
   @override
   void initState() {
     super.initState();
-    _startTimer();
+    _paymentDetailCubit = context.read<PaymentDetailCubit>();
+    _paymentDetailCubit.loadPaymentDetails(widget.orderId);
   }
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer?.cancel();
     super.dispose();
   }
 
-  void _startTimer() {
+  void _startTimer(DateTime expiredAt) {
+    _timer?.cancel();
+
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        if (_seconds > 0) {
-          _seconds--;
-        } else {
-          if (_minutes > 0) {
-            _minutes--;
-            _seconds = 59;
-          } else {
-            if (_hours > 0) {
-              _hours--;
-              _minutes = 59;
-              _seconds = 59;
-            } else {
-              timer.cancel();
-            }
-          }
-        }
-      });
+      final now = DateTime.now();
+      if (now.isAfter(expiredAt)) {
+        _timer?.cancel();
+        setState(() {
+          _remainingTime = Duration.zero;
+        });
+      } else {
+        setState(() {
+          _remainingTime = expiredAt.difference(now);
+        });
+      }
     });
+  }
+
+  String _formatDuration(Duration duration) {
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes.remainder(60);
+    final seconds = duration.inSeconds.remainder(60);
+
+    return '${hours.toString().padLeft(2, '0')}:'
+        '${minutes.toString().padLeft(2, '0')}:'
+        '${seconds.toString().padLeft(2, '0')}';
   }
 
   @override
@@ -61,25 +70,89 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
         title: const Text('Detail Pembayaran'),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildCountdownCard(),
-            const SizedBox(height: 16),
-            _buildMetodePembayaran(),
-            const SizedBox(height: 16),
-            _buildVirtualAccountInfo(),
-            const SizedBox(height: 24),
-            _buildActionButtons(),
-            const SizedBox(height: 64),
-          ],
-        ),
+      body: BlocConsumer<PaymentDetailCubit, PaymentDetailState>(
+        bloc: _paymentDetailCubit,
+        listener: (context, state) {
+          if (state is PaymentDetailSuccess) {
+            if (state.expiredAt != null) {
+              _startTimer(state.expiredAt!);
+            }
+            if (state.message != null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.message!),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            }
+          } else if (state is PaymentDetailError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        },
+        builder: (context, state) {
+          if (state is PaymentDetailLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (state is PaymentDetailSuccess) {
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildCountdownCard(state),
+                  const SizedBox(height: 16),
+                  _buildMetodePembayaran(state),
+                  const SizedBox(height: 16),
+                  if (state.selectedVirtualAccount != null)
+                    _buildVirtualAccountInfo(state),
+                  const SizedBox(height: 24),
+                  _buildActionButtons(state),
+                  const SizedBox(height: 64),
+                ],
+              ),
+            );
+          } else if (state is PaymentDetailError) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.error_outline,
+                    size: 64,
+                    color: Colors.red,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    state.message,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () =>
+                        _paymentDetailCubit.loadPaymentDetails(widget.orderId),
+                    child: const Text('Coba Lagi'),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return const SizedBox();
+        },
       ),
     );
   }
 
-  Widget _buildCountdownCard() {
+  Widget _buildCountdownCard(PaymentDetailSuccess state) {
+    final eventDate = DateTime.parse(state.order.eventDate);
+    final formattedDate = DateFormat('dd MMMM yyyy', 'id_ID').format(eventDate);
+
     return Card(
       margin: const EdgeInsets.all(16),
       child: Padding(
@@ -95,7 +168,7 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
             ),
             const SizedBox(height: 8),
             Text(
-              '${_hours.toString().padLeft(2, '0')}:${_minutes.toString().padLeft(2, '0')}:${_seconds.toString().padLeft(2, '0')}',
+              _formatDuration(_remainingTime),
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -115,11 +188,11 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
                     ),
                   ),
                 ),
-                const Expanded(
+                Expanded(
                   flex: 2,
                   child: Text(
-                    'Paket Pernikahan Lengkap',
-                    style: TextStyle(
+                    state.order.catalog?.name ?? 'Custom Package',
+                    style: const TextStyle(
                       fontSize: 14,
                       color: Colors.black,
                       fontWeight: FontWeight.w500,
@@ -135,18 +208,18 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
                 Expanded(
                   flex: 1,
                   child: Text(
-                    'Tanggal Booking',
+                    'Tanggal Acara',
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.grey[700],
                     ),
                   ),
                 ),
-                const Expanded(
+                Expanded(
                   flex: 2,
                   child: Text(
-                    '11 Maret 2025',
-                    style: TextStyle(
+                    formattedDate,
+                    style: const TextStyle(
                       fontSize: 14,
                       color: Colors.black,
                       fontWeight: FontWeight.w500,
@@ -162,7 +235,7 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
     );
   }
 
-  Widget _buildMetodePembayaran() {
+  Widget _buildMetodePembayaran(PaymentDetailSuccess state) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
@@ -177,49 +250,28 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
             ),
           ),
           const SizedBox(height: 12),
-          _buildBankOption(
-            'BCA Virtual Account',
-            'assets/images/bca.png',
-            'BCA Virtual Account',
-          ),
-          const SizedBox(height: 12),
-          _buildBankOption(
-            'Mandiri Virtual Account',
-            'assets/images/mandiri.png',
-            'Mandiri Virtual Account',
-          ),
-          const SizedBox(height: 12),
-          _buildBankOption(
-            'BNI Virtual Account',
-            'assets/images/bni.png',
-            'BNI Virtual Account',
-          ),
-          const SizedBox(height: 12),
-          _buildBankOption(
-            'BRI Virtual Account',
-            'assets/images/bri.png',
-            'BRI Virtual Account',
-          ),
+          ...state.virtualAccounts.map((va) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _buildBankOption(va, state),
+              )),
         ],
       ),
     );
   }
 
-  Widget _buildBankOption(String value, String logoPath, String title) {
-    bool isSelected = _selectedBank == value;
+  Widget _buildBankOption(VirtualAccountModel va, PaymentDetailSuccess state) {
+    bool isSelected = state.selectedVirtualAccount?.id == va.id;
 
     return InkWell(
       onTap: () {
-        setState(() {
-          _selectedBank = value;
-        });
+        _paymentDetailCubit.selectVirtualAccount(va);
       },
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           border: Border.all(
-            color: Colors.pink,
-            width: 1,
+            color: isSelected ? Colors.pink : Colors.grey[300]!,
+            width: isSelected ? 2 : 1,
           ),
           borderRadius: BorderRadius.circular(8),
         ),
@@ -233,23 +285,42 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
               ),
             ),
             const SizedBox(width: 16),
-            Container(
-              width: 60,
-              height: 20,
-              color: Colors.transparent,
-              alignment: Alignment.centerLeft,
-              child: Text(
-                value.split(' ')[0],
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue[800],
+            if (va.logo != null) ...[
+              Container(
+                width: 60,
+                height: 20,
+                child: Image.network(
+                  va.logo!,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Text(
+                      va.bankCode.toUpperCase(),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue[800],
+                      ),
+                    );
+                  },
                 ),
               ),
-            ),
-            const SizedBox(width: 8),
+              const SizedBox(width: 8),
+            ] else ...[
+              Container(
+                width: 60,
+                height: 20,
+                child: Text(
+                  va.bankCode.toUpperCase(),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue[800],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+            ],
             Expanded(
               child: Text(
-                title,
+                va.name,
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
@@ -262,7 +333,13 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
     );
   }
 
-  Widget _buildVirtualAccountInfo() {
+  Widget _buildVirtualAccountInfo(PaymentDetailSuccess state) {
+    final va = state.selectedVirtualAccount!;
+    final vaNumber = state.virtualAccountNumber ?? '';
+    final amount = state.order.requiresDownPayment
+        ? state.order.downPaymentAmountValue
+        : double.parse(state.order.price);
+
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       child: Padding(
@@ -281,10 +358,10 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
             const SizedBox(height: 8),
             Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: Text(
-                    '82771627899172563',
-                    style: TextStyle(
+                    vaNumber,
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.pink,
@@ -295,8 +372,7 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
                 IconButton(
                   icon: Icon(Icons.copy, color: Colors.grey[700]),
                   onPressed: () {
-                    Clipboard.setData(
-                        const ClipboardData(text: '82771627899172563'));
+                    Clipboard.setData(ClipboardData(text: vaNumber));
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('Nomor VA berhasil disalin'),
@@ -307,6 +383,7 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
                 ),
               ],
             ),
+            const SizedBox(height: 16),
             Text(
               'Cara Pembayaran:',
               style: TextStyle(
@@ -316,18 +393,10 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
               ),
             ),
             const SizedBox(height: 8),
-            _buildCaraPembayaranStep(
-                '1. Buka aplikasi m-banking BCA Virtual Account'),
-            _buildCaraPembayaranStep(
-                '2. Pilih menu "Transfer" atau "Pembayaran"'),
-            _buildCaraPembayaranStep('3. Pilih "Virtual Account"'),
-            _buildCaraPembayaranStep(
-                '4. Masukkan nomor Virtual Account di atas'),
-            _buildCaraPembayaranStep('5. Periksa detail pembayaran'),
-            _buildCaraPembayaranStep('6. Masukkan PIN untuk konfirmasi'),
-            _buildCaraPembayaranStep('7. Pembayaran selesai'),
-            const SizedBox(height: 8),
-            _buildTotalTagihan(),
+            ...va.paymentInstructions.map((instruction) =>
+                _buildCaraPembayaranStep(instruction.instruction)),
+            const SizedBox(height: 16),
+            _buildTotalTagihan(amount, state.order),
           ],
         ),
       ),
@@ -347,26 +416,33 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
     );
   }
 
-  Widget _buildTotalTagihan() {
+  Widget _buildTotalTagihan(double amount, OrderModel order) {
+    final formatCurrency = NumberFormat.currency(
+      locale: 'id_ID',
+      symbol: 'Rp ',
+      decimalDigits: 0,
+    );
+    final formattedAmount = formatCurrency.format(amount);
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: const Color(0xFFFFF9D2),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: const Row(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'Total Tagihan Anda:',
-            style: TextStyle(
+            order.requiresDownPayment ? 'Total DP (30%):' : 'Total Tagihan:',
+            style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
           ),
           Text(
-            'Rp 75.000.000',
-            style: TextStyle(
+            formattedAmount,
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: Colors.black,
@@ -377,7 +453,7 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
     );
   }
 
-  Widget _buildActionButtons() {
+  Widget _buildActionButtons(PaymentDetailSuccess state) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
@@ -406,7 +482,9 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
           const SizedBox(width: 16),
           Expanded(
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                _paymentDetailCubit.confirmPayment();
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.pink,
                 shape: RoundedRectangleBorder(

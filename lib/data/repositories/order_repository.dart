@@ -1,8 +1,12 @@
 // order_repository.dart
 import 'package:dewa_wo_app/core/api/api_client.dart';
+import 'package:dewa_wo_app/models/bank_model.dart';
 import 'package:dewa_wo_app/models/order_model.dart';
+import 'package:dewa_wo_app/models/response/bank_response.dart';
 import 'package:dewa_wo_app/models/response/order_response.dart';
 import 'package:dewa_wo_app/models/response/review_response.dart';
+import 'package:dewa_wo_app/models/response/virtual_account_response.dart';
+import 'package:dewa_wo_app/models/virtual_account_model.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
@@ -277,6 +281,89 @@ class OrderRepository {
       );
     } catch (e) {
       return ReviewResponse(
+        status: 'error',
+        message: e.toString(),
+        data: null,
+      );
+    }
+  }
+
+  // Get all banks
+  Future<BankResponse> getBanks() async {
+    try {
+      final response = await _apiClient.get('/banks');
+      if (response.data['data'] is List) {
+        final banks = (response.data['data'] as List)
+            .map((bank) => BankModel.fromJson(bank))
+            .toList();
+        return BankResponse(
+          status: response.data['status'] ?? 'success',
+          message: response.data['message'] ?? 'Banks fetched successfully',
+          data: banks,
+        );
+      }
+      return BankResponse.fromJson(response.data);
+    } on DioException catch (e) {
+      if (e.response != null) {
+        try {
+          return BankResponse.fromJson(e.response!.data);
+        } catch (_) {
+          return BankResponse(
+            status: 'error',
+            message: e.message ?? 'Failed to fetch banks',
+            data: null,
+          );
+        }
+      }
+      return BankResponse(
+        status: 'error',
+        message: e.message ?? 'Network error occurred',
+        data: null,
+      );
+    } catch (e) {
+      return BankResponse(
+        status: 'error',
+        message: e.toString(),
+        data: null,
+      );
+    }
+  }
+
+  // Get all virtual accounts
+  Future<VirtualAccountResponse> getVirtualAccounts() async {
+    try {
+      final response = await _apiClient.get('/va');
+      if (response.data['data'] is List) {
+        final virtualAccounts = (response.data['data'] as List)
+            .map((va) => VirtualAccountModel.fromJson(va))
+            .toList();
+        return VirtualAccountResponse(
+          status: response.data['status'] ?? 'success',
+          message: response.data['message'] ??
+              'Virtual accounts fetched successfully',
+          data: virtualAccounts,
+        );
+      }
+      return VirtualAccountResponse.fromJson(response.data);
+    } on DioException catch (e) {
+      if (e.response != null) {
+        try {
+          return VirtualAccountResponse.fromJson(e.response!.data);
+        } catch (_) {
+          return VirtualAccountResponse(
+            status: 'error',
+            message: e.message ?? 'Failed to fetch virtual accounts',
+            data: null,
+          );
+        }
+      }
+      return VirtualAccountResponse(
+        status: 'error',
+        message: e.message ?? 'Network error occurred',
+        data: null,
+      );
+    } catch (e) {
+      return VirtualAccountResponse(
         status: 'error',
         message: e.toString(),
         data: null,

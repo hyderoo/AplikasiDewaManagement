@@ -19,10 +19,18 @@ mixin _$BankModel {
   String get name;
   String get code;
   @JsonKey(name: 'account_number')
-  String get accountNumber;
+  String? get accountNumber;
   @JsonKey(name: 'account_name')
-  String get accountName;
+  String? get accountName;
+  String? get branch;
   String? get logo;
+  @JsonKey(name: 'is_active')
+  bool get isActive;
+  String? get description;
+  @JsonKey(name: 'created_at')
+  String get createdAt;
+  @JsonKey(name: 'updated_at')
+  String get updatedAt;
 
   /// Create a copy of BankModel
   /// with the given fields replaced by the non-null parameter values.
@@ -46,17 +54,26 @@ mixin _$BankModel {
                 other.accountNumber == accountNumber) &&
             (identical(other.accountName, accountName) ||
                 other.accountName == accountName) &&
-            (identical(other.logo, logo) || other.logo == logo));
+            (identical(other.branch, branch) || other.branch == branch) &&
+            (identical(other.logo, logo) || other.logo == logo) &&
+            (identical(other.isActive, isActive) ||
+                other.isActive == isActive) &&
+            (identical(other.description, description) ||
+                other.description == description) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, name, code, accountNumber, accountName, logo);
+  int get hashCode => Object.hash(runtimeType, id, name, code, accountNumber,
+      accountName, branch, logo, isActive, description, createdAt, updatedAt);
 
   @override
   String toString() {
-    return 'BankModel(id: $id, name: $name, code: $code, accountNumber: $accountNumber, accountName: $accountName, logo: $logo)';
+    return 'BankModel(id: $id, name: $name, code: $code, accountNumber: $accountNumber, accountName: $accountName, branch: $branch, logo: $logo, isActive: $isActive, description: $description, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 }
 
@@ -69,9 +86,14 @@ abstract mixin class $BankModelCopyWith<$Res> {
       {int id,
       String name,
       String code,
-      @JsonKey(name: 'account_number') String accountNumber,
-      @JsonKey(name: 'account_name') String accountName,
-      String? logo});
+      @JsonKey(name: 'account_number') String? accountNumber,
+      @JsonKey(name: 'account_name') String? accountName,
+      String? branch,
+      String? logo,
+      @JsonKey(name: 'is_active') bool isActive,
+      String? description,
+      @JsonKey(name: 'created_at') String createdAt,
+      @JsonKey(name: 'updated_at') String updatedAt});
 }
 
 /// @nodoc
@@ -89,9 +111,14 @@ class _$BankModelCopyWithImpl<$Res> implements $BankModelCopyWith<$Res> {
     Object? id = null,
     Object? name = null,
     Object? code = null,
-    Object? accountNumber = null,
-    Object? accountName = null,
+    Object? accountNumber = freezed,
+    Object? accountName = freezed,
+    Object? branch = freezed,
     Object? logo = freezed,
+    Object? isActive = null,
+    Object? description = freezed,
+    Object? createdAt = null,
+    Object? updatedAt = null,
   }) {
     return _then(_self.copyWith(
       id: null == id
@@ -106,18 +133,38 @@ class _$BankModelCopyWithImpl<$Res> implements $BankModelCopyWith<$Res> {
           ? _self.code
           : code // ignore: cast_nullable_to_non_nullable
               as String,
-      accountNumber: null == accountNumber
+      accountNumber: freezed == accountNumber
           ? _self.accountNumber
           : accountNumber // ignore: cast_nullable_to_non_nullable
-              as String,
-      accountName: null == accountName
+              as String?,
+      accountName: freezed == accountName
           ? _self.accountName
           : accountName // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
+      branch: freezed == branch
+          ? _self.branch
+          : branch // ignore: cast_nullable_to_non_nullable
+              as String?,
       logo: freezed == logo
           ? _self.logo
           : logo // ignore: cast_nullable_to_non_nullable
               as String?,
+      isActive: null == isActive
+          ? _self.isActive
+          : isActive // ignore: cast_nullable_to_non_nullable
+              as bool,
+      description: freezed == description
+          ? _self.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String?,
+      createdAt: null == createdAt
+          ? _self.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as String,
+      updatedAt: null == updatedAt
+          ? _self.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -129,9 +176,14 @@ class _BankModel implements BankModel {
       {required this.id,
       required this.name,
       required this.code,
-      @JsonKey(name: 'account_number') required this.accountNumber,
-      @JsonKey(name: 'account_name') required this.accountName,
-      this.logo});
+      @JsonKey(name: 'account_number') this.accountNumber,
+      @JsonKey(name: 'account_name') this.accountName,
+      this.branch,
+      this.logo,
+      @JsonKey(name: 'is_active') required this.isActive,
+      this.description,
+      @JsonKey(name: 'created_at') required this.createdAt,
+      @JsonKey(name: 'updated_at') required this.updatedAt});
   factory _BankModel.fromJson(Map<String, dynamic> json) =>
       _$BankModelFromJson(json);
 
@@ -143,12 +195,25 @@ class _BankModel implements BankModel {
   final String code;
   @override
   @JsonKey(name: 'account_number')
-  final String accountNumber;
+  final String? accountNumber;
   @override
   @JsonKey(name: 'account_name')
-  final String accountName;
+  final String? accountName;
+  @override
+  final String? branch;
   @override
   final String? logo;
+  @override
+  @JsonKey(name: 'is_active')
+  final bool isActive;
+  @override
+  final String? description;
+  @override
+  @JsonKey(name: 'created_at')
+  final String createdAt;
+  @override
+  @JsonKey(name: 'updated_at')
+  final String updatedAt;
 
   /// Create a copy of BankModel
   /// with the given fields replaced by the non-null parameter values.
@@ -177,17 +242,26 @@ class _BankModel implements BankModel {
                 other.accountNumber == accountNumber) &&
             (identical(other.accountName, accountName) ||
                 other.accountName == accountName) &&
-            (identical(other.logo, logo) || other.logo == logo));
+            (identical(other.branch, branch) || other.branch == branch) &&
+            (identical(other.logo, logo) || other.logo == logo) &&
+            (identical(other.isActive, isActive) ||
+                other.isActive == isActive) &&
+            (identical(other.description, description) ||
+                other.description == description) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, name, code, accountNumber, accountName, logo);
+  int get hashCode => Object.hash(runtimeType, id, name, code, accountNumber,
+      accountName, branch, logo, isActive, description, createdAt, updatedAt);
 
   @override
   String toString() {
-    return 'BankModel(id: $id, name: $name, code: $code, accountNumber: $accountNumber, accountName: $accountName, logo: $logo)';
+    return 'BankModel(id: $id, name: $name, code: $code, accountNumber: $accountNumber, accountName: $accountName, branch: $branch, logo: $logo, isActive: $isActive, description: $description, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 }
 
@@ -203,9 +277,14 @@ abstract mixin class _$BankModelCopyWith<$Res>
       {int id,
       String name,
       String code,
-      @JsonKey(name: 'account_number') String accountNumber,
-      @JsonKey(name: 'account_name') String accountName,
-      String? logo});
+      @JsonKey(name: 'account_number') String? accountNumber,
+      @JsonKey(name: 'account_name') String? accountName,
+      String? branch,
+      String? logo,
+      @JsonKey(name: 'is_active') bool isActive,
+      String? description,
+      @JsonKey(name: 'created_at') String createdAt,
+      @JsonKey(name: 'updated_at') String updatedAt});
 }
 
 /// @nodoc
@@ -223,9 +302,14 @@ class __$BankModelCopyWithImpl<$Res> implements _$BankModelCopyWith<$Res> {
     Object? id = null,
     Object? name = null,
     Object? code = null,
-    Object? accountNumber = null,
-    Object? accountName = null,
+    Object? accountNumber = freezed,
+    Object? accountName = freezed,
+    Object? branch = freezed,
     Object? logo = freezed,
+    Object? isActive = null,
+    Object? description = freezed,
+    Object? createdAt = null,
+    Object? updatedAt = null,
   }) {
     return _then(_BankModel(
       id: null == id
@@ -240,18 +324,38 @@ class __$BankModelCopyWithImpl<$Res> implements _$BankModelCopyWith<$Res> {
           ? _self.code
           : code // ignore: cast_nullable_to_non_nullable
               as String,
-      accountNumber: null == accountNumber
+      accountNumber: freezed == accountNumber
           ? _self.accountNumber
           : accountNumber // ignore: cast_nullable_to_non_nullable
-              as String,
-      accountName: null == accountName
+              as String?,
+      accountName: freezed == accountName
           ? _self.accountName
           : accountName // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
+      branch: freezed == branch
+          ? _self.branch
+          : branch // ignore: cast_nullable_to_non_nullable
+              as String?,
       logo: freezed == logo
           ? _self.logo
           : logo // ignore: cast_nullable_to_non_nullable
               as String?,
+      isActive: null == isActive
+          ? _self.isActive
+          : isActive // ignore: cast_nullable_to_non_nullable
+              as bool,
+      description: freezed == description
+          ? _self.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String?,
+      createdAt: null == createdAt
+          ? _self.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as String,
+      updatedAt: null == updatedAt
+          ? _self.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }

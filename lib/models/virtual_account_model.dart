@@ -8,14 +8,29 @@ part 'virtual_account_model.g.dart';
 abstract class VirtualAccountModel with _$VirtualAccountModel {
   const factory VirtualAccountModel({
     required int id,
-    required String name,
     @JsonKey(name: 'bank_code') required String bankCode,
-    String? logo,
+    required String name,
+    @JsonKey(name: 'account_number') String? accountNumber,
+    @JsonKey(name: 'is_active') required bool isActive,
     String? description,
+    String? logo,
     @JsonKey(name: 'payment_instructions')
-    Map<String, dynamic>? paymentInstructions,
+    required List<PaymentInstruction> paymentInstructions,
+    @JsonKey(name: 'created_at') required String createdAt,
+    @JsonKey(name: 'updated_at') required String updatedAt,
   }) = _VirtualAccountModel;
 
   factory VirtualAccountModel.fromJson(Map<String, dynamic> json) =>
       _$VirtualAccountModelFromJson(json);
+}
+
+@freezed
+abstract class PaymentInstruction with _$PaymentInstruction {
+  const factory PaymentInstruction({
+    required String step,
+    required String instruction,
+  }) = _PaymentInstruction;
+
+  factory PaymentInstruction.fromJson(Map<String, dynamic> json) =>
+      _$PaymentInstructionFromJson(json);
 }

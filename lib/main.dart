@@ -4,6 +4,7 @@ import 'package:dewa_wo_app/cubits/availability/availability_cubit.dart';
 import 'package:dewa_wo_app/cubits/order/order_cubit.dart';
 import 'package:dewa_wo_app/cubits/order_detail/order_detail_cubit.dart';
 import 'package:dewa_wo_app/cubits/order_form/order_form_cubit.dart';
+import 'package:dewa_wo_app/cubits/payment_detail/payment_detail_cubit.dart';
 import 'package:dewa_wo_app/cubits/portfolio/portfolio_cubit.dart';
 import 'package:dewa_wo_app/cubits/profile/profile_cubit.dart';
 import 'package:dewa_wo_app/cubits/review/review_cubit.dart';
