@@ -22,7 +22,7 @@ final GoRouter _router = GoRouter(
     GoRoute(
       path: '/portofolio',
       name: 'portofolio',
-      builder: (context, state) => const PortofolioPage(),
+      builder: (context, state) => const PortfolioPage(),
     ),
     GoRoute(
       path: '/tim',

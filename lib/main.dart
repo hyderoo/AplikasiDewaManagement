@@ -19,7 +19,7 @@ import 'package:dewa_wo_app/pages/pesanan/pembayaran/detail_pembayaran_page.dart
 import 'package:dewa_wo_app/pages/pesanan/detail/detail_pesanan_page.dart';
 import 'package:dewa_wo_app/pages/pesanan/form/form_pemesanan_page.dart';
 import 'package:dewa_wo_app/pages/pesanan/list/pesanan_page.dart';
-import 'package:dewa_wo_app/pages/portofolio/portofolio_page.dart';
+import 'package:dewa_wo_app/pages/portfolio/portfolio_page.dart';
 import 'package:dewa_wo_app/pages/splash/splash_page.dart';
 import 'package:dewa_wo_app/pages/tim/tim_page.dart';
 import 'package:flutter/material.dart';
