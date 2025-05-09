@@ -15,6 +15,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => getIt<PortfolioCubit>()),
         BlocProvider(create: (context) => getIt<ServiceCubit>()),
         BlocProvider(create: (context) => getIt<ReviewCubit>()),
+        BlocProvider(create: (context) => getIt<OrderCubit>()),
       ],
       child: MaterialApp.router(
         title: 'Dewa Management - Wedding Organizer',

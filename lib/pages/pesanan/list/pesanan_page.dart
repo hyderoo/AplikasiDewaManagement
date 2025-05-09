@@ -1,6 +1,9 @@
-import 'package:dewa_wo_app/models/pesanan_model.dart';
-import 'package:dewa_wo_app/pages/pesanan/list/pesanan_card.dart';
+// pesanan_page.dart
+import 'package:dewa_wo_app/cubits/order/order_cubit.dart';
+import 'package:dewa_wo_app/models/order_model.dart';
+import 'package:dewa_wo_app/pages/pesanan/list/order_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -14,57 +17,19 @@ class PesananPage extends StatefulWidget {
 class _PesananPageState extends State<PesananPage> {
   bool _isSearchMode = false;
   final TextEditingController _searchController = TextEditingController();
-  String _selectedStatus = 'Semua';
-  final List<String> _statusList = ['Semua', 'Lunas', 'Menunggu Pembayaran'];
-  bool _isLoading = true;
-
-  List<PesananModel> _filteredPesanan = [];
+  late final OrderCubit _orderCubit;
 
   @override
   void initState() {
     super.initState();
-    _filteredPesanan = pesananData;
-
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    });
+    _orderCubit = context.read<OrderCubit>();
+    _orderCubit.getOrders();
   }
 
-  void _filterPesanan(String status) {
-    setState(() {
-      _selectedStatus = status;
-      if (status == 'Semua') {
-        _filteredPesanan = pesananData;
-      } else {
-        _filteredPesanan =
-            pesananData.where((pesanan) => pesanan.status == status).toList();
-      }
-    });
-  }
-
-  void _searchPesanan(String query) {
-    if (query.isEmpty) {
-      _filterPesanan(_selectedStatus);
-      return;
-    }
-
-    final filteredByStatus = _selectedStatus == 'Semua'
-        ? pesananData
-        : pesananData
-            .where((pesanan) => pesanan.status == _selectedStatus)
-            .toList();
-
-    setState(() {
-      _filteredPesanan = filteredByStatus
-          .where((pesanan) =>
-              pesanan.userName.toLowerCase().contains(query.toLowerCase()) ||
-              pesanan.paketName.toLowerCase().contains(query.toLowerCase()))
-          .toList();
-    });
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -85,11 +50,25 @@ class _PesananPageState extends State<PesananPage> {
           SizedBox(height: MediaQuery.of(context).padding.top + 60),
           _buildStatusFilterList(),
           Expanded(
-            child: _isLoading
-                ? _buildShimmerList()
-                : _filteredPesanan.isEmpty
-                    ? _buildEmptyState()
-                    : _buildPesananList(),
+            child: BlocBuilder<OrderCubit, OrderState>(
+              bloc: _orderCubit,
+              builder: (context, state) {
+                if (state is OrderLoading || state is OrderInitial) {
+                  return _buildShimmerList();
+                } else if (state is OrderSuccess) {
+                  return RefreshIndicator(
+                    onRefresh: () => _orderCubit.refreshOrders(),
+                    child: state.filteredOrders.isEmpty
+                        ? _buildEmptyStateWithRefresh()
+                        : _buildOrderList(state.filteredOrders),
+                  );
+                } else if (state is OrderError) {
+                  return _buildErrorState(state.message);
+                }
+
+                return _buildShimmerList();
+              },
+            ),
           ),
         ],
       ),
@@ -106,13 +85,13 @@ class _PesananPageState extends State<PesananPage> {
       child: _isSearchMode
           ? Row(
               children: [
-                BackButton(
-                  color: Colors.white,
+                IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () {
                     setState(() {
                       _isSearchMode = false;
                       _searchController.clear();
-                      _filterPesanan(_selectedStatus);
+                      _orderCubit.searchOrders('');
                     });
                   },
                 ),
@@ -144,7 +123,7 @@ class _PesananPageState extends State<PesananPage> {
                         ),
                       ),
                     ),
-                    onChanged: _searchPesanan,
+                    onChanged: _orderCubit.searchOrders,
                     autofocus: true,
                   ),
                 ),
@@ -152,7 +131,7 @@ class _PesananPageState extends State<PesananPage> {
                   icon: const Icon(Icons.clear, color: Colors.white),
                   onPressed: () {
                     _searchController.clear();
-                    _searchPesanan('');
+                    _orderCubit.searchOrders('');
                   },
                 ),
               ],
@@ -160,8 +139,8 @@ class _PesananPageState extends State<PesananPage> {
           : Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                BackButton(
-                  color: Colors.white,
+                IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () => context.pop(),
                 ),
                 const Text(
@@ -186,42 +165,54 @@ class _PesananPageState extends State<PesananPage> {
   }
 
   Widget _buildStatusFilterList() {
-    return Container(
-      height: 60,
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        itemCount: _statusList.length,
-        itemBuilder: (context, index) {
-          final status = _statusList[index];
-          final isSelected = status == _selectedStatus;
+    return BlocBuilder<OrderCubit, OrderState>(
+      bloc: _orderCubit,
+      builder: (context, state) {
+        String selectedStatus = 'semua';
+        if (state is OrderSuccess) {
+          selectedStatus = state.selectedStatus;
+        }
 
-          return GestureDetector(
-            onTap: () => _filterPesanan(status),
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 6),
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(
-                color: isSelected ? Colors.pink[50] : Colors.transparent,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: isSelected ? Colors.pink[50]! : Colors.grey[400]!,
-                  width: 1,
+        return Container(
+          height: 60,
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            itemCount: _orderCubit.statusOptions.length,
+            itemBuilder: (context, index) {
+              final status = _orderCubit.statusOptions[index];
+              final isSelected = status == selectedStatus;
+              final displayName = _orderCubit.getStatusDisplayName(status);
+
+              return GestureDetector(
+                onTap: () => _orderCubit.filterOrders(status),
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 6),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: isSelected ? Colors.pink[50] : Colors.transparent,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: isSelected ? Colors.pink[50]! : Colors.grey[400]!,
+                      width: 1,
+                    ),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    displayName,
+                    style: TextStyle(
+                      color: isSelected ? Colors.pink[700] : Colors.grey[700],
+                      fontWeight:
+                          isSelected ? FontWeight.bold : FontWeight.normal,
+                    ),
+                  ),
                 ),
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                status,
-                style: TextStyle(
-                  color: isSelected ? Colors.pink[700] : Colors.grey[700],
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                ),
-              ),
-            ),
-          );
-        },
-      ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 
@@ -239,7 +230,7 @@ class _PesananPageState extends State<PesananPage> {
             itemCount: 5,
             itemBuilder: (context, index) {
               return Container(
-                height: 100,
+                height: 200,
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -253,45 +244,124 @@ class _PesananPageState extends State<PesananPage> {
     );
   }
 
-  Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+  Widget _buildEmptyStateWithRefresh() {
+    return ListView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      children: [
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.6,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.receipt_long_outlined,
+                  size: 80,
+                  color: Colors.grey[400],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Tidak ada pesanan yang ditemukan',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Silakan buat pesanan baru atau ubah filter',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[600],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  'Tarik ke bawah untuk menyegarkan',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[500],
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildErrorState(String message) {
+    return RefreshIndicator(
+      onRefresh: () => _orderCubit.refreshOrders(),
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
         children: [
-          Icon(
-            Icons.receipt_long_outlined,
-            size: 80,
-            color: Colors.grey[400],
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Tidak ada pesanan yang ditemukan',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[600],
-              fontWeight: FontWeight.bold,
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.7,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.error_outline,
+                    size: 80,
+                    color: Colors.red,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Terjadi kesalahan',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[800],
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    child: Text(
+                      message,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[600],
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: () => _orderCubit.refreshOrders(),
+                    child: const Text('Coba Lagi'),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'atau tarik ke bawah untuk menyegarkan',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[500],
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Silakan buat pesanan baru atau ubah filter',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[600],
-            ),
-            textAlign: TextAlign.center,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildPesananList() {
+  Widget _buildOrderList(List<OrderModel> orders) {
     return ListView.separated(
-      padding: const EdgeInsets.all(16),
-      itemCount: _filteredPesanan.length,
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.all(16).copyWith(bottom: 64),
+      itemCount: orders.length,
       itemBuilder: (context, index) {
-        return PesananCard(pesanan: _filteredPesanan[index]);
+        return OrderCard(order: orders[index]);
       },
       separatorBuilder: (BuildContext context, int index) {
         return const SizedBox(height: 16);

@@ -1,7 +1,11 @@
+// form_pemesanan_page.dart
+import 'package:dewa_wo_app/cubits/order_form/order_form_cubit.dart';
 import 'package:dewa_wo_app/models/catalog_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class FormPemesananPage extends StatefulWidget {
@@ -28,10 +32,12 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
 
   DateTime? _selectedDate;
   final _formKey = GlobalKey<FormState>();
+  late final OrderFormCubit _orderFormCubit;
 
   @override
   void initState() {
     super.initState();
+    _orderFormCubit = context.read<OrderFormCubit>();
 
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -98,165 +104,253 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
         print('Form valid, lanjut ke proses berikutnya');
       }
 
-      // ignore: unused_local_variable
-      final formData = {
-        'nama_pria': _namaPriaController.text,
-        'nama_wanita': _namaWanitaController.text,
-        'tanggal': _selectedDate.toString(),
-        'jumlah_tamu': _jumlahTamuController.text,
-        'lokasi': _lokasiController.text,
-        'alamat': _alamatController.text,
-        'email': _emailController.text,
-        'whatsapp': _whatsappController.text,
-        'telepon': _teleponController.text,
-        'paket_id': widget.layanan.id,
-        'paket_name': widget.layanan.name,
-      };
+      // Get price from catalog - use the lowest price if it's a range
+      double price =
+          (widget.layanan.price.isNotEmpty ? widget.layanan.price.first : 0)
+              .toDouble();
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Scaffold(
-            appBar: AppBar(
-              title: const Text('Konfirmasi Pesanan'),
-              backgroundColor: Colors.pink,
-            ),
-            body: const Center(
-              child: Text('Halaman konfirmasi pesanan'),
-            ),
-          ),
-        ),
+      // Create order using OrderFormCubit
+      _orderFormCubit.createOrder(
+        catalog: widget.layanan,
+        namaPria: _namaPriaController.text,
+        namaWanita: _namaWanitaController.text,
+        tanggal: _selectedDate!,
+        jumlahTamu: int.parse(_jumlahTamuController.text),
+        lokasi: _lokasiController.text,
+        alamat: _alamatController.text,
+        price: price,
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text('Form Pemesanan'),
-        centerTitle: true,
-      ),
-      body: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildSectionTitle('Informasi Pasangan'),
-              const SizedBox(height: 12),
-              _buildTextField(
-                controller: _namaPriaController,
-                hintText: 'Nama Pengantin Pria',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Nama pengantin pria wajib diisi';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 12),
-              _buildTextField(
-                controller: _namaWanitaController,
-                hintText: 'Nama Pengantin Wanita',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Nama pengantin wanita wajib diisi';
-                  }
-                  return null;
-                },
-              ),
-              _buildDivider(),
-              _buildSectionTitle('Informasi Acara'),
-              const SizedBox(height: 12),
-              _buildDateField(
-                hintText: _formattedDate,
-                onTap: () => _selectDate(context),
-                validator: (value) {
-                  if (_selectedDate == null) {
-                    return 'Tanggal pernikahan wajib diisi';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 12),
-              _buildTextField(
-                controller: _jumlahTamuController,
-                hintText: 'Estimasi Jumlah Tamu',
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Estimasi jumlah tamu wajib diisi';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 12),
-              _buildTextField(
-                controller: _lokasiController,
-                hintText: 'Lokasi Acara (Nama Gedung/Tempat Acara)',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Lokasi acara wajib diisi';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 12),
-              _buildTextField(
-                controller: _alamatController,
-                hintText: 'Alamat Lengkap Lokasi',
-                maxLines: 3,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Alamat lengkap lokasi wajib diisi';
-                  }
-                  return null;
-                },
-              ),
-              _buildDivider(),
-              _buildSectionTitle('Informasi Kontak'),
-              const SizedBox(height: 12),
-              _buildTextField(
-                controller: _emailController,
-                hintText: 'Email',
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Email wajib diisi';
-                  }
-                  if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                      .hasMatch(value)) {
-                    return 'Masukkan email yang valid';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 12),
-              _buildTextField(
-                controller: _whatsappController,
-                hintText: 'Nomor WhatsApp',
-                keyboardType: TextInputType.phone,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Nomor WhatsApp wajib diisi';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 12),
-              _buildTextField(
-                controller: _teleponController,
-                hintText: 'Nomor Telepon Alternatif',
-                keyboardType: TextInputType.phone,
-              ),
-              const SizedBox(height: 32),
-              _buildActionButtons(),
-              const SizedBox(height: 32),
-            ],
+    return BlocListener<OrderFormCubit, OrderFormState>(
+      bloc: _orderFormCubit,
+      listener: (context, state) {
+        if (state is OrderFormLoading) {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => const Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        } else if (state is OrderFormSuccess) {
+          // Close loading dialog
+          Navigator.of(context).pop();
+
+          // Show success dialog
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Berhasil'),
+              content: const Text('Pesanan berhasil dibuat'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    // Navigate to order detail
+                    context
+                        .pushReplacement('/pesanan/detail/${state.order.id}');
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
+        } else if (state is OrderFormError) {
+          // Close loading dialog if it's showing
+          if (Navigator.canPop(context)) {
+            Navigator.of(context).pop();
+          }
+
+          // Show error dialog
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Error'),
+              content: Text(state.message),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: const Text('Form Pemesanan'),
+          centerTitle: true,
+        ),
+        body: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildSelectedPackageInfo(),
+                _buildDivider(),
+                _buildSectionTitle('Informasi Pasangan'),
+                const SizedBox(height: 12),
+                _buildTextField(
+                  controller: _namaPriaController,
+                  hintText: 'Nama Pengantin Pria',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Nama pengantin pria wajib diisi';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 12),
+                _buildTextField(
+                  controller: _namaWanitaController,
+                  hintText: 'Nama Pengantin Wanita',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Nama pengantin wanita wajib diisi';
+                    }
+                    return null;
+                  },
+                ),
+                _buildDivider(),
+                _buildSectionTitle('Informasi Acara'),
+                const SizedBox(height: 12),
+                _buildDateField(
+                  hintText: _formattedDate,
+                  onTap: () => _selectDate(context),
+                  validator: (value) {
+                    if (_selectedDate == null) {
+                      return 'Tanggal pernikahan wajib diisi';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 12),
+                _buildTextField(
+                  controller: _jumlahTamuController,
+                  hintText: 'Estimasi Jumlah Tamu',
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Estimasi jumlah tamu wajib diisi';
+                    }
+                    if (int.tryParse(value) == null) {
+                      return 'Masukkan angka yang valid';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 12),
+                _buildTextField(
+                  controller: _lokasiController,
+                  hintText: 'Lokasi Acara (Nama Gedung/Tempat Acara)',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Lokasi acara wajib diisi';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 12),
+                _buildTextField(
+                  controller: _alamatController,
+                  hintText: 'Alamat Lengkap Lokasi',
+                  maxLines: 3,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Alamat lengkap lokasi wajib diisi';
+                    }
+                    return null;
+                  },
+                ),
+                _buildDivider(),
+                _buildSectionTitle('Informasi Kontak'),
+                const SizedBox(height: 12),
+                _buildTextField(
+                  controller: _emailController,
+                  hintText: 'Email',
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Email wajib diisi';
+                    }
+                    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                        .hasMatch(value)) {
+                      return 'Masukkan email yang valid';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 12),
+                _buildTextField(
+                  controller: _whatsappController,
+                  hintText: 'Nomor WhatsApp',
+                  keyboardType: TextInputType.phone,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Nomor WhatsApp wajib diisi';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 12),
+                _buildTextField(
+                  controller: _teleponController,
+                  hintText: 'Nomor Telepon Alternatif',
+                  keyboardType: TextInputType.phone,
+                ),
+                const SizedBox(height: 32),
+                _buildActionButtons(),
+                const SizedBox(height: 32),
+              ],
+            ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSelectedPackageInfo() {
+    return Card(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        width: double.maxFinite,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Paket yang dipilih:',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              widget.layanan.name,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              widget.layanan.formattedPrice,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.pink,
+              ),
+            ),
+          ],
         ),
       ),
     );

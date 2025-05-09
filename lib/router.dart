@@ -40,15 +40,21 @@ final GoRouter _router = GoRouter(
         GoRoute(
           path: 'form',
           name: 'form',
-          builder: (context, state) => FormPemesananPage(
-            layanan: state.extra as CatalogModel,
+          builder: (context, state) => BlocProvider(
+            create: (context) => getIt<OrderFormCubit>(),
+            child: FormPemesananPage(
+              layanan: state.extra as CatalogModel,
+            ),
           ),
         ),
         GoRoute(
-          path: 'detail',
+          path: 'detail/:id',
           name: 'detail',
-          builder: (context, state) => DetailPesananPage(
-            pesanan: state.extra as PesananModel,
+          builder: (context, state) => BlocProvider(
+            create: (context) => getIt<OrderDetailCubit>(),
+            child: DetailPesananPage(
+              id: int.tryParse(state.pathParameters['id'] ?? '0') ?? 0,
+            ),
           ),
         ),
         GoRoute(

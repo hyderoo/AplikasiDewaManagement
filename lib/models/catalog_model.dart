@@ -15,7 +15,7 @@ abstract class CatalogModel with _$CatalogModel {
     required List<String> features,
     @JsonKey(name: 'created_at') required String createdAt,
     @JsonKey(name: 'updated_at') required String updatedAt,
-    @JsonKey(name: 'image_url') required String imageUrl,
+    @JsonKey(name: 'image_url') required String? imageUrl,
     @JsonKey(name: 'formatted_price') required String formattedPrice,
   }) = _CatalogModel;
 

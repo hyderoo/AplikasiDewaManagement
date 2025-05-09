@@ -1,32 +1,30 @@
-import 'package:dewa_wo_app/models/pesanan_model.dart';
+// order_card.dart (renamed from pesanan_card.dart)
+import 'package:dewa_wo_app/cubits/order/order_cubit.dart';
+import 'package:dewa_wo_app/models/order_model.dart';
 import 'package:dewa_wo_app/resources/resources.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-class PesananCard extends StatelessWidget {
-  final PesananModel pesanan;
-  const PesananCard({super.key, required this.pesanan});
+class OrderCard extends StatelessWidget {
+  final OrderModel order;
+  const OrderCard({super.key, required this.order});
 
   @override
   Widget build(BuildContext context) {
-    Color statusColor =
-        pesanan.status == 'Lunas' ? Colors.green : Colors.orange;
+    final orderCubit = context.read<OrderCubit>();
+    final statusColor = orderCubit.getStatusColor(order.status);
+    final statusDisplay = orderCubit.getStatusDisplayName(order.status);
 
-    final formatCurrency = NumberFormat.currency(
-      locale: 'id_ID',
-      symbol: 'Rp ',
-      decimalDigits: 0,
-    );
-    final formattedHarga = formatCurrency.format(pesanan.totalHarga);
+    // Parse event date to show formatted date
+    final eventDate = DateTime.parse(order.eventDate);
+    final formattedDate = DateFormat('dd MMMM yyyy', 'id_ID').format(eventDate);
 
     return Card(
       child: InkWell(
         onTap: () {
-          context.push(
-            'pesanan/detail',
-            extra: pesanan,
-          );
+          context.push('/pesanan/detail/${order.id}');
         },
         borderRadius: BorderRadius.circular(16),
         child: Padding(
@@ -42,7 +40,7 @@ class PesananCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          pesanan.userName,
+                          order.clientName,
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -51,7 +49,7 @@ class PesananCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          pesanan.paketName,
+                          order.catalog?.name ?? 'Custom Package',
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
@@ -69,7 +67,7 @@ class PesananCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      pesanan.status,
+                      statusDisplay,
                       style: TextStyle(
                         color: statusColor,
                         fontWeight: FontWeight.bold,
@@ -89,7 +87,7 @@ class PesananCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    pesanan.tanggal,
+                    formattedDate,
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey[600],
@@ -107,7 +105,7 @@ class PesananCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    formattedHarga,
+                    order.formattedPrice,
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey[600],
@@ -124,16 +122,21 @@ class PesananCard extends StatelessWidget {
                     color: Colors.grey[600],
                   ),
                   const SizedBox(width: 8),
-                  Text(
-                    'Grand Hyatt Jakarta',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
+                  Expanded(
+                    child: Text(
+                      order.venue,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[600],
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
               ),
-              if (true) ...[
+              if (order.status == 'pending_payment' &&
+                  order.requiresDownPayment) ...[
                 const SizedBox(height: 12),
                 SizedBox(
                   width: double.infinity,
@@ -142,7 +145,7 @@ class PesananCard extends StatelessWidget {
                       backgroundColor: Colors.orange,
                     ),
                     onPressed: () {
-                      context.push('/pesanan/bayar', extra: pesanan);
+                      context.push('/pesanan/bayar', extra: order);
                     },
                     child: const Text('Bayar Sekarang'),
                   ),
@@ -153,14 +156,52 @@ class PesananCard extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    context.push(
-                      '/pesanan/detail',
-                      extra: pesanan,
-                    );
+                    context.push('/pesanan/detail/${order.id}');
                   },
                   child: const Text('Lihat Detail'),
                 ),
               ),
+              if (order.paymentPercentage > 0) ...[
+                const SizedBox(height: 8),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Progress Pembayaran',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[600],
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Text(
+                          '${order.paymentPercentage}%',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: order.paymentPercentage == 100
+                                ? Colors.green
+                                : Colors.orange,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    LinearProgressIndicator(
+                      value: order.paymentPercentage / 100,
+                      backgroundColor: Colors.grey[200],
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        order.paymentPercentage == 100
+                            ? Colors.green
+                            : Colors.orange,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ],
           ),
         ),

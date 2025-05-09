@@ -15,6 +15,9 @@ import 'package:injectable/injectable.dart' as _i526;
 import '../../cubits/auth/auth_cubit.dart' as _i685;
 import '../../cubits/availability/availability_cubit.dart' as _i291;
 import '../../cubits/home/home_cubit.dart' as _i196;
+import '../../cubits/order/order_cubit.dart' as _i184;
+import '../../cubits/order_detail/order_detail_cubit.dart' as _i865;
+import '../../cubits/order_form/order_form_cubit.dart' as _i702;
 import '../../cubits/portfolio/portfolio_cubit.dart' as _i453;
 import '../../cubits/profile/profile_cubit.dart' as _i1056;
 import '../../cubits/review/review_cubit.dart' as _i668;
@@ -23,6 +26,8 @@ import '../../cubits/team/team_cubit.dart' as _i22;
 import '../../data/repositories/auth_repository.dart' as _i481;
 import '../../data/repositories/availability_repository.dart' as _i798;
 import '../../data/repositories/content_repository.dart' as _i785;
+import '../../data/repositories/order_repository.dart' as _i893;
+import '../../data/repositories/payment_repository.dart' as _i753;
 import '../../data/repositories/profile_repository.dart' as _i971;
 import '../api/api_client.dart' as _i277;
 
@@ -42,6 +47,16 @@ _i174.GetIt init(
       () => _i785.ContentRepository(apiClient: gh<_i277.ApiClient>()));
   gh.lazySingleton<_i798.AvailabilityRepository>(
       () => _i798.AvailabilityRepository(apiClient: gh<_i277.ApiClient>()));
+  gh.lazySingleton<_i893.OrderRepository>(
+      () => _i893.OrderRepository(apiClient: gh<_i277.ApiClient>()));
+  gh.lazySingleton<_i753.PaymentRepository>(
+      () => _i753.PaymentRepository(apiClient: gh<_i277.ApiClient>()));
+  gh.factory<_i702.OrderFormCubit>(
+      () => _i702.OrderFormCubit(orderRepository: gh<_i893.OrderRepository>()));
+  gh.factory<_i865.OrderDetailCubit>(() =>
+      _i865.OrderDetailCubit(orderRepository: gh<_i893.OrderRepository>()));
+  gh.lazySingleton<_i184.OrderCubit>(
+      () => _i184.OrderCubit(orderRepository: gh<_i893.OrderRepository>()));
   gh.lazySingleton<_i481.AuthRepository>(
       () => _i481.AuthRepository(gh<_i277.ApiClient>()));
   gh.lazySingleton<_i291.AvailabilityCubit>(() => _i291.AvailabilityCubit(

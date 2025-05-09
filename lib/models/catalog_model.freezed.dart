@@ -27,7 +27,7 @@ mixin _$CatalogModel {
   @JsonKey(name: 'updated_at')
   String get updatedAt;
   @JsonKey(name: 'image_url')
-  String get imageUrl;
+  String? get imageUrl;
   @JsonKey(name: 'formatted_price')
   String get formattedPrice;
 
@@ -103,7 +103,7 @@ abstract mixin class $CatalogModelCopyWith<$Res> {
       List<String> features,
       @JsonKey(name: 'created_at') String createdAt,
       @JsonKey(name: 'updated_at') String updatedAt,
-      @JsonKey(name: 'image_url') String imageUrl,
+      @JsonKey(name: 'image_url') String? imageUrl,
       @JsonKey(name: 'formatted_price') String formattedPrice});
 }
 
@@ -128,7 +128,7 @@ class _$CatalogModelCopyWithImpl<$Res> implements $CatalogModelCopyWith<$Res> {
     Object? features = null,
     Object? createdAt = null,
     Object? updatedAt = null,
-    Object? imageUrl = null,
+    Object? imageUrl = freezed,
     Object? formattedPrice = null,
   }) {
     return _then(_self.copyWith(
@@ -168,10 +168,10 @@ class _$CatalogModelCopyWithImpl<$Res> implements $CatalogModelCopyWith<$Res> {
           ? _self.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as String,
-      imageUrl: null == imageUrl
+      imageUrl: freezed == imageUrl
           ? _self.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       formattedPrice: null == formattedPrice
           ? _self.formattedPrice
           : formattedPrice // ignore: cast_nullable_to_non_nullable
@@ -234,7 +234,7 @@ class _CatalogModel implements CatalogModel {
   final String updatedAt;
   @override
   @JsonKey(name: 'image_url')
-  final String imageUrl;
+  final String? imageUrl;
   @override
   @JsonKey(name: 'formatted_price')
   final String formattedPrice;
@@ -317,7 +317,7 @@ abstract mixin class _$CatalogModelCopyWith<$Res>
       List<String> features,
       @JsonKey(name: 'created_at') String createdAt,
       @JsonKey(name: 'updated_at') String updatedAt,
-      @JsonKey(name: 'image_url') String imageUrl,
+      @JsonKey(name: 'image_url') String? imageUrl,
       @JsonKey(name: 'formatted_price') String formattedPrice});
 }
 
@@ -343,7 +343,7 @@ class __$CatalogModelCopyWithImpl<$Res>
     Object? features = null,
     Object? createdAt = null,
     Object? updatedAt = null,
-    Object? imageUrl = null,
+    Object? imageUrl = freezed,
     Object? formattedPrice = null,
   }) {
     return _then(_CatalogModel(
@@ -383,10 +383,10 @@ class __$CatalogModelCopyWithImpl<$Res>
           ? _self.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as String,
-      imageUrl: null == imageUrl
+      imageUrl: freezed == imageUrl
           ? _self.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       formattedPrice: null == formattedPrice
           ? _self.formattedPrice
           : formattedPrice // ignore: cast_nullable_to_non_nullable
