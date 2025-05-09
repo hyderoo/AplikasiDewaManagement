@@ -17,7 +17,10 @@ final GoRouter _router = GoRouter(
     GoRoute(
       path: '/layanan',
       name: 'layanan',
-      builder: (context, state) => const LayananPage(),
+      builder: (context, state) {
+        String? search = state.extra as String?;
+        return LayananPage(search: search);
+      },
     ),
     GoRoute(
       path: '/portofolio',

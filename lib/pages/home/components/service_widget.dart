@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:collection/collection.dart';
 import 'package:dewa_wo_app/core/consts/app_consts.dart';
 import 'package:dewa_wo_app/cubits/service/service_cubit.dart';
 import 'package:dewa_wo_app/dialogs/login_required_dialog.dart';
@@ -23,6 +24,13 @@ class _ServiceWidgetState extends State<ServiceWidget> {
     super.initState();
     _serviceCubit = context.read<ServiceCubit>();
   }
+
+  final List<Map<String, String>> _serviceTypes = [
+    {"value": "semua", "label": "Semua"},
+    {"value": "all-in-one", "label": "Paket Lengkap"},
+    {"value": "decoration", "label": "Dekorasi"},
+    {"value": "documentation", "label": "Dokumentasi"},
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -183,7 +191,9 @@ class _ServiceWidgetState extends State<ServiceWidget> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      service.type,
+                      _serviceTypes.firstWhereOrNull(
+                              (e) => e['value'] == service.type)?['label'] ??
+                          '-',
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,

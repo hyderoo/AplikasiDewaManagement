@@ -11,7 +11,11 @@ import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 
 class LayananPage extends StatefulWidget {
-  const LayananPage({super.key});
+  final String? search;
+  const LayananPage({
+    super.key,
+    this.search,
+  });
 
   @override
   State<LayananPage> createState() => _LayananPageState();
@@ -35,10 +39,13 @@ class _LayananPageState extends State<LayananPage> {
   @override
   void initState() {
     super.initState();
+    _searchController.text = widget.search ?? '';
+    if (_searchController.text.isNotEmpty) {
+      _isSearchMode = true;
+    }
     _serviceCubit = context.read<ServiceCubit>();
     _availabilityCubit = context.read<AvailabilityCubit>();
     _serviceCubit.getServices();
-    // Load availability data when screen is opened
     _availabilityCubit.getBookedDates();
   }
 
@@ -189,7 +196,7 @@ class _LayananPageState extends State<LayananPage> {
               bloc: _serviceCubit,
               listener: (context, state) {
                 if (state is ServiceSuccess) {
-                  _filterLayanan(state.services, _selectedCategory);
+                  _searchLayanan(state.services, _searchController.text);
                 }
               },
               builder: (context, state) {

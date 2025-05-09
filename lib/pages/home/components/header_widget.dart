@@ -32,7 +32,7 @@ class HeaderWidget extends StatelessWidget {
                 child: Image.asset('assets/logo.png'),
               ),
               const SizedBox(width: 12),
-              const Expanded(
+              Expanded(
                 child: TextField(
                   style: TextStyle(color: Colors.white),
                   cursorColor: Colors.white,
@@ -60,6 +60,11 @@ class HeaderWidget extends StatelessWidget {
                       ),
                     ),
                   ),
+                  onSubmitted: (value) {
+                    if (value.isNotEmpty) {
+                      context.pushNamed('layanan', extra: value);
+                    }
+                  },
                 ),
               ),
               IconButton(
