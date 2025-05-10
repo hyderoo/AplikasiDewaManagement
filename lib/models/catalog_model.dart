@@ -12,7 +12,7 @@ abstract class CatalogModel with _$CatalogModel {
     required List<int> price,
     required String type,
     required String image,
-    required List<String> features,
+    @Default([]) List<String> features,
     @JsonKey(name: 'created_at') required String createdAt,
     @JsonKey(name: 'updated_at') required String updatedAt,
     @JsonKey(name: 'image_url') required String? imageUrl,

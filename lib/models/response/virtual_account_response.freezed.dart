@@ -17,7 +17,7 @@ T _$identity<T>(T value) => value;
 mixin _$VirtualAccountResponse {
   String get status;
   String get message;
-  dynamic get data;
+  List<VirtualAccountModel>? get data;
 
   /// Create a copy of VirtualAccountResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -57,7 +57,7 @@ abstract mixin class $VirtualAccountResponseCopyWith<$Res> {
           $Res Function(VirtualAccountResponse) _then) =
       _$VirtualAccountResponseCopyWithImpl;
   @useResult
-  $Res call({String status, String message, dynamic data});
+  $Res call({String status, String message, List<VirtualAccountModel>? data});
 }
 
 /// @nodoc
@@ -89,7 +89,7 @@ class _$VirtualAccountResponseCopyWithImpl<$Res>
       data: freezed == data
           ? _self.data
           : data // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as List<VirtualAccountModel>?,
     ));
   }
 }
@@ -98,7 +98,10 @@ class _$VirtualAccountResponseCopyWithImpl<$Res>
 @JsonSerializable()
 class _VirtualAccountResponse implements VirtualAccountResponse {
   const _VirtualAccountResponse(
-      {required this.status, required this.message, this.data});
+      {required this.status,
+      required this.message,
+      final List<VirtualAccountModel>? data})
+      : _data = data;
   factory _VirtualAccountResponse.fromJson(Map<String, dynamic> json) =>
       _$VirtualAccountResponseFromJson(json);
 
@@ -106,8 +109,15 @@ class _VirtualAccountResponse implements VirtualAccountResponse {
   final String status;
   @override
   final String message;
+  final List<VirtualAccountModel>? _data;
   @override
-  final dynamic data;
+  List<VirtualAccountModel>? get data {
+    final value = _data;
+    if (value == null) return null;
+    if (_data is EqualUnmodifiableListView) return _data;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
 
   /// Create a copy of VirtualAccountResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -132,13 +142,13 @@ class _VirtualAccountResponse implements VirtualAccountResponse {
             other is _VirtualAccountResponse &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.message, message) || other.message == message) &&
-            const DeepCollectionEquality().equals(other.data, data));
+            const DeepCollectionEquality().equals(other._data, _data));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
-      runtimeType, status, message, const DeepCollectionEquality().hash(data));
+      runtimeType, status, message, const DeepCollectionEquality().hash(_data));
 
   @override
   String toString() {
@@ -154,7 +164,7 @@ abstract mixin class _$VirtualAccountResponseCopyWith<$Res>
       __$VirtualAccountResponseCopyWithImpl;
   @override
   @useResult
-  $Res call({String status, String message, dynamic data});
+  $Res call({String status, String message, List<VirtualAccountModel>? data});
 }
 
 /// @nodoc
@@ -184,9 +194,9 @@ class __$VirtualAccountResponseCopyWithImpl<$Res>
           : message // ignore: cast_nullable_to_non_nullable
               as String,
       data: freezed == data
-          ? _self.data
+          ? _self._data
           : data // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as List<VirtualAccountModel>?,
     ));
   }
 }

@@ -14,7 +14,6 @@ import 'package:injectable/injectable.dart' as _i526;
 
 import '../../cubits/auth/auth_cubit.dart' as _i685;
 import '../../cubits/availability/availability_cubit.dart' as _i291;
-import '../../cubits/home/home_cubit.dart' as _i196;
 import '../../cubits/order/order_cubit.dart' as _i184;
 import '../../cubits/order_detail/order_detail_cubit.dart' as _i865;
 import '../../cubits/order_form/order_form_cubit.dart' as _i702;
@@ -44,36 +43,34 @@ _i174.GetIt init(
     environmentFilter,
   );
   gh.lazySingleton<_i277.ApiClient>(() => _i277.ApiClient());
-  gh.lazySingleton<_i785.ContentRepository>(
-      () => _i785.ContentRepository(apiClient: gh<_i277.ApiClient>()));
-  gh.lazySingleton<_i798.AvailabilityRepository>(
-      () => _i798.AvailabilityRepository(apiClient: gh<_i277.ApiClient>()));
   gh.lazySingleton<_i893.OrderRepository>(
       () => _i893.OrderRepository(apiClient: gh<_i277.ApiClient>()));
+  gh.lazySingleton<_i798.AvailabilityRepository>(
+      () => _i798.AvailabilityRepository(apiClient: gh<_i277.ApiClient>()));
   gh.lazySingleton<_i753.PaymentRepository>(
       () => _i753.PaymentRepository(apiClient: gh<_i277.ApiClient>()));
+  gh.lazySingleton<_i785.ContentRepository>(
+      () => _i785.ContentRepository(apiClient: gh<_i277.ApiClient>()));
+  gh.factory<_i807.PaymentDetailCubit>(() =>
+      _i807.PaymentDetailCubit(orderRepository: gh<_i893.OrderRepository>()));
   gh.factory<_i702.OrderFormCubit>(
       () => _i702.OrderFormCubit(orderRepository: gh<_i893.OrderRepository>()));
   gh.factory<_i865.OrderDetailCubit>(() =>
       _i865.OrderDetailCubit(orderRepository: gh<_i893.OrderRepository>()));
-  gh.factory<_i807.PaymentDetailCubit>(() =>
-      _i807.PaymentDetailCubit(orderRepository: gh<_i893.OrderRepository>()));
   gh.lazySingleton<_i184.OrderCubit>(
       () => _i184.OrderCubit(orderRepository: gh<_i893.OrderRepository>()));
   gh.lazySingleton<_i481.AuthRepository>(
       () => _i481.AuthRepository(gh<_i277.ApiClient>()));
   gh.lazySingleton<_i291.AvailabilityCubit>(() => _i291.AvailabilityCubit(
       availabilityRepository: gh<_i798.AvailabilityRepository>()));
-  gh.lazySingleton<_i196.HomeCubit>(
-      () => _i196.HomeCubit(contentRepository: gh<_i785.ContentRepository>()));
+  gh.lazySingleton<_i22.TeamCubit>(
+      () => _i22.TeamCubit(contentRepository: gh<_i785.ContentRepository>()));
   gh.lazySingleton<_i668.ReviewCubit>(() =>
       _i668.ReviewCubit(contentRepository: gh<_i785.ContentRepository>()));
   gh.lazySingleton<_i453.PortfolioCubit>(() =>
       _i453.PortfolioCubit(contentRepository: gh<_i785.ContentRepository>()));
   gh.lazySingleton<_i327.ServiceCubit>(() =>
       _i327.ServiceCubit(contentRepository: gh<_i785.ContentRepository>()));
-  gh.lazySingleton<_i22.TeamCubit>(
-      () => _i22.TeamCubit(contentRepository: gh<_i785.ContentRepository>()));
   gh.lazySingleton<_i971.ProfileRepository>(() => _i971.ProfileRepository(
         apiClient: gh<_i277.ApiClient>(),
         authRepository: gh<_i481.AuthRepository>(),

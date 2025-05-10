@@ -10,7 +10,7 @@ abstract class VirtualAccountResponse with _$VirtualAccountResponse {
   const factory VirtualAccountResponse({
     required String status,
     required String message,
-    dynamic data,
+    List<VirtualAccountModel>? data,
   }) = _VirtualAccountResponse;
 
   factory VirtualAccountResponse.fromJson(Map<String, dynamic> json) =>

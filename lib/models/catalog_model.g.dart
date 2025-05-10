@@ -16,8 +16,10 @@ _CatalogModel _$CatalogModelFromJson(Map<String, dynamic> json) =>
           .toList(),
       type: json['type'] as String,
       image: json['image'] as String,
-      features:
-          (json['features'] as List<dynamic>).map((e) => e as String).toList(),
+      features: (json['features'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
       createdAt: json['created_at'] as String,
       updatedAt: json['updated_at'] as String,
       imageUrl: json['image_url'] as String?,

@@ -10,7 +10,9 @@ _BankResponse _$BankResponseFromJson(Map<String, dynamic> json) =>
     _BankResponse(
       status: json['status'] as String,
       message: json['message'] as String,
-      data: json['data'],
+      data: (json['data'] as List<dynamic>?)
+          ?.map((e) => BankModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$BankResponseToJson(_BankResponse instance) =>

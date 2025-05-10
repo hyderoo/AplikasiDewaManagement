@@ -10,7 +10,7 @@ abstract class BankResponse with _$BankResponse {
   const factory BankResponse({
     required String status,
     required String message,
-    dynamic data,
+    List<BankModel>? data,
   }) = _BankResponse;
 
   factory BankResponse.fromJson(Map<String, dynamic> json) =>

@@ -17,7 +17,7 @@ T _$identity<T>(T value) => value;
 mixin _$BankResponse {
   String get status;
   String get message;
-  dynamic get data;
+  List<BankModel>? get data;
 
   /// Create a copy of BankResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -57,7 +57,7 @@ abstract mixin class $BankResponseCopyWith<$Res> {
           BankResponse value, $Res Function(BankResponse) _then) =
       _$BankResponseCopyWithImpl;
   @useResult
-  $Res call({String status, String message, dynamic data});
+  $Res call({String status, String message, List<BankModel>? data});
 }
 
 /// @nodoc
@@ -88,7 +88,7 @@ class _$BankResponseCopyWithImpl<$Res> implements $BankResponseCopyWith<$Res> {
       data: freezed == data
           ? _self.data
           : data // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as List<BankModel>?,
     ));
   }
 }
@@ -96,7 +96,11 @@ class _$BankResponseCopyWithImpl<$Res> implements $BankResponseCopyWith<$Res> {
 /// @nodoc
 @JsonSerializable()
 class _BankResponse implements BankResponse {
-  const _BankResponse({required this.status, required this.message, this.data});
+  const _BankResponse(
+      {required this.status,
+      required this.message,
+      final List<BankModel>? data})
+      : _data = data;
   factory _BankResponse.fromJson(Map<String, dynamic> json) =>
       _$BankResponseFromJson(json);
 
@@ -104,8 +108,15 @@ class _BankResponse implements BankResponse {
   final String status;
   @override
   final String message;
+  final List<BankModel>? _data;
   @override
-  final dynamic data;
+  List<BankModel>? get data {
+    final value = _data;
+    if (value == null) return null;
+    if (_data is EqualUnmodifiableListView) return _data;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
 
   /// Create a copy of BankResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -129,13 +140,13 @@ class _BankResponse implements BankResponse {
             other is _BankResponse &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.message, message) || other.message == message) &&
-            const DeepCollectionEquality().equals(other.data, data));
+            const DeepCollectionEquality().equals(other._data, _data));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
-      runtimeType, status, message, const DeepCollectionEquality().hash(data));
+      runtimeType, status, message, const DeepCollectionEquality().hash(_data));
 
   @override
   String toString() {
@@ -151,7 +162,7 @@ abstract mixin class _$BankResponseCopyWith<$Res>
       __$BankResponseCopyWithImpl;
   @override
   @useResult
-  $Res call({String status, String message, dynamic data});
+  $Res call({String status, String message, List<BankModel>? data});
 }
 
 /// @nodoc
@@ -181,9 +192,9 @@ class __$BankResponseCopyWithImpl<$Res>
           : message // ignore: cast_nullable_to_non_nullable
               as String,
       data: freezed == data
-          ? _self.data
+          ? _self._data
           : data // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as List<BankModel>?,
     ));
   }
 }

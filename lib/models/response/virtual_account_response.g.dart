@@ -11,7 +11,9 @@ _VirtualAccountResponse _$VirtualAccountResponseFromJson(
     _VirtualAccountResponse(
       status: json['status'] as String,
       message: json['message'] as String,
-      data: json['data'],
+      data: (json['data'] as List<dynamic>?)
+          ?.map((e) => VirtualAccountModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$VirtualAccountResponseToJson(

@@ -190,7 +190,7 @@ class _CatalogModel implements CatalogModel {
       required final List<int> price,
       required this.type,
       required this.image,
-      required final List<String> features,
+      final List<String> features = const [],
       @JsonKey(name: 'created_at') required this.createdAt,
       @JsonKey(name: 'updated_at') required this.updatedAt,
       @JsonKey(name: 'image_url') required this.imageUrl,
@@ -220,6 +220,7 @@ class _CatalogModel implements CatalogModel {
   final String image;
   final List<String> _features;
   @override
+  @JsonKey()
   List<String> get features {
     if (_features is EqualUnmodifiableListView) return _features;
     // ignore: implicit_dynamic_type

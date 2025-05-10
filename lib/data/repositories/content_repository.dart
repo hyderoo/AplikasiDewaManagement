@@ -2,7 +2,6 @@ import 'package:dewa_wo_app/core/api/api_client.dart';
 import 'package:dewa_wo_app/models/response/legal_document_response.dart';
 import 'package:dewa_wo_app/models/response/portfolio_response.dart';
 import 'package:dewa_wo_app/models/response/review_response.dart';
-import 'package:dewa_wo_app/models/response/service_response.dart';
 import 'package:dewa_wo_app/models/response/team_response.dart';
 import 'package:dewa_wo_app/models/response/catalog_response.dart';
 import 'package:dio/dio.dart';
@@ -38,37 +37,6 @@ class ContentRepository {
       );
     } catch (e) {
       return PortfolioResponse(
-        status: 'error',
-        message: e.toString(),
-        data: null,
-      );
-    }
-  }
-
-  // Service Methods
-  Future<ServiceResponse> getServices() async {
-    try {
-      final response = await _apiClient.get('/services');
-      return ServiceResponse.fromJson(response.data);
-    } on DioException catch (e) {
-      if (e.response != null) {
-        try {
-          return ServiceResponse.fromJson(e.response!.data);
-        } catch (_) {
-          return ServiceResponse(
-            status: 'error',
-            message: e.message ?? 'Failed to fetch services',
-            data: null,
-          );
-        }
-      }
-      return ServiceResponse(
-        status: 'error',
-        message: e.message ?? 'Network error occurred',
-        data: null,
-      );
-    } catch (e) {
-      return ServiceResponse(
         status: 'error',
         message: e.toString(),
         data: null,
