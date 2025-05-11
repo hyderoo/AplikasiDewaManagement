@@ -13,7 +13,7 @@ _PaymentDetailsResponse _$PaymentDetailsResponseFromJson(
       message: json['message'] as String,
       data: json['data'] == null
           ? null
-          : PaymentDetailsData.fromJson(json['data'] as Map<String, dynamic>),
+          : PaymentModel.fromJson(json['data'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$PaymentDetailsResponseToJson(
@@ -22,22 +22,4 @@ Map<String, dynamic> _$PaymentDetailsResponseToJson(
       'status': instance.status,
       'message': instance.message,
       'data': instance.data,
-    };
-
-_PaymentDetailsData _$PaymentDetailsDataFromJson(Map<String, dynamic> json) =>
-    _PaymentDetailsData(
-      order: OrderModel.fromJson(json['order'] as Map<String, dynamic>),
-      banks: (json['banks'] as List<dynamic>)
-          .map((e) => BankModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      virtualAccounts: (json['virtual_accounts'] as List<dynamic>)
-          .map((e) => VirtualAccountModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
-
-Map<String, dynamic> _$PaymentDetailsDataToJson(_PaymentDetailsData instance) =>
-    <String, dynamic>{
-      'order': instance.order,
-      'banks': instance.banks,
-      'virtual_accounts': instance.virtualAccounts,
     };

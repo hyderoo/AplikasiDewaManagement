@@ -1,8 +1,10 @@
-// payment_detail_cubit.dart
+// lib/cubits/payment_detail/payment_detail_cubit.dart
 import 'package:bloc/bloc.dart';
+import 'package:collection/collection.dart';
 import 'package:dewa_wo_app/data/repositories/order_repository.dart';
-import 'package:dewa_wo_app/models/bank_model.dart';
+import 'package:dewa_wo_app/data/repositories/payment_repository.dart';
 import 'package:dewa_wo_app/models/order_model.dart';
+import 'package:dewa_wo_app/models/payment_model.dart';
 import 'package:dewa_wo_app/models/virtual_account_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -10,59 +12,55 @@ import 'package:injectable/injectable.dart';
 part 'payment_detail_state.dart';
 part 'payment_detail_cubit.freezed.dart';
 
-@injectable
+@lazySingleton
 class PaymentDetailCubit extends Cubit<PaymentDetailState> {
+  final PaymentRepository _paymentRepository;
   final OrderRepository _orderRepository;
 
-  PaymentDetailCubit({required OrderRepository orderRepository})
+  PaymentDetailCubit(
+      {required PaymentRepository paymentRepository,
+      required OrderRepository orderRepository})
       : _orderRepository = orderRepository,
+        _paymentRepository = paymentRepository,
         super(const PaymentDetailState.initial());
 
-  Future<void> loadPaymentDetails(int orderId) async {
+  Future<void> loadPaymentDetails(int id) async {
     emit(const PaymentDetailState.loading());
 
     try {
-      // Get order detail
-      final orderResponse = await _orderRepository.getOrderById(orderId);
-      if (orderResponse.status != 'success' || orderResponse.data == null) {
-        emit(PaymentDetailState.error(message: orderResponse.message));
+      // Fetch order details
+      final paymentResponse = await _paymentRepository.getPaymentDetails(id);
+      if (paymentResponse.status != 'success' || paymentResponse.data == null) {
+        emit(PaymentDetailState.error(message: paymentResponse.message));
         return;
       }
-      final order = orderResponse.data as OrderModel;
 
-      // Get banks
-      final banksResponse = await _orderRepository.getBanks();
-      final banks =
-          banksResponse.status == 'success' && banksResponse.data != null
-              ? banksResponse.data as List<BankModel>
-              : <BankModel>[];
+      final payment = paymentResponse.data as PaymentModel;
 
-      // Get virtual accounts
-      final vaResponse = await _orderRepository.getVirtualAccounts();
-      final virtualAccounts =
-          vaResponse.status == 'success' && vaResponse.data != null
-              ? (vaResponse.data as List<VirtualAccountModel>)
-                  .where((va) => va.isActive)
-                  .toList()
-              : <VirtualAccountModel>[];
+      // Get virtual account details by bank code
+      final VirtualAccountModel? virtualAccount = payment.bankCode != null
+          ? await _getVirtualAccountByCode(payment.bankCode!)
+          : null;
 
-      // Set default selection
-      final defaultVA =
-          virtualAccounts.isNotEmpty ? virtualAccounts.first : null;
+      if (virtualAccount == null) {
+        emit(const PaymentDetailState.error(
+            message: 'Bank Virtual Account tidak ditemukan'));
+        return;
+      }
 
-      // Generate virtual account number (in real app, this should come from backend)
-      final vaNumber = _generateVirtualAccountNumber();
+      // Set expiration time (24 hours from payment creation)
+      final expiredAt =
+          DateTime.parse(payment.createdAt).add(const Duration(hours: 24));
 
-      // Set expiration time (24 hours from now)
-      final expiredAt = DateTime.now().add(const Duration(hours: 24));
+      final orderResponse =
+          await _orderRepository.getOrderById(payment.orderId);
 
       emit(PaymentDetailState.success(
-        order: order,
-        banks: banks,
-        virtualAccounts: virtualAccounts,
-        selectedVirtualAccount: defaultVA,
-        virtualAccountNumber: vaNumber,
+        order: orderResponse.data!,
+        virtualAccountNumber: payment.vaNumber ?? '-',
+        virtualAccount: virtualAccount,
         expiredAt: expiredAt,
+        amount: double.tryParse(payment.amount) ?? 0,
       ));
     } catch (e) {
       emit(PaymentDetailState.error(
@@ -70,20 +68,17 @@ class PaymentDetailCubit extends Cubit<PaymentDetailState> {
     }
   }
 
-  void selectVirtualAccount(VirtualAccountModel virtualAccount) {
-    if (state is PaymentDetailSuccess) {
-      final currentState = state as PaymentDetailSuccess;
-      emit(currentState.copyWith(
-        selectedVirtualAccount: virtualAccount,
-      ));
-    }
-  }
+  Future<VirtualAccountModel?> _getVirtualAccountByCode(String bankCode) async {
+    final vaResponse = await _orderRepository.getVirtualAccounts();
 
-  String _generateVirtualAccountNumber() {
-    // In real app, this should come from backend
-    // This is just a dummy implementation
-    final timestamp = DateTime.now().millisecondsSinceEpoch;
-    return timestamp.toString().padLeft(16, '0').substring(0, 16);
+    if (vaResponse.status == 'success' && vaResponse.data != null) {
+      final virtualAccounts = vaResponse.data as List<VirtualAccountModel>;
+      return virtualAccounts.firstWhereOrNull(
+        (va) => va.bankCode == bankCode,
+      );
+    }
+
+    return null;
   }
 
   Future<void> confirmPayment() async {
@@ -91,21 +86,60 @@ class PaymentDetailCubit extends Cubit<PaymentDetailState> {
 
     emit(const PaymentDetailState.loading());
 
-    // In real app, this would send payment confirmation to backend
-    // For now, we'll just simulate a successful payment
-    await Future.delayed(const Duration(seconds: 2));
+    try {
+      // In a real app, this would send payment confirmation to backend
+      // For now, we'll just simulate a successful payment
+      await Future.delayed(const Duration(seconds: 2));
 
-    // Navigate back or show success
-    emit(PaymentDetailState.success(
-      order: (state as PaymentDetailSuccess).order,
-      banks: (state as PaymentDetailSuccess).banks,
-      virtualAccounts: (state as PaymentDetailSuccess).virtualAccounts,
-      selectedVirtualAccount:
-          (state as PaymentDetailSuccess).selectedVirtualAccount,
-      virtualAccountNumber:
-          (state as PaymentDetailSuccess).virtualAccountNumber,
-      expiredAt: (state as PaymentDetailSuccess).expiredAt,
-      message: 'Pembayaran berhasil dikonfirmasi',
-    ));
+      final currentState = state as PaymentDetailSuccess;
+
+      emit(PaymentDetailState.success(
+        order: currentState.order,
+        virtualAccountNumber: currentState.virtualAccountNumber,
+        virtualAccount: currentState.virtualAccount,
+        expiredAt: currentState.expiredAt,
+        amount: currentState.amount,
+        message: 'Pembayaran berhasil dikonfirmasi',
+        isPaymentConfirmed: true,
+      ));
+    } catch (e) {
+      emit(PaymentDetailState.error(
+          message: 'Terjadi kesalahan: ${e.toString()}'));
+    }
+  }
+
+  Future<void> checkPaymentStatus() async {
+    if (state is! PaymentDetailSuccess) return;
+
+    try {
+      // In a real app, this would check payment status from the backend
+      // For now, we'll just simulate pending status
+      await Future.delayed(const Duration(seconds: 1));
+
+      final currentState = state as PaymentDetailSuccess;
+
+      emit(PaymentDetailState.success(
+        order: currentState.order,
+        virtualAccountNumber: currentState.virtualAccountNumber,
+        virtualAccount: currentState.virtualAccount,
+        expiredAt: currentState.expiredAt,
+        amount: currentState.amount,
+        message:
+            'Pembayaran masih dalam proses. Harap tunggu notifikasi dari bank Anda.',
+        isPaymentConfirmed: false,
+      ));
+    } catch (e) {
+      final currentState = state as PaymentDetailSuccess;
+
+      emit(PaymentDetailState.success(
+        order: currentState.order,
+        virtualAccountNumber: currentState.virtualAccountNumber,
+        virtualAccount: currentState.virtualAccount,
+        expiredAt: currentState.expiredAt,
+        amount: currentState.amount,
+        message: 'Gagal memeriksa status: ${e.toString()}',
+        isPaymentConfirmed: false,
+      ));
+    }
   }
 }

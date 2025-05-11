@@ -81,34 +81,20 @@ class PaymentDetailLoading implements PaymentDetailState {
 class PaymentDetailSuccess implements PaymentDetailState {
   const PaymentDetailSuccess(
       {required this.order,
-      required final List<BankModel> banks,
-      required final List<VirtualAccountModel> virtualAccounts,
-      this.selectedVirtualAccount,
-      this.virtualAccountNumber,
-      this.expiredAt,
-      this.message})
-      : _banks = banks,
-        _virtualAccounts = virtualAccounts;
+      required this.virtualAccountNumber,
+      required this.virtualAccount,
+      required this.expiredAt,
+      required this.amount,
+      this.message,
+      this.isPaymentConfirmed});
 
   final OrderModel order;
-  final List<BankModel> _banks;
-  List<BankModel> get banks {
-    if (_banks is EqualUnmodifiableListView) return _banks;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_banks);
-  }
-
-  final List<VirtualAccountModel> _virtualAccounts;
-  List<VirtualAccountModel> get virtualAccounts {
-    if (_virtualAccounts is EqualUnmodifiableListView) return _virtualAccounts;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_virtualAccounts);
-  }
-
-  final VirtualAccountModel? selectedVirtualAccount;
-  final String? virtualAccountNumber;
-  final DateTime? expiredAt;
+  final String virtualAccountNumber;
+  final VirtualAccountModel virtualAccount;
+  final DateTime expiredAt;
+  final double amount;
   final String? message;
+  final bool? isPaymentConfirmed;
 
   /// Create a copy of PaymentDetailState
   /// with the given fields replaced by the non-null parameter values.
@@ -124,32 +110,25 @@ class PaymentDetailSuccess implements PaymentDetailState {
         (other.runtimeType == runtimeType &&
             other is PaymentDetailSuccess &&
             (identical(other.order, order) || other.order == order) &&
-            const DeepCollectionEquality().equals(other._banks, _banks) &&
-            const DeepCollectionEquality()
-                .equals(other._virtualAccounts, _virtualAccounts) &&
-            (identical(other.selectedVirtualAccount, selectedVirtualAccount) ||
-                other.selectedVirtualAccount == selectedVirtualAccount) &&
             (identical(other.virtualAccountNumber, virtualAccountNumber) ||
                 other.virtualAccountNumber == virtualAccountNumber) &&
+            (identical(other.virtualAccount, virtualAccount) ||
+                other.virtualAccount == virtualAccount) &&
             (identical(other.expiredAt, expiredAt) ||
                 other.expiredAt == expiredAt) &&
-            (identical(other.message, message) || other.message == message));
+            (identical(other.amount, amount) || other.amount == amount) &&
+            (identical(other.message, message) || other.message == message) &&
+            (identical(other.isPaymentConfirmed, isPaymentConfirmed) ||
+                other.isPaymentConfirmed == isPaymentConfirmed));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      order,
-      const DeepCollectionEquality().hash(_banks),
-      const DeepCollectionEquality().hash(_virtualAccounts),
-      selectedVirtualAccount,
-      virtualAccountNumber,
-      expiredAt,
-      message);
+  int get hashCode => Object.hash(runtimeType, order, virtualAccountNumber,
+      virtualAccount, expiredAt, amount, message, isPaymentConfirmed);
 
   @override
   String toString() {
-    return 'PaymentDetailState.success(order: $order, banks: $banks, virtualAccounts: $virtualAccounts, selectedVirtualAccount: $selectedVirtualAccount, virtualAccountNumber: $virtualAccountNumber, expiredAt: $expiredAt, message: $message)';
+    return 'PaymentDetailState.success(order: $order, virtualAccountNumber: $virtualAccountNumber, virtualAccount: $virtualAccount, expiredAt: $expiredAt, amount: $amount, message: $message, isPaymentConfirmed: $isPaymentConfirmed)';
   }
 }
 
@@ -162,15 +141,15 @@ abstract mixin class $PaymentDetailSuccessCopyWith<$Res>
   @useResult
   $Res call(
       {OrderModel order,
-      List<BankModel> banks,
-      List<VirtualAccountModel> virtualAccounts,
-      VirtualAccountModel? selectedVirtualAccount,
-      String? virtualAccountNumber,
-      DateTime? expiredAt,
-      String? message});
+      String virtualAccountNumber,
+      VirtualAccountModel virtualAccount,
+      DateTime expiredAt,
+      double amount,
+      String? message,
+      bool? isPaymentConfirmed});
 
   $OrderModelCopyWith<$Res> get order;
-  $VirtualAccountModelCopyWith<$Res>? get selectedVirtualAccount;
+  $VirtualAccountModelCopyWith<$Res> get virtualAccount;
 }
 
 /// @nodoc
@@ -186,42 +165,42 @@ class _$PaymentDetailSuccessCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   $Res call({
     Object? order = null,
-    Object? banks = null,
-    Object? virtualAccounts = null,
-    Object? selectedVirtualAccount = freezed,
-    Object? virtualAccountNumber = freezed,
-    Object? expiredAt = freezed,
+    Object? virtualAccountNumber = null,
+    Object? virtualAccount = null,
+    Object? expiredAt = null,
+    Object? amount = null,
     Object? message = freezed,
+    Object? isPaymentConfirmed = freezed,
   }) {
     return _then(PaymentDetailSuccess(
       order: null == order
           ? _self.order
           : order // ignore: cast_nullable_to_non_nullable
               as OrderModel,
-      banks: null == banks
-          ? _self._banks
-          : banks // ignore: cast_nullable_to_non_nullable
-              as List<BankModel>,
-      virtualAccounts: null == virtualAccounts
-          ? _self._virtualAccounts
-          : virtualAccounts // ignore: cast_nullable_to_non_nullable
-              as List<VirtualAccountModel>,
-      selectedVirtualAccount: freezed == selectedVirtualAccount
-          ? _self.selectedVirtualAccount
-          : selectedVirtualAccount // ignore: cast_nullable_to_non_nullable
-              as VirtualAccountModel?,
-      virtualAccountNumber: freezed == virtualAccountNumber
+      virtualAccountNumber: null == virtualAccountNumber
           ? _self.virtualAccountNumber
           : virtualAccountNumber // ignore: cast_nullable_to_non_nullable
-              as String?,
-      expiredAt: freezed == expiredAt
+              as String,
+      virtualAccount: null == virtualAccount
+          ? _self.virtualAccount
+          : virtualAccount // ignore: cast_nullable_to_non_nullable
+              as VirtualAccountModel,
+      expiredAt: null == expiredAt
           ? _self.expiredAt
           : expiredAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
+              as DateTime,
+      amount: null == amount
+          ? _self.amount
+          : amount // ignore: cast_nullable_to_non_nullable
+              as double,
       message: freezed == message
           ? _self.message
           : message // ignore: cast_nullable_to_non_nullable
               as String?,
+      isPaymentConfirmed: freezed == isPaymentConfirmed
+          ? _self.isPaymentConfirmed
+          : isPaymentConfirmed // ignore: cast_nullable_to_non_nullable
+              as bool?,
     ));
   }
 
@@ -239,14 +218,9 @@ class _$PaymentDetailSuccessCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $VirtualAccountModelCopyWith<$Res>? get selectedVirtualAccount {
-    if (_self.selectedVirtualAccount == null) {
-      return null;
-    }
-
-    return $VirtualAccountModelCopyWith<$Res>(_self.selectedVirtualAccount!,
-        (value) {
-      return _then(_self.copyWith(selectedVirtualAccount: value));
+  $VirtualAccountModelCopyWith<$Res> get virtualAccount {
+    return $VirtualAccountModelCopyWith<$Res>(_self.virtualAccount, (value) {
+      return _then(_self.copyWith(virtualAccount: value));
     });
   }
 }

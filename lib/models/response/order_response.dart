@@ -1,3 +1,4 @@
+import 'package:dewa_wo_app/models/order_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'order_response.freezed.dart';

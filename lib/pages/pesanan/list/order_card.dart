@@ -145,12 +145,25 @@ class OrderCard extends StatelessWidget {
                       backgroundColor: Colors.orange,
                     ),
                     onPressed: () {
-                      context.push('/pesanan/payment/${order.id}');
+                      context.push('/pesanan/payment/order/${order.id}');
                     },
                     child: const Text('Bayar Sekarang'),
                   ),
                 ),
               ],
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange,
+                  ),
+                  onPressed: () {
+                    context.push('/pesanan/payment/riwayat/${order.id}');
+                  },
+                  child: const Text('Riwayat Pembayaran'),
+                ),
+              ),
               const SizedBox(height: 8),
               SizedBox(
                 width: double.infinity,

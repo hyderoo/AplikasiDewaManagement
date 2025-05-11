@@ -26,7 +26,7 @@ mixin _$PaymentModel {
   String get paymentMethod;
   @JsonKey(name: 'bank_code')
   String? get bankCode;
-  double get amount;
+  String get amount;
   String get status;
   @JsonKey(name: 'transaction_id')
   String? get transactionId;
@@ -144,7 +144,7 @@ abstract mixin class $PaymentModelCopyWith<$Res> {
       @JsonKey(name: 'payment_type') String paymentType,
       @JsonKey(name: 'payment_method') String paymentMethod,
       @JsonKey(name: 'bank_code') String? bankCode,
-      double amount,
+      String amount,
       String status,
       @JsonKey(name: 'transaction_id') String? transactionId,
       @JsonKey(name: 'va_number') String? vaNumber,
@@ -219,7 +219,7 @@ class _$PaymentModelCopyWithImpl<$Res> implements $PaymentModelCopyWith<$Res> {
       amount: null == amount
           ? _self.amount
           : amount // ignore: cast_nullable_to_non_nullable
-              as double,
+              as String,
       status: null == status
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
@@ -316,7 +316,7 @@ class _PaymentModel implements PaymentModel {
   @JsonKey(name: 'bank_code')
   final String? bankCode;
   @override
-  final double amount;
+  final String amount;
   @override
   final String status;
   @override
@@ -452,7 +452,7 @@ abstract mixin class _$PaymentModelCopyWith<$Res>
       @JsonKey(name: 'payment_type') String paymentType,
       @JsonKey(name: 'payment_method') String paymentMethod,
       @JsonKey(name: 'bank_code') String? bankCode,
-      double amount,
+      String amount,
       String status,
       @JsonKey(name: 'transaction_id') String? transactionId,
       @JsonKey(name: 'va_number') String? vaNumber,
@@ -528,7 +528,7 @@ class __$PaymentModelCopyWithImpl<$Res>
       amount: null == amount
           ? _self.amount
           : amount // ignore: cast_nullable_to_non_nullable
-              as double,
+              as String,
       status: null == status
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable

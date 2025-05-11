@@ -18,6 +18,8 @@ import '../../cubits/order/order_cubit.dart' as _i184;
 import '../../cubits/order_detail/order_detail_cubit.dart' as _i865;
 import '../../cubits/order_form/order_form_cubit.dart' as _i702;
 import '../../cubits/payment_detail/payment_detail_cubit.dart' as _i807;
+import '../../cubits/payment_history/payment_history_cubit.dart' as _i1060;
+import '../../cubits/payment_method/payment_method_cubit.dart' as _i90;
 import '../../cubits/portfolio/portfolio_cubit.dart' as _i453;
 import '../../cubits/profile/profile_cubit.dart' as _i1056;
 import '../../cubits/review/review_cubit.dart' as _i668;
@@ -51,8 +53,6 @@ _i174.GetIt init(
       () => _i753.PaymentRepository(apiClient: gh<_i277.ApiClient>()));
   gh.lazySingleton<_i785.ContentRepository>(
       () => _i785.ContentRepository(apiClient: gh<_i277.ApiClient>()));
-  gh.factory<_i807.PaymentDetailCubit>(() =>
-      _i807.PaymentDetailCubit(orderRepository: gh<_i893.OrderRepository>()));
   gh.factory<_i702.OrderFormCubit>(
       () => _i702.OrderFormCubit(orderRepository: gh<_i893.OrderRepository>()));
   gh.factory<_i865.OrderDetailCubit>(() =>
@@ -63,6 +63,10 @@ _i174.GetIt init(
       () => _i481.AuthRepository(gh<_i277.ApiClient>()));
   gh.lazySingleton<_i291.AvailabilityCubit>(() => _i291.AvailabilityCubit(
       availabilityRepository: gh<_i798.AvailabilityRepository>()));
+  gh.lazySingleton<_i90.PaymentMethodCubit>(() => _i90.PaymentMethodCubit(
+        orderRepository: gh<_i893.OrderRepository>(),
+        paymentRepository: gh<_i753.PaymentRepository>(),
+      ));
   gh.lazySingleton<_i22.TeamCubit>(
       () => _i22.TeamCubit(contentRepository: gh<_i785.ContentRepository>()));
   gh.lazySingleton<_i668.ReviewCubit>(() =>
@@ -79,5 +83,11 @@ _i174.GetIt init(
       () => _i685.AuthCubit(authRepository: gh<_i481.AuthRepository>()));
   gh.lazySingleton<_i1056.ProfileCubit>(() =>
       _i1056.ProfileCubit(profileRepository: gh<_i971.ProfileRepository>()));
+  gh.lazySingleton<_i807.PaymentDetailCubit>(() => _i807.PaymentDetailCubit(
+        paymentRepository: gh<_i753.PaymentRepository>(),
+        orderRepository: gh<_i893.OrderRepository>(),
+      ));
+  gh.factory<_i1060.PaymentHistoryCubit>(() => _i1060.PaymentHistoryCubit(
+      paymentRepository: gh<_i753.PaymentRepository>()));
   return getIt;
 }

@@ -13,7 +13,7 @@ abstract class PaymentModel with _$PaymentModel {
     @JsonKey(name: 'payment_type') required String paymentType,
     @JsonKey(name: 'payment_method') required String paymentMethod,
     @JsonKey(name: 'bank_code') String? bankCode,
-    required double amount,
+    required String amount,
     required String status,
     @JsonKey(name: 'transaction_id') String? transactionId,
     @JsonKey(name: 'va_number') String? vaNumber,

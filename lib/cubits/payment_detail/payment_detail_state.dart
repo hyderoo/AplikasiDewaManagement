@@ -1,4 +1,4 @@
-// payment_detail_state.dart
+// lib/cubits/payment_detail/payment_detail_state.dart
 part of 'payment_detail_cubit.dart';
 
 @freezed
@@ -7,12 +7,12 @@ class PaymentDetailState with _$PaymentDetailState {
   const factory PaymentDetailState.loading() = PaymentDetailLoading;
   const factory PaymentDetailState.success({
     required OrderModel order,
-    required List<BankModel> banks,
-    required List<VirtualAccountModel> virtualAccounts,
-    VirtualAccountModel? selectedVirtualAccount,
-    String? virtualAccountNumber,
-    DateTime? expiredAt,
+    required String virtualAccountNumber,
+    required VirtualAccountModel virtualAccount,
+    required DateTime expiredAt,
+    required double amount,
     String? message,
+    bool? isPaymentConfirmed,
   }) = PaymentDetailSuccess;
   const factory PaymentDetailState.error({
     required String message,

@@ -14,7 +14,7 @@ _PaymentModel _$PaymentModelFromJson(Map<String, dynamic> json) =>
       paymentType: json['payment_type'] as String,
       paymentMethod: json['payment_method'] as String,
       bankCode: json['bank_code'] as String?,
-      amount: (json['amount'] as num).toDouble(),
+      amount: json['amount'] as String,
       status: json['status'] as String,
       transactionId: json['transaction_id'] as String?,
       vaNumber: json['va_number'] as String?,

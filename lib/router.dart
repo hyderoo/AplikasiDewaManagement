@@ -57,16 +57,36 @@ final GoRouter _router = GoRouter(
             ),
           ),
         ),
-        // GoRoute(
-        //   path: 'payment/:id',
-        //   name: 'payment',
-        //   builder: (context, state) => BlocProvider(
-        //     create: (context) => getIt<PaymentDetailCubit>(),
-        //     child: DetailPembayaranPage(
-        //       orderId: int.tryParse(state.pathParameters['id'] ?? '0') ?? 0,
-        //     ),
-        //   ),
-        // ),
+        GoRoute(
+          path: 'payment/detail/:id',
+          name: 'payment-detail',
+          builder: (context, state) => BlocProvider(
+            create: (context) => getIt<PaymentDetailCubit>(),
+            child: DetailPembayaranPage(
+              paymentId: int.tryParse(state.pathParameters['id'] ?? '0') ?? 0,
+            ),
+          ),
+        ),
+        GoRoute(
+          path: 'payment/order/:id',
+          name: 'payment-order',
+          builder: (context, state) => BlocProvider(
+            create: (context) => getIt<PaymentMethodCubit>(),
+            child: PaymentMethodPage(
+              orderId: int.tryParse(state.pathParameters['id'] ?? '0') ?? 0,
+            ),
+          ),
+        ),
+        GoRoute(
+          path: 'payment/riwayat/:orderId',
+          name: 'riwayat-pembayaran',
+          builder: (context, state) => BlocProvider(
+            create: (context) => getIt<PaymentHistoryCubit>(),
+            child: PaymentHistoryPage(
+              orderId: int.parse(state.pathParameters['orderId']!),
+            ),
+          ),
+        ),
       ],
     ),
     GoRoute(

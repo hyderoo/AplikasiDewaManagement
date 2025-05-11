@@ -13,10 +13,9 @@ class PaymentRepository {
 
   PaymentRepository({required ApiClient apiClient}) : _apiClient = apiClient;
 
-  // Get payment details for an order
-  Future<PaymentDetailsResponse> getPaymentDetails(int orderId) async {
+  Future<PaymentDetailsResponse> getPaymentDetails(int id) async {
     try {
-      final response = await _apiClient.get('/payments/order/$orderId');
+      final response = await _apiClient.get('/payments/$id');
       return PaymentDetailsResponse.fromJson(response.data);
     } on DioException catch (e) {
       if (e.response != null) {
