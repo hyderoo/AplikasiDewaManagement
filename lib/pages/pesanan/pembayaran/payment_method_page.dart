@@ -79,7 +79,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                 width: 60,
                 height: 20,
                 child: Image.network(
-                  va.logo!,
+                  "${AppConsts.baseUrl}/storage/${va.logo!}",
                   fit: BoxFit.contain,
                   errorBuilder: (context, error, stackTrace) {
                     return Text(

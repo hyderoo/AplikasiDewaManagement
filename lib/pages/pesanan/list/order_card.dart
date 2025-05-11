@@ -135,47 +135,8 @@ class OrderCard extends StatelessWidget {
                   ),
                 ],
               ),
-              if (order.status == 'pending_payment' &&
-                  order.requiresDownPayment) ...[
-                const SizedBox(height: 12),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange,
-                    ),
-                    onPressed: () {
-                      context.push('/pesanan/payment/order/${order.id}');
-                    },
-                    child: const Text('Bayar Sekarang'),
-                  ),
-                ),
-              ],
-              const SizedBox(height: 12),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange,
-                  ),
-                  onPressed: () {
-                    context.push('/pesanan/payment/riwayat/${order.id}');
-                  },
-                  child: const Text('Riwayat Pembayaran'),
-                ),
-              ),
               const SizedBox(height: 8),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    context.push('/pesanan/detail/${order.id}');
-                  },
-                  child: const Text('Lihat Detail'),
-                ),
-              ),
               if (order.paymentPercentage > 0) ...[
-                const SizedBox(height: 8),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -214,7 +175,17 @@ class OrderCard extends StatelessWidget {
                     ),
                   ],
                 ),
+                const SizedBox(height: 8),
               ],
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    context.push('/pesanan/detail/${order.id}');
+                  },
+                  child: const Text('Lihat Detail'),
+                ),
+              ),
             ],
           ),
         ),

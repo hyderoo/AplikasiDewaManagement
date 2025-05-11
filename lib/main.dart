@@ -28,7 +28,7 @@ import 'package:dewa_wo_app/pages/not_found/not_found_page.dart';
 import 'package:dewa_wo_app/pages/pesanan/detail/detail_pesanan_page.dart';
 import 'package:dewa_wo_app/pages/pesanan/form/form_pemesanan_page.dart';
 import 'package:dewa_wo_app/pages/pesanan/list/pesanan_page.dart';
-import 'package:dewa_wo_app/pages/pesanan/pembayaran/detail_pembayaran_page.dart';
+import 'package:dewa_wo_app/pages/pesanan/pembayaran/payment_detail_page.dart';
 import 'package:dewa_wo_app/pages/pesanan/pembayaran/payment_history_page.dart';
 import 'package:dewa_wo_app/pages/pesanan/pembayaran/payment_method_page.dart';
 import 'package:dewa_wo_app/pages/portfolio/portfolio_page.dart';

@@ -49,51 +49,36 @@ final GoRouter _router = GoRouter(
         GoRoute(
           path: 'form',
           name: 'form',
-          builder: (context, state) => BlocProvider(
-            create: (context) => getIt<OrderFormCubit>(),
-            child: FormPemesananPage(
-              layanan: state.extra as CatalogModel,
-            ),
+          builder: (context, state) => FormPemesananPage(
+            layanan: state.extra as CatalogModel,
           ),
         ),
         GoRoute(
           path: 'detail/:id',
           name: 'detail',
-          builder: (context, state) => BlocProvider(
-            create: (context) => getIt<OrderDetailCubit>(),
-            child: DetailPesananPage(
-              id: int.tryParse(state.pathParameters['id'] ?? '0') ?? 0,
-            ),
+          builder: (context, state) => DetailPesananPage(
+            id: int.tryParse(state.pathParameters['id'] ?? '0') ?? 0,
           ),
         ),
         GoRoute(
           path: 'payment/detail/:id',
           name: 'payment-detail',
-          builder: (context, state) => BlocProvider(
-            create: (context) => getIt<PaymentDetailCubit>(),
-            child: DetailPembayaranPage(
-              paymentId: int.tryParse(state.pathParameters['id'] ?? '0') ?? 0,
-            ),
+          builder: (context, state) => PaymentDetailPage(
+            paymentId: int.tryParse(state.pathParameters['id'] ?? '0') ?? 0,
           ),
         ),
         GoRoute(
           path: 'payment/order/:id',
           name: 'payment-order',
-          builder: (context, state) => BlocProvider(
-            create: (context) => getIt<PaymentMethodCubit>(),
-            child: PaymentMethodPage(
-              orderId: int.tryParse(state.pathParameters['id'] ?? '0') ?? 0,
-            ),
+          builder: (context, state) => PaymentMethodPage(
+            orderId: int.tryParse(state.pathParameters['id'] ?? '0') ?? 0,
           ),
         ),
         GoRoute(
           path: 'payment/riwayat/:orderId',
           name: 'riwayat-pembayaran',
-          builder: (context, state) => BlocProvider(
-            create: (context) => getIt<PaymentHistoryCubit>(),
-            child: PaymentHistoryPage(
-              orderId: int.parse(state.pathParameters['orderId']!),
-            ),
+          builder: (context, state) => PaymentHistoryPage(
+            orderId: int.parse(state.pathParameters['orderId']!),
           ),
         ),
       ],

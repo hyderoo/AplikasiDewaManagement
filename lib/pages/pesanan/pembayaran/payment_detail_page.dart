@@ -1,4 +1,3 @@
-// lib/pages/pesanan/pembayaran/detail_pembayaran_page.dart
 import 'package:dewa_wo_app/cubits/payment_detail/payment_detail_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,15 +5,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
 
-class DetailPembayaranPage extends StatefulWidget {
+class PaymentDetailPage extends StatefulWidget {
   final int paymentId;
-  const DetailPembayaranPage({super.key, required this.paymentId});
+  const PaymentDetailPage({super.key, required this.paymentId});
 
   @override
-  State<DetailPembayaranPage> createState() => _DetailPembayaranPageState();
+  State<PaymentDetailPage> createState() => _PaymentDetailPageState();
 }
 
-class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
+class _PaymentDetailPageState extends State<PaymentDetailPage> {
   Timer? _timer;
   Duration _remainingTime = Duration.zero;
 
@@ -516,7 +515,9 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
         children: [
           ElevatedButton.icon(
             onPressed: () {
-              context.read<PaymentDetailCubit>().checkPaymentStatus();
+              context
+                  .read<PaymentDetailCubit>()
+                  .loadPaymentDetails(widget.paymentId);
             },
             icon: const Icon(Icons.refresh),
             label: const Text('Cek Status Pembayaran'),
@@ -538,46 +539,6 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
               fontStyle: FontStyle.italic,
             ),
             textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 16),
-          OutlinedButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Konfirmasi'),
-                  content: const Text(
-                      'Apakah Anda yakin ingin membatalkan pembayaran ini?'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text('Tidak'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context); // Close dialog
-                        Navigator.pop(context); // Back to previous screen
-                      },
-                      child: const Text('Ya, Batalkan'),
-                    ),
-                  ],
-                ),
-              );
-            },
-            style: OutlinedButton.styleFrom(
-              side: BorderSide(color: Colors.grey[300]!),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 16),
-            ),
-            child: Text(
-              'Batalkan',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey[700],
-              ),
-            ),
           ),
         ],
       ),

@@ -111,9 +111,9 @@ class _DetailPesananPageState extends State<DetailPesananPage> {
                         ),
                       ),
                     ),
-                    if (state.order.status == 'pending_payment' &&
-                        state.order.requiresDownPayment)
+                    if (state.order.status == 'pending_payment')
                       _buildPaymentButton(state.order),
+                    SizedBox(height: 64),
                   ],
                 ),
               ),
@@ -428,6 +428,19 @@ class _DetailPesananPageState extends State<DetailPesananPage> {
               ),
             ),
           ],
+          const SizedBox(height: 8),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orange,
+              ),
+              onPressed: () {
+                context.push('/pesanan/payment/riwayat/${order.id}');
+              },
+              child: const Text('Riwayat Pembayaran'),
+            ),
+          ),
         ],
       ),
     );
@@ -435,13 +448,12 @@ class _DetailPesananPageState extends State<DetailPesananPage> {
 
   Widget _buildPaymentButton(OrderModel order) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16).copyWith(top: 0),
       child: ElevatedButton(
         onPressed: () {
           context.push('/pesanan/payment/order/${order.id}');
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.orange,
           padding: const EdgeInsets.symmetric(vertical: 14),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),

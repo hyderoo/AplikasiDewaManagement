@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 
 class LayananCard extends StatelessWidget {
   final CatalogModel service;
-  LayananCard({super.key, required this.service});
+  const LayananCard({super.key, required this.service});
 
   @override
   Widget build(BuildContext context) {

@@ -602,30 +602,6 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                       ),
                     ),
                   ],
-
-                  // Action buttons
-                  if (payment.status == 'pending') ...[
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              // Check payment status
-                              context
-                                  .read<PaymentHistoryCubit>()
-                                  .loadPaymentHistory(payment.id);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                              foregroundColor: Colors.white,
-                            ),
-                            child: const Text('Cek Status'),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
                 ],
               ),
             ),
