@@ -1,7 +1,7 @@
 // detail_pesanan_page.dart
 import 'package:dewa_wo_app/cubits/order/order_cubit.dart';
 import 'package:dewa_wo_app/cubits/order_detail/order_detail_cubit.dart';
-import 'package:dewa_wo_app/models/order_model.dart';
+import 'package:dewa_wo_app/core/models/order_model.dart';
 import 'package:dewa_wo_app/resources/resources.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

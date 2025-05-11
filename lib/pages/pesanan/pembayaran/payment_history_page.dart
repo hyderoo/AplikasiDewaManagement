@@ -1,14 +1,8 @@
 // lib/pages/pesanan/pembayaran/payment_history_page.dart
-import 'dart:io';
 
 import 'package:dewa_wo_app/core/consts/app_consts.dart';
-import 'package:dewa_wo_app/core/di/dependency_injection.dart';
-import 'package:dewa_wo_app/cubits/payment_detail/payment_detail_cubit.dart';
 import 'package:dewa_wo_app/cubits/payment_history/payment_history_cubit.dart';
-import 'package:dewa_wo_app/cubits/payment_method/payment_method_cubit.dart';
-import 'package:dewa_wo_app/models/payment_model.dart';
-import 'package:dewa_wo_app/pages/pesanan/pembayaran/detail_pembayaran_page.dart';
-import 'package:dewa_wo_app/pages/pesanan/pembayaran/payment_method_page.dart';
+import 'package:dewa_wo_app/core/models/payment_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +11,7 @@ import 'package:intl/intl.dart';
 
 class PaymentHistoryPage extends StatefulWidget {
   final int orderId;
-  const PaymentHistoryPage({Key? key, required this.orderId}) : super(key: key);
+  const PaymentHistoryPage({super.key, required this.orderId});
 
   @override
   State<PaymentHistoryPage> createState() => _PaymentHistoryPageState();
@@ -390,14 +384,6 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
         }[payment.paymentType] ??
         payment.paymentType;
 
-    final statusDisplay = {
-          'pending': 'Menunggu Verifikasi',
-          'verified': 'Terverifikasi',
-          'rejected': 'Ditolak',
-          'expired': 'Kadaluarsa',
-        }[payment.status] ??
-        payment.status;
-
     final paymentMethodDisplay = {
           'bank_transfer': 'Transfer Bank',
           'virtual_account': 'Virtual Account',
@@ -628,7 +614,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                               // Check payment status
                               context
                                   .read<PaymentHistoryCubit>()
-                                  .checkPaymentStatus(payment.id);
+                                  .loadPaymentHistory(payment.id);
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,

@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dewa_wo_app/core/consts/app_consts.dart';
 import 'package:dewa_wo_app/cubits/portfolio/portfolio_cubit.dart';
-import 'package:dewa_wo_app/models/portfolio_model.dart';
+import 'package:dewa_wo_app/core/models/portfolio_model.dart';
 import 'package:dewa_wo_app/pages/portfolio/portfolio_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

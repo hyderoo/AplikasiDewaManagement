@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:dewa_wo_app/data/repositories/availability_repository.dart';
+import 'package:dewa_wo_app/core/repositories/availability_repository.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 

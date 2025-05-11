@@ -1,12 +1,12 @@
 // lib/cubits/payment_method/payment_method_cubit.dart
 import 'dart:io';
 import 'package:bloc/bloc.dart';
-import 'package:dewa_wo_app/data/repositories/order_repository.dart';
-import 'package:dewa_wo_app/data/repositories/payment_repository.dart';
-import 'package:dewa_wo_app/models/bank_model.dart';
-import 'package:dewa_wo_app/models/order_model.dart';
-import 'package:dewa_wo_app/models/response/payment_response.dart';
-import 'package:dewa_wo_app/models/virtual_account_model.dart';
+import 'package:dewa_wo_app/core/repositories/order_repository.dart';
+import 'package:dewa_wo_app/core/repositories/payment_repository.dart';
+import 'package:dewa_wo_app/core/models/bank_model.dart';
+import 'package:dewa_wo_app/core/models/order_model.dart';
+import 'package:dewa_wo_app/core/models/response/payment_response.dart';
+import 'package:dewa_wo_app/core/models/virtual_account_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:injectable/injectable.dart';
@@ -259,8 +259,6 @@ class PaymentMethodCubit extends Cubit<PaymentMethodState> {
       case PaymentType.installment:
         return 'installment';
       case PaymentType.fullPayment:
-        return 'full_payment';
-      default:
         return 'full_payment';
     }
   }

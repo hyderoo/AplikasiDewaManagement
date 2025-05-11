@@ -1,11 +1,11 @@
 // lib/cubits/payment_detail/payment_detail_cubit.dart
 import 'package:bloc/bloc.dart';
 import 'package:collection/collection.dart';
-import 'package:dewa_wo_app/data/repositories/order_repository.dart';
-import 'package:dewa_wo_app/data/repositories/payment_repository.dart';
-import 'package:dewa_wo_app/models/order_model.dart';
-import 'package:dewa_wo_app/models/payment_model.dart';
-import 'package:dewa_wo_app/models/virtual_account_model.dart';
+import 'package:dewa_wo_app/core/repositories/order_repository.dart';
+import 'package:dewa_wo_app/core/repositories/payment_repository.dart';
+import 'package:dewa_wo_app/core/models/order_model.dart';
+import 'package:dewa_wo_app/core/models/payment_model.dart';
+import 'package:dewa_wo_app/core/models/virtual_account_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 

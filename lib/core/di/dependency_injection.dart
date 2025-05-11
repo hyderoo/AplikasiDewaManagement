@@ -1,5 +1,5 @@
-import 'package:dewa_wo_app/cubits/auth/auth_cubit.dart';
-import 'package:dewa_wo_app/data/repositories/auth_repository.dart';
+import 'package:dewa_wo_app/pages/auth/cubit/auth_cubit.dart';
+import 'package:dewa_wo_app/core/repositories/auth_repository.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:dewa_wo_app/core/di/dependency_injection.config.dart';

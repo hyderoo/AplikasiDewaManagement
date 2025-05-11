@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:dewa_wo_app/data/repositories/order_repository.dart';
-import 'package:dewa_wo_app/models/order_model.dart';
+import 'package:dewa_wo_app/core/repositories/order_repository.dart';
+import 'package:dewa_wo_app/core/models/order_model.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';

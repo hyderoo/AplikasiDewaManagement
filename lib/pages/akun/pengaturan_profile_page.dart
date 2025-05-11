@@ -2,9 +2,9 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dewa_wo_app/core/consts/app_consts.dart';
-import 'package:dewa_wo_app/cubits/auth/auth_cubit.dart';
+import 'package:dewa_wo_app/pages/auth/cubit/auth_cubit.dart';
 import 'package:dewa_wo_app/cubits/profile/profile_cubit.dart';
-import 'package:dewa_wo_app/helpers/image_compressor.dart';
+import 'package:dewa_wo_app/core/helpers/image_compressor.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

@@ -1,5 +1,5 @@
 import 'package:dewa_wo_app/core/di/dependency_injection.dart';
-import 'package:dewa_wo_app/cubits/auth/auth_cubit.dart';
+import 'package:dewa_wo_app/pages/auth/cubit/auth_cubit.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

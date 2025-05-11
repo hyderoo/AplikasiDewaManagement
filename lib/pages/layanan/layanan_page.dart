@@ -3,7 +3,7 @@ import 'package:dewa_wo_app/core/consts/app_consts.dart';
 import 'package:dewa_wo_app/cubits/availability/availability_cubit.dart';
 import 'package:dewa_wo_app/cubits/service/service_cubit.dart';
 import 'package:dewa_wo_app/dialogs/login_required_dialog.dart';
-import 'package:dewa_wo_app/models/catalog_model.dart';
+import 'package:dewa_wo_app/core/models/catalog_model.dart';
 import 'package:dewa_wo_app/pages/layanan/wedding_calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

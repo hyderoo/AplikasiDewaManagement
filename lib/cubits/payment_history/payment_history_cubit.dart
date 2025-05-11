@@ -1,8 +1,8 @@
 // lib/cubits/payment_history/payment_history_cubit.dart
 import 'package:bloc/bloc.dart';
-import 'package:dewa_wo_app/data/repositories/payment_repository.dart';
-import 'package:dewa_wo_app/models/order_model.dart';
-import 'package:dewa_wo_app/models/payment_model.dart';
+import 'package:dewa_wo_app/core/repositories/payment_repository.dart';
+import 'package:dewa_wo_app/core/models/order_model.dart';
+import 'package:dewa_wo_app/core/models/payment_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
@@ -44,23 +44,6 @@ class PaymentHistoryCubit extends Cubit<PaymentHistoryState> {
       emit(PaymentHistoryState.error(
         message: 'Terjadi kesalahan: ${e.toString()}',
       ));
-    }
-  }
-
-  Future<void> checkPaymentStatus(int paymentId) async {
-    if (state is! PaymentHistorySuccess) return;
-
-    try {
-      final response = await _paymentRepository.checkPaymentStatus(paymentId);
-
-      if (response.status == 'success') {
-        // Reload payment history to get updated statuses
-        final currentState = state as PaymentHistorySuccess;
-        await loadPaymentHistory(currentState.order.id);
-      }
-    } catch (e) {
-      // Don't change state on error, just keep the current state
-      print("Error checking payment status: ${e.toString()}");
     }
   }
 }

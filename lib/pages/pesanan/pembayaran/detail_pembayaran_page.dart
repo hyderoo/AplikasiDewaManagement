@@ -1,7 +1,5 @@
 // lib/pages/pesanan/pembayaran/detail_pembayaran_page.dart
 import 'package:dewa_wo_app/cubits/payment_detail/payment_detail_cubit.dart';
-import 'package:dewa_wo_app/models/order_model.dart';
-import 'package:dewa_wo_app/models/virtual_account_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,8 +8,7 @@ import 'dart:async';
 
 class DetailPembayaranPage extends StatefulWidget {
   final int paymentId;
-  const DetailPembayaranPage({Key? key, required this.paymentId})
-      : super(key: key);
+  const DetailPembayaranPage({super.key, required this.paymentId});
 
   @override
   State<DetailPembayaranPage> createState() => _DetailPembayaranPageState();
@@ -86,6 +83,7 @@ class _DetailPembayaranPageState extends State<DetailPembayaranPage> {
               // If payment is confirmed, navigate back after a delay
               if (state.isPaymentConfirmed == true) {
                 Future.delayed(const Duration(seconds: 2), () {
+                  // ignore: use_build_context_synchronously
                   Navigator.of(context).pop();
                 });
               }
