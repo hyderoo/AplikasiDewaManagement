@@ -176,6 +176,46 @@ class OrderRepository {
     }
   }
 
+  // Create order
+  Future<OrderResponse> createCustomOrder(
+      Map<String, dynamic> orderData) async {
+    try {
+      final response = await _apiClient.post('/orders/custom', data: orderData);
+      if (response.data['data'] != null) {
+        final order = OrderModel.fromJson(response.data['data']);
+        return OrderResponse(
+          status: response.data['status'] ?? 'success',
+          message: response.data['message'] ?? 'Order created successfully',
+          data: order,
+        );
+      }
+      return OrderResponse.fromJson(response.data);
+    } on DioException catch (e) {
+      if (e.response != null) {
+        try {
+          return OrderResponse.fromJson(e.response!.data);
+        } catch (_) {
+          return OrderResponse(
+            status: 'error',
+            message: e.message ?? 'Failed to create order',
+            data: null,
+          );
+        }
+      }
+      return OrderResponse(
+        status: 'error',
+        message: e.message ?? 'Network error occurred',
+        data: null,
+      );
+    } catch (e) {
+      return OrderResponse(
+        status: 'error',
+        message: e.toString(),
+        data: null,
+      );
+    }
+  }
+
   // Cancel order
   Future<OrderResponse> cancelOrder(int id, {String? reason}) async {
     try {

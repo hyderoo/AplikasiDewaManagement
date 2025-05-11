@@ -238,7 +238,7 @@ class _LayananPageState extends State<LayananPage> {
           onTap: () {
             LoginRequiredDialog.check(
               context: context,
-              action: () => context.push('/custom-package'),
+              action: () => context.pushNamed('custom-layanan'),
               actionName: 'membuat paket khusus',
             );
           },
@@ -256,7 +256,7 @@ class _LayananPageState extends State<LayananPage> {
                 ),
                 SizedBox(height: 16),
                 Text(
-                  'Buat Paket Khusus',
+                  'Buat Paket Custom',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,

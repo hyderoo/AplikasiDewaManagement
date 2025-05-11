@@ -1,4 +1,5 @@
 import 'package:dewa_wo_app/core/api/api_client.dart';
+import 'package:dewa_wo_app/core/models/response/features_response.dart';
 import 'package:dewa_wo_app/core/models/response/legal_document_response.dart';
 import 'package:dewa_wo_app/core/models/response/portfolio_response.dart';
 import 'package:dewa_wo_app/core/models/response/review_response.dart';
@@ -99,6 +100,37 @@ class ContentRepository {
       );
     } catch (e) {
       return CatalogResponse(
+        status: 'error',
+        message: e.toString(),
+        data: null,
+      );
+    }
+  }
+
+  // Custom Features Methods
+  Future<FeaturesResponse> getCustomFeatures() async {
+    try {
+      final response = await _apiClient.get('/catalogs/custom-features');
+      return FeaturesResponse.fromJson(response.data);
+    } on DioException catch (e) {
+      if (e.response != null) {
+        try {
+          return FeaturesResponse.fromJson(e.response!.data);
+        } catch (_) {
+          return FeaturesResponse(
+            status: 'error',
+            message: e.message ?? 'Failed to fetch custom features',
+            data: null,
+          );
+        }
+      }
+      return FeaturesResponse(
+        status: 'error',
+        message: e.message ?? 'Network error occurred',
+        data: null,
+      );
+    } catch (e) {
+      return FeaturesResponse(
         status: 'error',
         message: e.toString(),
         data: null,

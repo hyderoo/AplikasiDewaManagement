@@ -21,6 +21,15 @@ final GoRouter _router = GoRouter(
         String? search = state.extra as String?;
         return LayananPage(search: search);
       },
+      routes: [
+        GoRoute(
+          path: 'custom',
+          name: 'custom-layanan',
+          builder: (context, state) {
+            return CustomFeaturesPage();
+          },
+        ),
+      ],
     ),
     GoRoute(
       path: '/portofolio',
@@ -47,12 +56,22 @@ final GoRouter _router = GoRouter(
       builder: (context, state) => const PesananPage(),
       routes: [
         GoRoute(
-          path: 'form',
-          name: 'form',
-          builder: (context, state) => FormPemesananPage(
-            layanan: state.extra as CatalogModel,
-          ),
-        ),
+            path: 'form',
+            name: 'form',
+            builder: (context, state) => FormPemesananPage(
+                  layanan: state.extra as CatalogModel,
+                ),
+            routes: [
+              GoRoute(
+                path: 'custom',
+                name: 'order-custom',
+                builder: (context, state) => CustomOrderFormPage(
+                  selectedFeatures: (state.extra as Map)['selectedFeatures']
+                      as List<FeatureModel>,
+                  totalPrice: (state.extra as Map)['totalPrice'] as double,
+                ),
+              ),
+            ]),
         GoRoute(
           path: 'detail/:id',
           name: 'detail',

@@ -13,20 +13,23 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
 import '../../cubits/availability/availability_cubit.dart' as _i291;
-import '../../pages/pesanan/list/cubit/order_cubit.dart' as _i184;
-import '../../pages/pesanan/detail/cubit/order_detail_cubit.dart' as _i865;
-import '../../pages/pesanan/form/cubit/order_form_cubit.dart' as _i702;
-import '../../pages/pesanan/pembayaran/detail/cubit/payment_detail_cubit.dart'
-    as _i807;
-import '../../pages/pesanan/pembayaran/history/cubit/payment_history_cubit.dart'
-    as _i1060;
-import '../../pages/pesanan/pembayaran/method/cubit/payment_method_cubit.dart'
-    as _i90;
-import '../../pages/portfolio/cubit/portfolio_cubit.dart' as _i453;
-import '../../pages/akun/cubit/profile_cubit.dart' as _i1056;
+import '../../cubits/custom_features/custom_features_cubit.dart' as _i397;
 import '../../cubits/review/review_cubit.dart' as _i668;
-import '../../pages/layanan/cubit/service_cubit.dart' as _i327;
+import '../../pages/akun/cubit/profile_cubit.dart' as _i680;
 import '../../pages/auth/cubit/auth_cubit.dart' as _i297;
+import '../../pages/layanan/cubit/service_cubit.dart' as _i860;
+import '../../pages/pesanan/detail/cubit/order_detail_cubit.dart' as _i1009;
+import '../../pages/pesanan/form/cubit/order_form_cubit.dart' as _i9;
+import '../../pages/pesanan/form/custom/cubit/custom_order_form_cubit.dart'
+    as _i194;
+import '../../pages/pesanan/list/cubit/order_cubit.dart' as _i582;
+import '../../pages/pesanan/pembayaran/detail/cubit/payment_detail_cubit.dart'
+    as _i675;
+import '../../pages/pesanan/pembayaran/history/cubit/payment_history_cubit.dart'
+    as _i231;
+import '../../pages/pesanan/pembayaran/method/cubit/payment_method_cubit.dart'
+    as _i492;
+import '../../pages/portfolio/cubit/portfolio_cubit.dart' as _i239;
 import '../../pages/tim/cubit/tim_cubit.dart' as _i474;
 import '../api/api_client.dart' as _i277;
 import '../repositories/auth_repository.dart' as _i1002;
@@ -56,41 +59,45 @@ _i174.GetIt init(
       () => _i771.PaymentRepository(apiClient: gh<_i277.ApiClient>()));
   gh.lazySingleton<_i739.ContentRepository>(
       () => _i739.ContentRepository(apiClient: gh<_i277.ApiClient>()));
-  gh.lazySingleton<_i90.PaymentMethodCubit>(() => _i90.PaymentMethodCubit(
+  gh.lazySingleton<_i492.PaymentMethodCubit>(() => _i492.PaymentMethodCubit(
         orderRepository: gh<_i344.OrderRepository>(),
         paymentRepository: gh<_i771.PaymentRepository>(),
       ));
   gh.lazySingleton<_i1002.AuthRepository>(
       () => _i1002.AuthRepository(gh<_i277.ApiClient>()));
-  gh.lazySingleton<_i807.PaymentDetailCubit>(() => _i807.PaymentDetailCubit(
+  gh.lazySingleton<_i675.PaymentDetailCubit>(() => _i675.PaymentDetailCubit(
         paymentRepository: gh<_i771.PaymentRepository>(),
         orderRepository: gh<_i344.OrderRepository>(),
       ));
   gh.lazySingleton<_i291.AvailabilityCubit>(() => _i291.AvailabilityCubit(
       availabilityRepository: gh<_i609.AvailabilityRepository>()));
+  gh.factory<_i397.CustomFeaturesCubit>(() => _i397.CustomFeaturesCubit(
+      contentRepository: gh<_i739.ContentRepository>()));
   gh.lazySingleton<_i668.ReviewCubit>(() =>
       _i668.ReviewCubit(contentRepository: gh<_i739.ContentRepository>()));
-  gh.lazySingleton<_i453.PortfolioCubit>(() =>
-      _i453.PortfolioCubit(contentRepository: gh<_i739.ContentRepository>()));
-  gh.lazySingleton<_i327.ServiceCubit>(() =>
-      _i327.ServiceCubit(contentRepository: gh<_i739.ContentRepository>()));
   gh.lazySingleton<_i474.TimCubit>(
       () => _i474.TimCubit(contentRepository: gh<_i739.ContentRepository>()));
-  gh.factory<_i1060.PaymentHistoryCubit>(() => _i1060.PaymentHistoryCubit(
+  gh.lazySingleton<_i239.PortfolioCubit>(() =>
+      _i239.PortfolioCubit(contentRepository: gh<_i739.ContentRepository>()));
+  gh.lazySingleton<_i860.ServiceCubit>(() =>
+      _i860.ServiceCubit(contentRepository: gh<_i739.ContentRepository>()));
+  gh.factory<_i231.PaymentHistoryCubit>(() => _i231.PaymentHistoryCubit(
       paymentRepository: gh<_i771.PaymentRepository>()));
-  gh.lazySingleton<_i184.OrderCubit>(
-      () => _i184.OrderCubit(orderRepository: gh<_i344.OrderRepository>()));
-  gh.factory<_i702.OrderFormCubit>(
-      () => _i702.OrderFormCubit(orderRepository: gh<_i344.OrderRepository>()));
-  gh.factory<_i865.OrderDetailCubit>(() =>
-      _i865.OrderDetailCubit(orderRepository: gh<_i344.OrderRepository>()));
+  gh.lazySingleton<_i582.OrderCubit>(
+      () => _i582.OrderCubit(orderRepository: gh<_i344.OrderRepository>()));
+  gh.factory<_i9.OrderFormCubit>(
+      () => _i9.OrderFormCubit(orderRepository: gh<_i344.OrderRepository>()));
+  gh.factory<_i1009.OrderDetailCubit>(() =>
+      _i1009.OrderDetailCubit(orderRepository: gh<_i344.OrderRepository>()));
+  gh.factory<_i194.CustomOrderFormCubit>(() =>
+      _i194.CustomOrderFormCubit(orderRepository: gh<_i344.OrderRepository>()));
   gh.lazySingleton<_i297.AuthCubit>(
       () => _i297.AuthCubit(authRepository: gh<_i1002.AuthRepository>()));
   gh.lazySingleton<_i210.ProfileRepository>(() => _i210.ProfileRepository(
         apiClient: gh<_i277.ApiClient>(),
         authRepository: gh<_i1002.AuthRepository>(),
       ));
-  gh.lazySingleton<_i1056.ProfileCubit>(() =>
-      _i1056.ProfileCubit(profileRepository: gh<_i210.ProfileRepository>()));
+  gh.lazySingleton<_i680.ProfileCubit>(() =>
+      _i680.ProfileCubit(profileRepository: gh<_i210.ProfileRepository>()));
   return getIt;
 }
