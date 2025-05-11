@@ -3,6 +3,13 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'catalog_model.freezed.dart';
 part 'catalog_model.g.dart';
 
+final List<Map<String, String>> serviceTypes = [
+  {"value": "semua", "label": "Semua"},
+  {"value": "all-in-one", "label": "Paket Lengkap"},
+  {"value": "decoration", "label": "Dekorasi"},
+  {"value": "documentation", "label": "Dokumentasi"},
+];
+
 @freezed
 abstract class CatalogModel with _$CatalogModel {
   const factory CatalogModel({

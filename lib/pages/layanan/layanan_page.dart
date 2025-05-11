@@ -1,14 +1,16 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dewa_wo_app/core/consts/app_consts.dart';
 import 'package:dewa_wo_app/cubits/availability/availability_cubit.dart';
 import 'package:dewa_wo_app/cubits/service/service_cubit.dart';
 import 'package:dewa_wo_app/dialogs/login_required_dialog.dart';
 import 'package:dewa_wo_app/core/models/catalog_model.dart';
+import 'package:dewa_wo_app/pages/general/empty_page.dart';
+import 'package:dewa_wo_app/pages/general/error_page.dart';
+import 'package:dewa_wo_app/pages/general/header_page.dart';
+import 'package:dewa_wo_app/pages/general/shimmer_page.dart';
+import 'package:dewa_wo_app/pages/layanan/layanan_card.dart';
 import 'package:dewa_wo_app/pages/layanan/wedding_calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shimmer/shimmer.dart';
 
 class LayananPage extends StatefulWidget {
   final String? search;
@@ -25,12 +27,6 @@ class _LayananPageState extends State<LayananPage> {
   bool _isSearchMode = false;
   final TextEditingController _searchController = TextEditingController();
   String _selectedCategory = 'semua';
-  final List<Map<String, String>> _serviceTypes = [
-    {"value": "semua", "label": "Semua"},
-    {"value": "all-in-one", "label": "Paket Lengkap"},
-    {"value": "decoration", "label": "Dekorasi"},
-    {"value": "documentation", "label": "Dokumentasi"},
-  ];
 
   List<CatalogModel> _filteredLayanan = [];
   late final ServiceCubit _serviceCubit;
@@ -53,14 +49,6 @@ class _LayananPageState extends State<LayananPage> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
-  }
-
-  String _getServiceTypeLabel(String typeValue) {
-    final typeMap = _serviceTypes.firstWhere(
-      (type) => type["value"] == typeValue,
-      orElse: () => {"value": typeValue, "label": typeValue},
-    );
-    return typeMap["label"]!;
   }
 
   void _filterLayanan(List<CatalogModel> services, String categoryValue) {
@@ -99,93 +87,36 @@ class _LayananPageState extends State<LayananPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(60),
-        child: AppBar(
-          backgroundColor: Colors.pink,
-          automaticallyImplyLeading: false,
-          leading: BackButton(
-            color: Colors.white,
-            onPressed: () {
-              if (_isSearchMode) {
-                setState(() {
-                  _isSearchMode = false;
-                  _searchController.clear();
-                  if (_serviceCubit.state is ServiceSuccess) {
-                    final services =
-                        (_serviceCubit.state as ServiceSuccess).services;
-                    _filterLayanan(services, _selectedCategory);
-                  }
-                });
-              } else {
-                context.pop();
-              }
-            },
-          ),
-          title: _isSearchMode
-              ? TextField(
-                  controller: _searchController,
-                  style: const TextStyle(color: Colors.white),
-                  cursorColor: Colors.white,
-                  decoration: const InputDecoration(
-                    hintText: 'Cari layanan...',
-                    hintStyle: TextStyle(color: Colors.white70),
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: 15,
-                      horizontal: 16,
-                    ),
-                    filled: false,
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                  ),
-                  onChanged: (query) {
-                    if (_serviceCubit.state is ServiceSuccess) {
-                      final services =
-                          (_serviceCubit.state as ServiceSuccess).services;
-                      _searchLayanan(services, query);
-                    }
-                  },
-                  autofocus: true,
-                )
-              : const Text(
-                  'Layanan Kami',
-                  style: TextStyle(color: Colors.white),
-                ),
-          actions: [
-            IconButton(
-              icon: Icon(
-                _isSearchMode ? Icons.clear : Icons.search,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                if (_isSearchMode) {
-                  _searchController.clear();
-                  if (_serviceCubit.state is ServiceSuccess) {
-                    final services =
-                        (_serviceCubit.state as ServiceSuccess).services;
-                    _searchLayanan(services, '');
-                  }
-                } else {
-                  setState(() {
-                    _isSearchMode = true;
-                  });
-                }
-              },
-            ),
-          ],
-        ),
+      appBar: buildHeader(
+        context: context,
+        isSearchMode: _isSearchMode,
+        searchController: _searchController,
+        title: 'Layanan Kami',
+        searchHint: 'Cari Layanan Kami',
+        backAction: () {
+          setState(() {
+            _isSearchMode = false;
+            _searchController.clear();
+            if (_serviceCubit.state is ServiceSuccess) {
+              final services = (_serviceCubit.state as ServiceSuccess).services;
+              _filterLayanan(services, _selectedCategory);
+            }
+          });
+        },
+        onChangedSearch: (query) {
+          if (_serviceCubit.state is ServiceSuccess) {
+            final services = (_serviceCubit.state as ServiceSuccess).services;
+            _searchLayanan(services, query);
+          }
+        },
+        closePressed: () {
+          _searchController.clear();
+          if (_serviceCubit.state is ServiceSuccess) {
+            final services = (_serviceCubit.state as ServiceSuccess).services;
+            _searchLayanan(services, '');
+          }
+        },
+        searchPressed: () => setState(() => _isSearchMode = true),
       ),
       body: Column(
         children: [
@@ -201,18 +132,21 @@ class _LayananPageState extends State<LayananPage> {
               },
               builder: (context, state) {
                 if (state is ServiceLoading || state is ServiceInitial) {
-                  return _buildShimmerList();
+                  return ShimmerPage();
                 } else if (state is ServiceSuccess) {
                   return RefreshIndicator(
                     onRefresh: () => _serviceCubit.getServices(),
                     child: _filteredLayanan.isEmpty
-                        ? _buildEmptyStateWithRefresh()
+                        ? EmptyPage(message: 'Tidak ada layanan yang ditemukan')
                         : _buildMainContent(),
                   );
                 } else if (state is ServiceError) {
-                  return _buildErrorState(state.message);
+                  return ErrorPage(
+                    fetchData: () => _serviceCubit.getServices(),
+                    message: state.message,
+                  );
                 }
-                return _buildShimmerList();
+                return ShimmerPage();
               },
             ),
           ),
@@ -228,9 +162,9 @@ class _LayananPageState extends State<LayananPage> {
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 12),
-        itemCount: _serviceTypes.length,
+        itemCount: serviceTypes.length,
         itemBuilder: (context, index) {
-          final category = _serviceTypes[index];
+          final category = serviceTypes[index];
           final isSelected = category["value"] == _selectedCategory;
 
           return GestureDetector(
@@ -267,145 +201,6 @@ class _LayananPageState extends State<LayananPage> {
     );
   }
 
-  Widget _buildShimmerList() {
-    return MediaQuery.removePadding(
-      context: context,
-      removeTop: true,
-      removeBottom: true,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Shimmer.fromColors(
-          baseColor: Colors.grey[300]!,
-          highlightColor: Colors.grey[100]!,
-          child: ListView.builder(
-            itemCount: 5,
-            itemBuilder: (context, index) {
-              return Container(
-                height: 300,
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEmptyStateWithRefresh() {
-    return ListView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      children: [
-        SizedBox(
-          height: MediaQuery.of(context).size.height * 0.4,
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.search_off,
-                  size: 80,
-                  color: Colors.grey[400],
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Tidak ada layanan yang ditemukan',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Coba pilih kategori lain atau ubah kata kunci pencarian',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  'Tarik ke bawah untuk menyegarkan',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[500],
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildErrorState(String message) {
-    return RefreshIndicator(
-      onRefresh: () => _serviceCubit.getServices(),
-      child: ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.7,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.error_outline,
-                    size: 80,
-                    color: Colors.red,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Terjadi kesalahan',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[800],
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                    child: Text(
-                      message,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[600],
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: () => _serviceCubit.getServices(),
-                    child: const Text('Coba Lagi'),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'atau tarik ke bawah untuk menyegarkan',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[500],
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildMainContent() {
     return SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
@@ -427,166 +222,11 @@ class _LayananPageState extends State<LayananPage> {
       padding: const EdgeInsets.all(16),
       itemCount: _filteredLayanan.length,
       itemBuilder: (context, index) {
-        return _buildLayananCard(_filteredLayanan[index]);
+        return LayananCard(service: _filteredLayanan[index]);
       },
       separatorBuilder: (BuildContext context, int index) {
         return const SizedBox(height: 16);
       },
-    );
-  }
-
-  Widget _buildLayananCard(CatalogModel service) {
-    return Card(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16),
-            ),
-            child: CachedNetworkImage(
-              imageUrl: '${AppConsts.baseUrl}${service.image}',
-              height: 180,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => Container(
-                color: Colors.grey[200],
-                child: Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.pink),
-                  ),
-                ),
-              ),
-              errorWidget: (context, url, error) => Container(
-                height: 180,
-                width: double.infinity,
-                color: Colors.pink[100],
-                alignment: Alignment.center,
-                child: Icon(Icons.image, size: 60, color: Colors.pink[300]),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        service.name,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                    Text(
-                      service.formattedPrice,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.pink,
-                      ),
-                      textAlign: TextAlign.end,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.pink[50],
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    _getServiceTypeLabel(service.type),
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.pink[700],
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  service.description,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    height: 1.4,
-                  ),
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 8),
-                if (service.features.isNotEmpty)
-                  _buildFeatureGrid(service.features),
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () => LoginRequiredDialog.check(
-                      context: context,
-                      action: () => context.push(
-                        '/pesanan/form',
-                        extra: service,
-                      ),
-                      actionName: 'memesan layanan',
-                    ),
-                    child: const Text('Pilih Paket'),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFeatureGrid(List<String> features) {
-    return MediaQuery.removePadding(
-      context: context,
-      removeTop: true,
-      removeBottom: true,
-      child: GridView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 8,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-        ),
-        itemCount: features.length > 4 ? 4 : features.length,
-        itemBuilder: (context, index) {
-          return Row(
-            children: [
-              const Text(
-                '✓',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(width: 4),
-              Expanded(
-                child: Text(
-                  features[index],
-                  style: const TextStyle(fontSize: 12),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          );
-        },
-      ),
     );
   }
 
@@ -666,8 +306,6 @@ class _LayananPageState extends State<LayananPage> {
                 ),
               ),
               const SizedBox(height: 16),
-
-              // Kalender
               BlocBuilder<AvailabilityCubit, AvailabilityState>(
                 bloc: _availabilityCubit,
                 builder: (context, state) {

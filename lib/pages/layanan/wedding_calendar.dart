@@ -485,38 +485,6 @@ class _WeddingCalendarState extends State<WeddingCalendar> {
 
                       // Actions
                       if (!isBooked) ...[
-                        const Text(
-                          'Ingin memesan untuk tanggal ini?',
-                          style: TextStyle(
-                            fontSize: 14,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        // Book button
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              // Navigasi ke halaman pemesanan
-                              Navigator.pushNamed(
-                                context,
-                                '/reserve-date',
-                                arguments: date,
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.pink[400],
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                            child: const Text('Reservasi Tanggal'),
-                          ),
-                        ),
-                      ] else ...[
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(12),

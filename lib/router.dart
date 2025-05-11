@@ -26,6 +26,15 @@ final GoRouter _router = GoRouter(
       path: '/portofolio',
       name: 'portofolio',
       builder: (context, state) => const PortfolioPage(),
+      routes: [
+        GoRoute(
+          path: 'detail',
+          name: 'portofolio-detail',
+          builder: (context, state) => PortfolioDetailPage(
+            portfolio: state.extra as PortfolioModel,
+          ),
+        ),
+      ],
     ),
     GoRoute(
       path: '/tim',

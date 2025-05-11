@@ -1,4 +1,5 @@
 import 'package:dewa_wo_app/core/di/dependency_injection.dart';
+import 'package:dewa_wo_app/core/models/portfolio_model.dart';
 import 'package:dewa_wo_app/pages/auth/cubit/auth_cubit.dart';
 import 'package:dewa_wo_app/cubits/availability/availability_cubit.dart';
 import 'package:dewa_wo_app/cubits/order/order_cubit.dart';
@@ -7,10 +8,11 @@ import 'package:dewa_wo_app/cubits/order_form/order_form_cubit.dart';
 import 'package:dewa_wo_app/cubits/payment_detail/payment_detail_cubit.dart';
 import 'package:dewa_wo_app/cubits/payment_history/payment_history_cubit.dart';
 import 'package:dewa_wo_app/cubits/payment_method/payment_method_cubit.dart';
-import 'package:dewa_wo_app/cubits/portfolio/portfolio_cubit.dart';
+import 'package:dewa_wo_app/pages/portfolio/cubit/portfolio_cubit.dart';
 import 'package:dewa_wo_app/cubits/profile/profile_cubit.dart';
 import 'package:dewa_wo_app/cubits/review/review_cubit.dart';
 import 'package:dewa_wo_app/cubits/service/service_cubit.dart';
+import 'package:dewa_wo_app/pages/portfolio/portfolio_detail_page.dart';
 import 'package:dewa_wo_app/pages/tim/cubit/tim_cubit.dart';
 import 'package:dewa_wo_app/core/models/catalog_model.dart';
 import 'package:dewa_wo_app/pages/akun/pengaturan_akun_page.dart';

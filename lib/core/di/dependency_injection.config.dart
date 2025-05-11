@@ -19,7 +19,7 @@ import '../../cubits/order_form/order_form_cubit.dart' as _i702;
 import '../../cubits/payment_detail/payment_detail_cubit.dart' as _i807;
 import '../../cubits/payment_history/payment_history_cubit.dart' as _i1060;
 import '../../cubits/payment_method/payment_method_cubit.dart' as _i90;
-import '../../cubits/portfolio/portfolio_cubit.dart' as _i453;
+import '../../pages/portfolio/cubit/portfolio_cubit.dart' as _i453;
 import '../../cubits/profile/profile_cubit.dart' as _i1056;
 import '../../cubits/review/review_cubit.dart' as _i668;
 import '../../cubits/service/service_cubit.dart' as _i327;
