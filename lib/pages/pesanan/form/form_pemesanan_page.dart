@@ -8,6 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import 'wedding_date_picker_page.dart';
+
 class FormPemesananPage extends StatefulWidget {
   final CatalogModel layanan;
 
@@ -118,6 +120,10 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
         jumlahTamu: int.parse(_jumlahTamuController.text),
         lokasi: _lokasiController.text,
         alamat: _alamatController.text,
+        email: _emailController.text,
+        whatsapp: _whatsappController.text,
+        teleponAlternatif:
+            _teleponController.text.isNotEmpty ? _teleponController.text : null,
         price: price,
       );
     }
@@ -422,7 +428,21 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
     String? Function(String?)? validator,
   }) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () async {
+        final pickedDate = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => WeddingDatePickerPage(
+              initialDate: _selectedDate,
+            ),
+          ),
+        );
+        if (pickedDate != null) {
+          setState(() {
+            _selectedDate = pickedDate;
+          });
+        }
+      },
       child: AbsorbPointer(
         child: TextFormField(
           decoration: InputDecoration(
@@ -459,8 +479,8 @@ class _FormPemesananPageState extends State<FormPemesananPage> {
               ),
             ),
             suffixIcon: const Icon(
-              Icons.keyboard_arrow_down,
-              color: Colors.grey,
+              Icons.calendar_today,
+              color: Colors.pink,
             ),
           ),
           validator: validator,

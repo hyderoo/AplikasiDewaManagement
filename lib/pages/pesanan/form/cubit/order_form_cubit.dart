@@ -26,6 +26,9 @@ class OrderFormCubit extends Cubit<OrderFormState> {
     required String lokasi,
     required String alamat,
     required double price,
+    required String email,
+    required String whatsapp,
+    String? teleponAlternatif,
     double? originalPrice,
   }) async {
     emit(const OrderFormState.loading());
@@ -46,6 +49,9 @@ class OrderFormCubit extends Cubit<OrderFormState> {
         'estimated_guests': jumlahTamu,
         'price': price,
         'original_price': originalPrice ?? price,
+        'email': email,
+        'phone': whatsapp,
+        'alt_phone': teleponAlternatif,
       };
 
       final response = await _orderRepository.createOrder(orderData);

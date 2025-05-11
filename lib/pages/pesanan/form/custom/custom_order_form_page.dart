@@ -1,5 +1,6 @@
 // lib/pages/pesanan/form/custom_form_pemesanan_page.dart
 import 'package:dewa_wo_app/core/models/response/features_response.dart';
+import 'package:dewa_wo_app/pages/pesanan/form/wedding_date_picker_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -118,7 +119,8 @@ class _CustomOrderFormPageState extends State<CustomOrderFormPage> {
         alamat: _alamatController.text,
         email: _emailController.text,
         whatsapp: _whatsappController.text,
-        teleponAlternatif: _teleponController.text,
+        teleponAlternatif:
+            _teleponController.text.isNotEmpty ? _teleponController.text : null,
         totalPrice: widget.totalPrice,
       );
     }
@@ -463,7 +465,21 @@ class _CustomOrderFormPageState extends State<CustomOrderFormPage> {
     String? Function(String?)? validator,
   }) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () async {
+        final pickedDate = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => WeddingDatePickerPage(
+              initialDate: _selectedDate,
+            ),
+          ),
+        );
+        if (pickedDate != null) {
+          setState(() {
+            _selectedDate = pickedDate;
+          });
+        }
+      },
       child: AbsorbPointer(
         child: TextFormField(
           decoration: InputDecoration(
@@ -500,8 +516,8 @@ class _CustomOrderFormPageState extends State<CustomOrderFormPage> {
               ),
             ),
             suffixIcon: const Icon(
-              Icons.keyboard_arrow_down,
-              color: Colors.grey,
+              Icons.calendar_today,
+              color: Colors.pink,
             ),
           ),
           validator: validator,

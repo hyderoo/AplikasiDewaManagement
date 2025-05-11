@@ -26,7 +26,7 @@ class CustomOrderFormCubit extends Cubit<CustomOrderFormState> {
     required String alamat,
     required String email,
     required String whatsapp,
-    required String teleponAlternatif,
+    required String? teleponAlternatif,
     required double totalPrice,
   }) async {
     emit(const CustomOrderFormState.loading());
