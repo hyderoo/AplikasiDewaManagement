@@ -3,6 +3,7 @@ import 'package:dewa_wo_app/cubits/payment_detail/payment_detail_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
 
@@ -84,7 +85,7 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
               if (state.isPaymentConfirmed == true) {
                 Future.delayed(const Duration(seconds: 2), () {
                   // ignore: use_build_context_synchronously
-                  Navigator.of(context).pop();
+                  context.pop();
                 });
               }
             }

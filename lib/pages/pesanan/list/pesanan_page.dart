@@ -85,8 +85,8 @@ class _PesananPageState extends State<PesananPage> {
       child: _isSearchMode
           ? Row(
               children: [
-                IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                BackButton(
+                  color: Colors.white,
                   onPressed: () {
                     setState(() {
                       _isSearchMode = false;
@@ -139,8 +139,8 @@ class _PesananPageState extends State<PesananPage> {
           : Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                BackButton(
+                  color: Colors.white,
                   onPressed: () => context.pop(),
                 ),
                 const Text(
