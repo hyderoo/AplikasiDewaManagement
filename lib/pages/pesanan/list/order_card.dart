@@ -1,5 +1,5 @@
 // order_card.dart (renamed from pesanan_card.dart)
-import 'package:dewa_wo_app/cubits/order/order_cubit.dart';
+import 'package:dewa_wo_app/pages/pesanan/list/cubit/order_cubit.dart';
 import 'package:dewa_wo_app/core/models/order_model.dart';
 import 'package:dewa_wo_app/resources/resources.dart';
 import 'package:flutter/material.dart';

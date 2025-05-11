@@ -1,5 +1,5 @@
 import 'package:dewa_wo_app/cubits/availability/availability_cubit.dart';
-import 'package:dewa_wo_app/cubits/service/service_cubit.dart';
+import 'package:dewa_wo_app/pages/layanan/cubit/service_cubit.dart';
 import 'package:dewa_wo_app/dialogs/login_required_dialog.dart';
 import 'package:dewa_wo_app/core/models/catalog_model.dart';
 import 'package:dewa_wo_app/pages/general/empty_page.dart';

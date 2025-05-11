@@ -2,7 +2,7 @@
 import 'dart:io';
 
 import 'package:dewa_wo_app/core/consts/app_consts.dart';
-import 'package:dewa_wo_app/cubits/payment_method/payment_method_cubit.dart';
+import 'package:dewa_wo_app/pages/pesanan/pembayaran/method/cubit/payment_method_cubit.dart';
 import 'package:dewa_wo_app/core/models/bank_model.dart';
 import 'package:dewa_wo_app/core/models/virtual_account_model.dart';
 import 'package:flutter/material.dart';

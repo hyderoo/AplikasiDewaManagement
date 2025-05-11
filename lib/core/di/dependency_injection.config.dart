@@ -13,16 +13,19 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
 import '../../cubits/availability/availability_cubit.dart' as _i291;
-import '../../cubits/order/order_cubit.dart' as _i184;
-import '../../cubits/order_detail/order_detail_cubit.dart' as _i865;
-import '../../cubits/order_form/order_form_cubit.dart' as _i702;
-import '../../cubits/payment_detail/payment_detail_cubit.dart' as _i807;
-import '../../cubits/payment_history/payment_history_cubit.dart' as _i1060;
-import '../../cubits/payment_method/payment_method_cubit.dart' as _i90;
+import '../../pages/pesanan/list/cubit/order_cubit.dart' as _i184;
+import '../../pages/pesanan/detail/cubit/order_detail_cubit.dart' as _i865;
+import '../../pages/pesanan/form/cubit/order_form_cubit.dart' as _i702;
+import '../../pages/pesanan/pembayaran/detail/cubit/payment_detail_cubit.dart'
+    as _i807;
+import '../../pages/pesanan/pembayaran/history/cubit/payment_history_cubit.dart'
+    as _i1060;
+import '../../pages/pesanan/pembayaran/method/cubit/payment_method_cubit.dart'
+    as _i90;
 import '../../pages/portfolio/cubit/portfolio_cubit.dart' as _i453;
-import '../../cubits/profile/profile_cubit.dart' as _i1056;
+import '../../pages/akun/cubit/profile_cubit.dart' as _i1056;
 import '../../cubits/review/review_cubit.dart' as _i668;
-import '../../cubits/service/service_cubit.dart' as _i327;
+import '../../pages/layanan/cubit/service_cubit.dart' as _i327;
 import '../../pages/auth/cubit/auth_cubit.dart' as _i297;
 import '../../pages/tim/cubit/tim_cubit.dart' as _i474;
 import '../api/api_client.dart' as _i277;

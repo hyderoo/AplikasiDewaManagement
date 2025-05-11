@@ -1,5 +1,5 @@
 import 'package:dewa_wo_app/core/consts/app_consts.dart';
-import 'package:dewa_wo_app/cubits/payment_detail/payment_detail_cubit.dart';
+import 'package:dewa_wo_app/pages/pesanan/pembayaran/detail/cubit/payment_detail_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

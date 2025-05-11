@@ -1,7 +1,7 @@
 // lib/pages/pesanan/pembayaran/payment_history_page.dart
 
 import 'package:dewa_wo_app/core/consts/app_consts.dart';
-import 'package:dewa_wo_app/cubits/payment_history/payment_history_cubit.dart';
+import 'package:dewa_wo_app/pages/pesanan/pembayaran/history/cubit/payment_history_cubit.dart';
 import 'package:dewa_wo_app/core/models/payment_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
