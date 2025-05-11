@@ -54,13 +54,15 @@ class PaymentDetailCubit extends Cubit<PaymentDetailState> {
 
       final orderResponse =
           await _orderRepository.getOrderById(payment.orderId);
-
+      bool isPaymentConfirmed = payment.status == 'verified';
       emit(PaymentDetailState.success(
         order: orderResponse.data!,
         virtualAccountNumber: payment.vaNumber ?? '-',
         virtualAccount: virtualAccount,
         expiredAt: expiredAt,
         amount: double.tryParse(payment.amount) ?? 0,
+        isPaymentConfirmed: isPaymentConfirmed,
+        message: isPaymentConfirmed ? 'Pembayaran Terkonfirmasi' : null,
       ));
     } catch (e) {
       emit(PaymentDetailState.error(

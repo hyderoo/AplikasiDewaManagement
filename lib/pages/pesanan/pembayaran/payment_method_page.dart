@@ -360,9 +360,9 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
           } else if (state is PaymentMethodSubmitted) {
             if (state.paymentMethod == PaymentMethod.virtualAccount) {
               context.pushReplacement(
-                  '/pesanan/payment/detail/${state.paymentId}');
+                '/pesanan/payment/detail/${state.paymentId}',
+              );
             } else {
-              // For bank transfer, just show success message and go back
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text(

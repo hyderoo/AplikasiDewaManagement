@@ -587,8 +587,18 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                           const SizedBox(height: 12),
                           ElevatedButton.icon(
                             onPressed: () {
-                              context.push(
-                                  '/pesanan/payment/detail/${payment.id}');
+                              context
+                                  .push(
+                                '/pesanan/payment/detail/${payment.id}',
+                              )
+                                  .then(
+                                (value) {
+                                  // ignore: use_build_context_synchronously
+                                  context
+                                      .read<PaymentHistoryCubit>()
+                                      .loadPaymentHistory(widget.orderId);
+                                },
+                              );
                             },
                             icon: const Icon(Icons.visibility),
                             label: const Text('Lihat Detail VA'),

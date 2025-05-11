@@ -1,3 +1,4 @@
+import 'package:dewa_wo_app/core/consts/app_consts.dart';
 import 'package:dewa_wo_app/cubits/payment_detail/payment_detail_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -309,7 +310,7 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
                 ),
                 if (state.virtualAccount.logo != null)
                   Image.network(
-                    state.virtualAccount.logo!,
+                    "${AppConsts.baseUrl}/storage/${state.virtualAccount.logo!}",
                     height: 30,
                     errorBuilder: (context, error, stackTrace) {
                       return Text(
